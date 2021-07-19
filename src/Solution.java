@@ -1,12 +1,15 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+
 class Solution {
-    public int solution(int num) {
-        int answer = 0;
-        long _num = (long) num;
-        for(int i = 0; i < 500; i++)  {
-            if(_num == 1) return answer;
-            _num = (_num % 2 == 0) ? _num / 2 : (_num * 3) + 1;
-            answer++;
+    public int[] solution(int[] arr) {
+        if(arr.length == 1) return new int[]{-1};
+        ArrayList<Integer> list = new ArrayList<>();
+        Integer min = Arrays.stream(arr).min().getAsInt();
+        for (int i : arr) {
+            if(i == min) continue;
+            list.add(i);
         }
-        return -1;
+        return list.stream().mapToInt(Integer::intValue).toArray();
     }
 }
