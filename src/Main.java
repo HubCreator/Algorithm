@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 class Node {
     int data;
@@ -10,29 +13,31 @@ class Node {
 }
 
 public class Main {
-    Node root;
-    public void DFS(Node root) {
-        if(root == null) return;
-        else {
-            DFS(root.lt);
-            DFS(root.rt);
-            System.out.print(root.data + " ");
+    static int num;
+    static int[] ch;
+    public static void DFS(int L) {
+        if(L == num+1) {
+            StringBuilder sb = new StringBuilder("");
+            for(int i = 0; i <= num; i++)
+                if(ch[i] == 1) {
+                    sb.append(i);
+                    sb.append(" ");
+                }
+            if(!sb.equals(""))
+                System.out.println(sb);
+        } else {
+            // 사용함
+            ch[L] = 1;
+            DFS(L+1);
+            // 사용하지 않음
+            ch[L] = 0;
+            DFS(L+1);
         }
     }
-
-    public static void main(String[] args) {
-        Main tree = new Main();
-        tree.root = new Node(1);
-
-        tree.root.lt = new Node(2);
-        tree.root.rt = new Node(3);
-
-        tree.root.lt.lt = new Node(4);
-        tree.root.lt.rt = new Node(5);
-
-        tree.root.rt.lt = new Node(6);
-        tree.root.rt.rt = new Node(7);
-
-        tree.DFS(tree.root);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        num = Integer.parseInt(br.readLine());
+        ch = new int[num+1];
+        DFS(1);
     }
 }
