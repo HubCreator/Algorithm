@@ -3,6 +3,7 @@ import java.io.*;
 public class Main {
     public static int[] fibo;
     public static int recursive(int n) {
+        if(fibo[n] > 0) return fibo[n];
         if (n == 1) return fibo[n] = 1;
         else if (n == 2) return fibo[n] = 1;
         else return fibo[n] = recursive(n-2) + recursive(n-1);
