@@ -3,13 +3,14 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int count(int[] arr, int capacity) {
-        int cnt = 1, sum = 0; // cnt는 DVD 장수
-        for(int x : arr) {
-            if(sum + x > capacity) {
+    public static int count(int[] arr, int dist) { // 유효한지 판별
+        int cnt = 1;        // 배치한 말의 마리 수
+        int ep = arr[0];    // 말을 배치한 좌표
+        for (int i = 1; i < arr.length; i++) {
+            if(arr[i] - ep >= dist) {
                 cnt++;
-                sum = x;
-            } else sum += x;
+                ep = arr[i];
+            }
         }
         return cnt;
     }
@@ -18,24 +19,23 @@ public class Main {
         StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
         StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
         int N = Integer.parseInt(st1.nextToken());
-        int M = Integer.parseInt(st1.nextToken());
+        int C = Integer.parseInt(st1.nextToken()) ;
         int[] arr = new int[N];
-
         for(int i = 0; i < N; i++)
             arr[i] = Integer.parseInt(st2.nextToken());
 
+        Arrays.sort(arr); // 오름차순 정렬
+        int lt = 1, rt = arr[arr.length-1];
         int answer = 0;
-        int lt = Arrays.stream(arr).max().getAsInt(),
-                rt = Arrays.stream(arr).sum();
 
-        while (lt <= rt) {
+        while(lt <= rt) { // 이분 검색
             int mid = (lt + rt) / 2;
-            if(count(arr, mid) <= M) {
+            if(count(arr, mid) >= C) {
                 answer = mid;
-                rt = mid - 1;
-            } else lt = mid + 1;
+                lt = mid + 1;
+            } else rt = mid - 1;
         }
 
-        System.out.print(answer);
+        System.out.println(answer);
     }
 }
