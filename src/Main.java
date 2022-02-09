@@ -1,31 +1,30 @@
-import java.io.*;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main {
+
+    public static int count = -1;
+
+    public static void BFS(int s, int t) {
+        count++;
+        if (s == t) {
+            return;
+        } else {
+            if (s + 3 < t) BFS(s + 5, t);
+            else if (s < t) BFS(s + 1, t);
+            else BFS(s - 1, t);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        int N = Integer.parseInt(st1.nextToken());
-        int M = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[N];
-        int lt = 0, rt = N-1, answer = 0;
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int S = Integer.parseInt(st.nextToken());
+        int T = Integer.parseInt(st.nextToken());
 
-        for(int i = 0; i < N; i++)
-            arr[i] = Integer.parseInt(st2.nextToken());
-
-        Arrays.sort(arr);
-        while(lt <= rt) {
-            int mid = (lt + rt) / 2;
-            if(arr[mid] == M) {
-                answer = mid + 1;
-                break;
-            }
-            else if (arr[mid] > M) rt = mid-1;
-            else lt = mid+1;
-        }
-
-        System.out.println(answer);
+        BFS(S, T);
+        System.out.println(count);
     }
 }
