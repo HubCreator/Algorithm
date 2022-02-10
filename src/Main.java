@@ -1,44 +1,43 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Node {
-    int data;
-    Node lt, rt;
-    Node(int data) {
-        this.data = data;
-        this.lt = null;
-        this.rt = null;
-    }
-}
-
-// 말단노드까지의 길이 구하기 (BFS 탐색)
 class Main {
-    public static void main(String[] args) {
-        Node root = new Node(1);
+    static int[][] graph;
+    static int[] ch;
+    static int count = 0;
+    static int V, E;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        V = Integer.parseInt(st1.nextToken());
+        E = Integer.parseInt(st1.nextToken());
+        graph = new int[V+1][V+1];
+        ch = new int[V+1];
+        StringTokenizer[] stArr = new StringTokenizer[E];
 
-        root.lt = new Node(2);
-        root.rt = new Node(3);
+        for(int i = 0; i < E; i++)
+            stArr[i] = new StringTokenizer(br.readLine(), " ");
 
-        root.lt.lt = new Node(4);
-        root.lt.rt = new Node(5);
+        for(int i = 0; i < E; i++)
+            graph[Integer.parseInt(stArr[i].nextToken())][Integer.parseInt(stArr[i].nextToken())] = 1;
 
-        System.out.println(BFS(root));
+        DFS(1);
+        System.out.println(count);
     }
 
-    private static int BFS(Node root) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.offer(root);
-        int L = 0;
-        while(!queue.isEmpty()) {
-            int len = queue.size();
-            for(int i = 0; i < len; i++) {
-                Node cur = queue.poll();
-                if(cur.lt == null && cur.rt == null) return L;
-                if(cur.lt != null) queue.offer(cur.lt);
-                if(cur.rt != null) queue.offer(cur.rt);
+    private static void DFS(int val) {
+        if(val == V) {
+            count++;
+        } else {
+            for(int i = 1; i <= V; i++) {
+                if(graph[val][i] == 1 && ch[i] == 0 && val != i) {
+                    ch[val] = 1;
+                    DFS(i);
+                    ch[val] = 0;
+                }
             }
-            L++;
         }
-        return 0;
     }
 }
