@@ -1,50 +1,51 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Main {
+    static int N, M;
     static ArrayList<ArrayList<Integer>> graph;
-    static int[] ch;
-    static int count = 0;
-    static int V, E;
-
+    static int[] dist, ch;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        V = Integer.parseInt(st1.nextToken()); // 노드 (Vertex)
-        E = Integer.parseInt(st1.nextToken());  // 간선 (Edge)
-        graph = new ArrayList<>();
-        ch = new int[V+1];
-        StringTokenizer[] stArr = new StringTokenizer[E];
+        N = Integer.parseInt(st1.nextToken()); // 정점의 수
+        M = Integer.parseInt(st1.nextToken()); // 간선의 수
+        dist = new int[N + 1];
+        ch = new int[N + 1];
 
-        for(int i = 0; i < E; i++)
-            stArr[i] = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer[] st2 = new StringTokenizer[M];
+        for (int i = 0; i < M; i++)
+            st2[i] = new StringTokenizer(br.readLine(), " ");
 
-        for(int i = 0; i <= V; i++)
+        graph = new ArrayList<ArrayList<Integer>>();
+        for(int i = 0; i <= N; i++)
             graph.add(new ArrayList<Integer>());
 
-        for(int i = 0; i < E; i++) {
-            int a = Integer.parseInt(stArr[i].nextToken());
-            int b = Integer.parseInt(stArr[i].nextToken());
+        for (int i = 0; i < M; i++) {
+            int a = Integer.parseInt(st2[i].nextToken());
+            int b = Integer.parseInt(st2[i].nextToken());
             graph.get(a).add(b);
         }
 
-        ch[1] = 1;
-        DFS(1);
-        System.out.println(count);
+        BFS(1);
+        for(int i = 2; i < N; i++)
+            System.out.println(i + " : " + dist[i]);
     }
 
-    private static void DFS(int val) {
-        if(val == V) {
-            count++;
-        } else {
-            for (int nv : graph.get(val)) {
+    private static void BFS(int v) {
+        Queue<Integer> queue = new LinkedList<>();
+        ch[v] = 1;
+        dist[v] = 0;
+        queue.offer(v);
+        while (!queue.isEmpty()) {
+            int cv = queue.poll(); // current vertext
+            for(int nv : graph.get(cv)) {
                 if(ch[nv] == 0) {
                     ch[nv] = 1;
-                    DFS(nv);
-                    ch[nv] = 0;
+                    queue.offer(nv);
+                    dist[nv] = dist[cv]+1;
                 }
             }
         }
