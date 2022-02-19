@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -9,18 +8,18 @@ public class Main {
         int N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
         int[] arr = new int[N];
-        ArrayList<Integer> answer = new ArrayList<>();
+        boolean flag = true;
 
         for(int i = 0; i < N; i++)
             arr[i] = Integer.parseInt(st.nextToken());
 
-        int[] arr_sorted = arr.clone(); // 깊은 복사
-        Arrays.sort(arr_sorted);
+        Arrays.sort(arr);
+        for(int i = 0; i < arr.length-1; i++)
+            if(arr[i] == arr[i+1]) {
+                flag = false;
+                break;
+            }
 
-        for(int i = 0; i < N; i++)
-            if(arr[i] != arr_sorted[i])
-                answer.add(i+1);
-
-        answer.forEach(x->System.out.print(x+" "));
+        System.out.print(flag ? "U" : "D");
     }
 }
