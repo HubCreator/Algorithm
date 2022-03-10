@@ -7,21 +7,10 @@ public class Main {
         String str = br.readLine();
         Stack<Character> stack = new Stack<>();
 
-        for(int i = 0; i < str.length(); i++) {
-            char x = str.charAt(i);
-            if (x == '(') stack.push(x);
-            else if (x == ')') {
-                int j = i-1;
-                while(stack.peek() != '(') {
-                    if(!stack.isEmpty())
-                        stack.pop();
-                    j = j-1;
-                }
-                if(!stack.isEmpty())
-                    stack.pop();
-            }
-            else
-                stack.push(x);
+        for(char x : str.toCharArray()) {
+            if(x == ')')
+                while(stack.pop() != '('); // 조건을 실행하고, 만족시키지 않으면 break;
+            else stack.push(x);
         }
         stack.forEach(System.out::print);
     }
