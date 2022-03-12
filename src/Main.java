@@ -7,8 +7,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
         StringTokenizer[] tmp = new StringTokenizer[N];
-        int[][] arr = new int[N][N];
-        Stack<Integer>[] stacks = new Stack[N];
+        int[][] board = new int[N][N];
         int answer = 0;
         Stack<Integer> bucket = new Stack<>();
 
@@ -17,7 +16,7 @@ public class Main {
 
         for(int i = 0; i < N; i++)
             for(int j = 0; j < N; j++)
-                arr[i][j] = Integer.parseInt(tmp[i].nextToken());
+                board[i][j] = Integer.parseInt(tmp[i].nextToken());
 
         int M = Integer.parseInt(br.readLine());
         int[] moves = new int[M];
@@ -26,30 +25,20 @@ public class Main {
         for(int i = 0; i < M; i++)
             moves[i] = Integer.parseInt(tmp2.nextToken());
 
-        for(int i = 0; i < N; i++) // stack 생성
-            stacks[i] = new Stack<>();
-
-        for(int i = 0; i < N; i++) { // stack에 값 push
-            for (int j = N-1; j >= 0; j--) {
-                if (arr[j][i] == 0) continue;
-                stacks[i].add(arr[j][i]);
+        for (int pos : moves) {
+            for (int i = 0; i < board.length; i++) {
+                if (board[i][pos - 1] != 0) {
+                    int target = board[i][pos - 1];
+                    board[i][pos - 1] = 0;
+                    if (!bucket.isEmpty() && target == bucket.peek()) {
+                        bucket.pop();
+                        answer += 2;
+                    } else bucket.push(target);
+                    break;
+                }
             }
         }
 
-        for(int i = 0; i < M; i++) {
-            if(stacks[moves[i]-1].isEmpty()) continue;
-
-            int target = stacks[moves[i]-1].pop();
-            if(!bucket.isEmpty()) {
-                if(target == bucket.peek()) {
-                    bucket.pop();
-                    answer += 2;
-                }
-                else
-                    bucket.push(target);
-            } else
-                bucket.push(target);
-        }
         System.out.println(answer);
     }
 }
