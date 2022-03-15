@@ -1,22 +1,24 @@
 import java.io.*;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String tmp = br.readLine();
-        Stack<Character> stack = new Stack<>();
-        int answer = 0;
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        Queue<Integer> queue = new LinkedList<>();
 
-        for(int i = 0; i < tmp.length(); i++) {
-            if(tmp.charAt(i) == '(') stack.push('(');
-            else {
-                stack.pop();
-                if(tmp.charAt(i-1) == '(') answer += stack.size(); // 원본과의 비교
-                else answer++;
-            }
+        for(int i = 1; i <= N; i++)
+            queue.offer(i);
+
+        while(queue.size() != 1) {
+            for(int i = 0; i < K-1; i++)
+                queue.offer(queue.poll());
+            queue.poll();
         }
-
-        System.out.println(answer);
+        System.out.println(queue.peek());
     }
 }
