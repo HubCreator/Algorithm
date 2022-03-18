@@ -1,29 +1,43 @@
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
+    public static class Person {
+        int index, priority;
+        public Person(int index, int priority) {
+            this.index = index;
+            this.priority = priority;
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String fixed = br.readLine();
-        String planned = br.readLine();
-        Queue<Character> queue = new LinkedList<>();
-        boolean answer = true;
+        StringTokenizer in_options = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer in_nums = new StringTokenizer(br.readLine(), " ");
+        Queue<Person> queue = new LinkedList<>();
 
-        for(char x : fixed.toCharArray())
-            queue.offer(x);
+        int N = Integer.parseInt(in_options.nextToken());
+        int M = Integer.parseInt(in_options.nextToken());
+        int answer = 0;
+        for(int i = 0; i < N; i++)
+            queue.offer(new Person(i, Integer.parseInt(in_nums.nextToken())));
 
-        for(char x : planned.toCharArray()) {
-            if(queue.contains(x)) {
-                if (queue.poll() != x) { // 참이든 아니든 poll이 실행됨
-                    answer = false;
+        while(!queue.isEmpty()) {
+            Person target = queue.poll();
+            for(Person x : queue) {
+                if(x.priority > target.priority) {
+                    queue.offer(target);
+                    target = null;
                     break;
                 }
-                // else queue.poll(); // 필요 없음
+            }
+            if(target != null) {
+                answer++;
+                if(target.index == M) break; // 루프 종료 조건
             }
         }
-        // 선수과목을 모두 듣지 않아도 false
-        if(!queue.isEmpty()) answer = false;
-        System.out.println(answer ? "YES" : "NO");
+        System.out.println(answer);
     }
 }
