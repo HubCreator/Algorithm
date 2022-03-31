@@ -4,17 +4,18 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        String str = br.readLine();
-        StringBuilder res = new StringBuilder();
+        int[] checkBit = new int[n+1];
+        int cnt = 0;
+        if(n < 2 || n > 2000000) return;
 
-        int cnt = 1;
-        for(int i = 0; i < n; i++) {
-            String tmp = str.substring(7*(cnt-1), 7*cnt)
-                    .replace('#', '1').replace('*', '0');
-            int num = Integer.parseInt(tmp, 2); // 2진수를 10진수로 변환
-            res.append((char)num);
-            cnt++;
+        for(int i = 2; i <= n; i++) {
+            if(checkBit[i] == 0) {
+                cnt++;
+                for(int j = i; j <= n; j = j + i)
+                    checkBit[j] = 1;
+            }
         }
-        System.out.println(res);
+
+        System.out.println(cnt);
     }
 }
