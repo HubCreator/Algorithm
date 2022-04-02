@@ -1,21 +1,37 @@
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        int[] checkBit = new int[n+1];
-        int cnt = 0;
-        if(n < 2 || n > 2000000) return;
+        StringTokenizer[] st = new StringTokenizer[n];
+        for(int i = 0; i < n; i++)
+            st[i] = new StringTokenizer(br.readLine(), " ");
+        int[][] nums = new int[n][n];
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < n; j++)
+                nums[i][j] = Integer.parseInt(st[i].nextToken());
 
-        for(int i = 2; i <= n; i++) {
-            if(checkBit[i] == 0) {
-                cnt++;
-                for(int j = i; j <= n; j = j + i)
-                    checkBit[j] = 1;
+        int max = Integer.MIN_VALUE;
+        int sum1, sum2;
+        for(int i = 0; i < n; i++) {
+            sum1 = sum2 = 0;
+            for(int j = 0; j < n; j++) {
+                sum1 += nums[i][j]; // 행 누적
+                sum2 += nums[j][i]; // 열 누적
             }
+            max = Math.max(sum1, max);
+            max = Math.max(sum2, max);
+        }
+        sum1 = sum2 = 0;
+        for(int i = 0; i < n; i++) {
+            sum1 += nums[i][i];
+            sum2 += nums[i][n-i-1];
+            max = Math.max(sum1, max);
+            max = Math.max(sum2, max);
         }
 
-        System.out.println(cnt);
+        System.out.println(max);
     }
 }
