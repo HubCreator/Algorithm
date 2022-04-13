@@ -1,37 +1,29 @@
 import java.io.*;
+import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        StringTokenizer[] st = new StringTokenizer[n];
-        for(int i = 0; i < n; i++)
-            st[i] = new StringTokenizer(br.readLine(), " ");
-        int[][] nums = new int[n][n];
-        for(int i = 0; i < n; i++)
-            for(int j = 0; j < n; j++)
-                nums[i][j] = Integer.parseInt(st[i].nextToken());
 
-        int max = Integer.MIN_VALUE;
-        int sum1, sum2;
-        for(int i = 0; i < n; i++) {
-            sum1 = sum2 = 0;
-            for(int j = 0; j < n; j++) {
-                sum1 += nums[i][j]; // 행 누적
-                sum2 += nums[j][i]; // 열 누적
-            }
-            max = Math.max(sum1, max);
-            max = Math.max(sum2, max);
-        }
-        sum1 = sum2 = 0;
-        for(int i = 0; i < n; i++) {
-            sum1 += nums[i][i];
-            sum2 += nums[i][n-i-1];
-            max = Math.max(sum1, max);
-            max = Math.max(sum2, max);
-        }
+        int arr_size1 = Integer.parseInt(br.readLine());
+        int[] arr1 = new int[arr_size1];
+        StringTokenizer st1 = new StringTokenizer(br.readLine()," ");
+        int arr_size2 =Integer.parseInt(br.readLine());
+        int[] arr2 = new int[arr_size2];
+        StringTokenizer st2 = new StringTokenizer(br.readLine()," ");
 
-        System.out.println(max);
+        for(int i = 0; i < arr1.length; i++)
+            arr1[i] = Integer.parseInt(st1.nextToken());
+
+        for(int i = 0; i < arr2.length; i++)
+            arr2[i] = Integer.parseInt(st2.nextToken());
+
+        IntStream intStream1 = Arrays.stream(arr1);
+        IntStream intStream2 = Arrays.stream(arr2);
+        IntStream result = IntStream.concat(intStream1, intStream2).sorted();
+
+        result.forEach(x->System.out.print(x + " "));
     }
 }
