@@ -1,7 +1,6 @@
 import java.io.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,14 +15,21 @@ public class Main {
 
         for(int i = 0; i < arr1.length; i++)
             arr1[i] = Integer.parseInt(st1.nextToken());
-
         for(int i = 0; i < arr2.length; i++)
             arr2[i] = Integer.parseInt(st2.nextToken());
 
-        IntStream intStream1 = Arrays.stream(arr1);
-        IntStream intStream2 = Arrays.stream(arr2);
-        IntStream result = IntStream.concat(intStream1, intStream2).sorted();
+        ArrayList<Integer> answer = new ArrayList<>();
+        int p1 = 0, p2 = 0;
+        while(p1 < arr_size1 && p2 < arr_size2) {
+            if(arr1[p1] > arr2[p2]) {
+                answer.add(arr2[p2++]);
+            } else {
+                answer.add(arr1[p1++]);
+            }
+        }
+        while(p1 < arr_size1) answer.add(arr1[p1++]);
+        while(p2 < arr_size2) answer.add(arr2[p2++]);
 
-        result.forEach(x->System.out.print(x + " "));
+        answer.forEach(x -> System.out.print(x + " "));
     }
 }
