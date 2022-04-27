@@ -6,21 +6,23 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st1 = new StringTokenizer(br.readLine());
         StringTokenizer st2 = new StringTokenizer(br.readLine());
+
         int N = Integer.parseInt(st1.nextToken());
         int K = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[N];
+        int[] num = new int[N];
+
         for(int i = 0; i < N; i++)
-            arr[i] = Integer.parseInt(st2.nextToken());
+            num[i] = Integer.parseInt(st2.nextToken());
 
-        int answer = 0;
-        int sum = 0;
-        for(int i = 0; i < K; i++) sum += arr[i]; // 초기 윈도우 만들기
-        answer = sum;
-        for(int i = K; i < N; i++) {
-            sum = sum + arr[i] - arr[i-K];
-            answer = Math.max(answer, sum);
+        int lt = 0, cnt = 0, answer = 0;
+        for(int rt = 0; rt < N; rt++) {
+            if(num[rt] == 0) cnt++;
+            while(cnt > K) {
+                if(num[lt] == 0) cnt--;
+                lt++;
+            }
+            answer = Math.max(answer, rt - lt + 1);
         }
-
         System.out.println(answer);
     }
 }
