@@ -1,28 +1,26 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine());
-        StringTokenizer st2 = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(br.readLine());
+        String tmp = br.readLine();
+        char answer = ' ';
 
-        int N = Integer.parseInt(st1.nextToken());
-        int K = Integer.parseInt(st1.nextToken());
-        int[] num = new int[N];
+        HashMap<Character, Integer> map = new HashMap<>();
+        for(char x : tmp.toCharArray())
+            map.put(x, map.getOrDefault(x, 0)+1); // 해당 value가 없다면 0 반환
 
-        for(int i = 0; i < N; i++)
-            num[i] = Integer.parseInt(st2.nextToken());
-
-        int lt = 0, cnt = 0, answer = 0;
-        for(int rt = 0; rt < N; rt++) {
-            if(num[rt] == 0) cnt++;
-            while(cnt > K) {
-                if(num[lt] == 0) cnt--;
-                lt++;
+        int max = Integer.MIN_VALUE;
+        for(char key : map.keySet()) { // keySet() -> 존재하는 키들을 모두 순회
+            /*System.out.println(key + " " + map.get(key));*/
+            if(map.get(key) > max) {
+                max = map.get(key);
+                answer = key;
             }
-            answer = Math.max(answer, rt - lt + 1);
         }
+
         System.out.println(answer);
     }
 }
