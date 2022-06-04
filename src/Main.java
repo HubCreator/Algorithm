@@ -1,23 +1,35 @@
+import java.awt.print.Pageable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
-// 보이는 학생
 public class Main {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int[] arr = new int[n+1];
-        int result = 0;
+        StringTokenizer st1 = new StringTokenizer(br.readLine());
+        StringTokenizer st2 = new StringTokenizer(br.readLine());
+        int[] a = new int[n];
+        int[] b = new int[n];
+        String answer = "";
 
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            a[i] = Integer.parseInt(st1.nextToken());
+            b[i] = Integer.parseInt(st2.nextToken());
         }
+
         for (int i = 0; i < n; i++) {
-            if (arr[i] < arr[i + 1]) result++;
+            if (a[i] == b[i]) answer += "D";
+            else if (a[i] == 1 && b[i] == 3) answer += "A";
+            else if (a[i] == 2 && b[i] == 1) answer += "A";
+            else if (a[i] == 3 && b[i] == 2) answer += "A";
+            else answer += "B";
         }
-        System.out.println(result);
+        System.out.println(answer);
+
     }
 }
