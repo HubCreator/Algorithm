@@ -3,32 +3,35 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// n일 중에서 k일 동안의 매출액 중 가장 높은 매출액
+// 연속 부분 수열 구하기
 public class Main {
-    public int solution(int n, int k, int[] arr) {
-        int max = 0;
-        int target = 0;
-        for (int i = 0; i < n - k; i++) {
-            for (int j = i; j < i + k; j++) {
-                target += arr[j];
+    private int solution(int m, int[] arr) {
+        int result = 0;
+        int size = 2;
+        while (size < arr.length) {
+            for (int i = 0; i < arr.length - size; i++) {
+                int count = 0;
+                for (int j = i; j < i + size; j++) {
+                    count += arr[j];
+                }
+                if (count == m) result++;
             }
-            max = Math.max(max, target);
-            target = 0;
+            size++;
         }
-        return max;
+        return result;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        int n = Integer.parseInt(st1.nextToken());
-        int k = Integer.parseInt(st1.nextToken());
         StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st1.nextToken());
+        int m = Integer.parseInt(st1.nextToken());
         int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st2.nextToken());
         }
-        System.out.println(T.solution(n, k, arr));;
+        System.out.println(T.solution(m, arr));
     }
 }
