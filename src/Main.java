@@ -1,22 +1,28 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
+    // 공통 원소 오름차순 출력
     public List<Integer> solution(int n1, int[] arr1, int n2, int[] arr2) {
         List<Integer> result = new ArrayList<>();
-        int p1 = 0, p2 = 0;
-        while (p1 < n1 && p2 < n2) { // 둘 중 하나라도 오버되면 break
-            boolean b = arr1[p1] < arr2[p2] ?
-                    result.add(arr1[p1++]) :
-                    result.add(arr2[p2++]);
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < n1; i++) {
+            map.put(arr1[i], 1);
         }
-        // 해당 조건을 만족하면 loop
-        while(p1 < n1) result.add(arr1[p1++]); // p1이 아직 n1만큼 돌지 않았다면 끝까지 돌려라
-        while(p2 < n2) result.add(arr2[p2++]); // p2이 아직 n2만큼 돌지 않았다면 끝까지 돌려라
+        for (int i = 0; i < n2; i++) {
+            if (map.get(arr2[i]) == null) {
+                map.put(arr2[i], 1);
+            } else
+                map.put(arr2[i], map.get(arr2[i]) + 1);
+        }
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 1) {
+                result.add(entry.getKey());
+            }
+        }
 
         return result;
     }
@@ -36,7 +42,8 @@ public class Main {
         for (int i = 0; i < n2; i++) {
             arr2[i] = Integer.parseInt(st2.nextToken());
         }
-        for (int x : T.solution(n1, arr1, n2, arr2)) {
+
+        for (Integer x : T.solution(n1, arr1, n2, arr2)) {
             System.out.print(x + " ");
         }
     }
