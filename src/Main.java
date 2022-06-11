@@ -1,19 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
-// 연속 부분 수열 구하기
+// 연속된 자연수의 합
 public class Main {
-    public int solution(int m, int[] arr) {
-        int answer = 0, sum = 0, lt = 0;
-        for (int rt = 0; rt < arr.length; rt++) {
-            sum += arr[rt];
-            if (sum == m) answer++;
-            while (sum >= m) {
-                sum -= arr[lt++];
-                if (sum == m) answer++;
-            }
+    private int solution(int n) {
+        int answer = 0, cnt = 1;
+        n--; // 1을 뺌
+        while (n > 0) {
+            cnt++;
+            n = n - cnt; // 2를 뺀 이후에 하나씩 loop를 돌며 뺌
+            if (n % cnt == 0) answer++; // cnt는 size와 같음
         }
         return answer;
     }
@@ -21,14 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        int n = Integer.parseInt(st1.nextToken());
-        int m = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
-        }
-        System.out.println(T.solution(m, arr));
+        int n = Integer.parseInt(br.readLine());
+        System.out.println(T.solution(n));
     }
 }
