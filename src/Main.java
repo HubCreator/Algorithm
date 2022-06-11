@@ -5,20 +5,17 @@ import java.util.StringTokenizer;
 
 // 연속 부분 수열 구하기
 public class Main {
-    private int solution(int m, int[] arr) {
-        int result = 0;
-        int size = 2;
-        while (size < arr.length) {
-            for (int i = 0; i < arr.length - size; i++) {
-                int count = 0;
-                for (int j = i; j < i + size; j++) {
-                    count += arr[j];
-                }
-                if (count == m) result++;
+    public int solution(int m, int[] arr) {
+        int answer = 0, sum = 0, lt = 0;
+        for (int rt = 0; rt < arr.length; rt++) {
+            sum += arr[rt];
+            if (sum == m) answer++;
+            while (sum >= m) {
+                sum -= arr[lt++];
+                if (sum == m) answer++;
             }
-            size++;
         }
-        return result;
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
