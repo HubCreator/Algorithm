@@ -1,26 +1,40 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+// 매출액의 종류
 public class Main {
-    private Character solution(int n, char[] chars) {
-        Map<Character, Integer> answer = new HashMap<>();
-        for (char aChar : chars) {
-            answer.put(aChar, answer.getOrDefault(aChar, 0) + 1);
+    private List<Integer> solution(int n, int k, int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
+        List<Integer> answer = new ArrayList<>();
+        int lt = 0;
+
+        for (int i = 0; i < n - k + 1; i++) {
+            for (int j = i; j < i + k; j++) {
+                map.put(arr[j], map.getOrDefault(map.get(arr[j]), 0) + 1);
+            }
+            answer.add(map.size());
+            map.remove(arr[lt++]);
         }
-        return Collections.max(answer.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        char[] chars = br.readLine().toCharArray();
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st1.nextToken());
+        int k = Integer.parseInt(st1.nextToken());
+        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st2.nextToken());
+        }
 
-        System.out.println(T.solution(n, chars));
+        List<Integer> solution = T.solution(n, k, arr);
+        for (Integer x : solution) {
+            System.out.print(x + " ");
+        }
     }
 }
