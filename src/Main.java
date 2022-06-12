@@ -1,21 +1,23 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.*;
 
-// 매출액의 종류
-public class Main {
-    private List<Integer> solution(int n, int k, int[] arr) {
-        Map<Integer, Integer> map = new HashMap<>();
+class Main {
+    public List<Integer> solution(int n, int k, int[] arr) {
         List<Integer> answer = new ArrayList<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < k - 1; i++) {
+            map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
+        }
         int lt = 0;
-
-        for (int i = 0; i < n - k + 1; i++) {
-            for (int j = i; j < i + k; j++) {
-                map.put(arr[j], map.getOrDefault(map.get(arr[j]), 0) + 1);
-            }
+        for (int rt = k - 1; rt < n; rt++) {
+            map.put(arr[rt], map.getOrDefault(arr[rt], 0) + 1);
             answer.add(map.size());
-            map.remove(arr[lt++]);
+            map.put(arr[lt], map.get(arr[lt]) - 1);
+            if (map.get(arr[lt]) == 0) map.remove(arr[lt]);
+            lt++;
         }
         return answer;
     }
