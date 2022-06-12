@@ -1,34 +1,26 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
-    private int solution(int n, int k, int[] arr) {
-        int answer = 0, cnt = 0, lt = 0;
-        for (int rt = 0; rt < n; rt++) {
-            if(arr[rt] == 0) cnt++;
-            while (cnt > k) {
-                if(arr[lt] == 0) cnt--;
-                lt++;
-            }
-            answer = Math.max(answer, rt - lt + 1);
+    private Character solution(int n, char[] chars) {
+        Map<Character, Integer> answer = new HashMap<>();
+        for (char aChar : chars) {
+            answer.put(aChar, answer.getOrDefault(aChar, 0) + 1);
         }
-        return answer;
+        return Collections.max(answer.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        int n = Integer.parseInt(st1.nextToken());
-        int k = Integer.parseInt(st1.nextToken());
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
-        }
+        int n = Integer.parseInt(br.readLine());
+        char[] chars = br.readLine().toCharArray();
 
-        System.out.println(T.solution(n, k, arr));
+        System.out.println(T.solution(n, chars));
     }
 }
