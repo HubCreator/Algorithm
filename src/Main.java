@@ -1,46 +1,32 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
-// LRU 구현
+// 중복 확인
 public class Main {
-    private Deque<Integer> solution(int s, int n, int[] arr) {
-        Deque<Integer> deque = new LinkedList<>();
+    private boolean solution(int n, int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < n; i++) {
-            if (deque.size() < s) {
-                if (!deque.contains(arr[i]))
-                    deque.offerFirst(arr[i]);
-                else {
-                    if (deque.remove(arr[i])) deque.offerFirst(arr[i]);
-                }
-            } else {
-                if (!deque.contains(arr[i])) {
-                    deque.pollLast();
-                    deque.offerFirst(arr[i]);
-                } else {
-                    if (deque.remove(arr[i])) deque.offerFirst(arr[i]);
-                }
-            }
+            if (!map.containsKey(arr[i])) {
+                map.put(arr[i], 1);
+            } else
+                return false;
         }
-        return deque;
+        return true;
     }
-
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        int s = Integer.parseInt(st1.nextToken());
-        int n = Integer.parseInt(st1.nextToken());
+        int n = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
         int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        for (Integer x : T.solution(s, n, arr)) {
-            System.out.print(x + " ");
-        };
+
+        System.out.println(T.solution(n, arr) ? "U" : "D");
     }
 }
