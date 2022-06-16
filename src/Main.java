@@ -3,17 +3,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// 버블 정렬
+// 삽입 정렬
 public class Main {
     private int[] solution(int n, int[] arr) {
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    int tmp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = tmp;
-                }
+        for (int i = 1; i < n; i++) {
+            int tmp = arr[i], j;
+            for (j = i - 1; j >= 0; j--) {              // i기준 왼쪽 요소들을 체크
+                if(arr[j] > tmp) arr[j + 1] = arr[j];   // i번째 요소보다 크면 오른쪽으로 한 칸 밀어라
+                else break;
             }
+            arr[j + 1] = tmp;
         }
         return arr;
     }
