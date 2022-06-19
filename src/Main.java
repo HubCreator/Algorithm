@@ -1,27 +1,38 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+class Node {
+    int data;
+    Node lt, rt;
 
-// 메모이제이션
+    public Node(int val) {
+        this.data = val;
+        lt = rt = null;
+    }
+}
+/*
+* 부모를 기준으로,
+* 부모가 처음이면 전위, 중간이면 중위, 후면 후위
+* */
 public class Main {
-    public static int[] fibo;
-
-    private int DFS(int n) {
-        if (fibo[n] > 0) return fibo[n]; // 값을 이미 구해놨으면 재귀를 돌지말고 바로 값 리턴
-        if (n == 1) return fibo[n] = 1;
-        else if (n == 2) return fibo[n] = 1;
-        else return fibo[n] = DFS(n - 2) + DFS(n - 1);
+    Node root;
+    public void DFS(Node root) {
+        if(root == null) return;
+        System.out.print(root.data + " ");
+        DFS(root.lt);
+        DFS(root.rt);
     }
 
-    public static void main(String[] args) throws IOException {
-        Main T = new Main();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        fibo = new int[n + 1];
-        T.DFS(n);
+    public static void main(String[] args) {
+        Main tree = new Main();
+        tree.root = new Node(1);
 
-        for (int i = 1; i <= n; i++) {
-            System.out.print(fibo[i] + " ");
-        }
+        tree.root.lt = new Node(2);
+        tree.root.rt = new Node(3);
+
+        tree.root.lt.lt = new Node(4);
+        tree.root.lt.rt = new Node(5);
+
+        tree.root.rt.lt = new Node(6);
+        tree.root.rt.rt = new Node(7);
+
+        tree.DFS(tree.root);
     }
 }
