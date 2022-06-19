@@ -1,38 +1,38 @@
-class Node {
-    int data;
-    Node lt, rt;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-    public Node(int val) {
-        this.data = val;
-        lt = rt = null;
-    }
-}
-/*
-* 부모를 기준으로,
-* 부모가 처음이면 전위, 중간이면 중위, 후면 후위
-* */
 public class Main {
-    Node root;
-    public void DFS(Node root) {
-        if(root == null) return;
-        System.out.print(root.data + " ");
-        DFS(root.lt);
-        DFS(root.rt);
+    static int n;
+    static int[] ch;
+
+    static void DFS(int L) { // 1부터 시작해서 n까지 찾아나감
+        if (L == n + 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i <= n; i++)
+                if (ch[i] == 1) {
+                    sb.append(i);
+                    sb.append(" ");
+                }
+            if (!sb.equals(""))
+                System.out.println(sb);
+
+        } else {
+            // 사용 함
+            ch[L] = 1;
+            DFS(L + 1);
+            // 사용하지 않음
+            ch[L] = 0;
+            DFS(L + 1);
+        }
+
     }
 
-    public static void main(String[] args) {
-        Main tree = new Main();
-        tree.root = new Node(1);
-
-        tree.root.lt = new Node(2);
-        tree.root.rt = new Node(3);
-
-        tree.root.lt.lt = new Node(4);
-        tree.root.lt.rt = new Node(5);
-
-        tree.root.rt.lt = new Node(6);
-        tree.root.rt.rt = new Node(7);
-
-        tree.DFS(tree.root);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        ch = new int[n + 1];
+        DFS(1);
     }
+
 }
