@@ -1,38 +1,49 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
 
+class Node {
+    int data;
+    Node lt, rt;
+
+    public Node(int val) {
+        this.data = val;
+        lt = rt = null;
+    }
+}
+
+// 레벨 탐색 (넓이 우선 탐색)
 public class Main {
-    static int n;
-    static int[] ch;
+    Node root;
 
-    static void DFS(int L) { // 1부터 시작해서 n까지 찾아나감
-        if (L == n + 1) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 1; i <= n; i++)
-                if (ch[i] == 1) {
-                    sb.append(i);
-                    sb.append(" ");
-                }
-            if (!sb.equals(""))
-                System.out.println(sb);
-
-        } else {
-            // 사용 함
-            ch[L] = 1;
-            DFS(L + 1);
-            // 사용하지 않음
-            ch[L] = 0;
-            DFS(L + 1);
+    // 이진트리 레벨탐색 (BFS)
+    private void BFS(Node root) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Node cur = queue.poll();
+                System.out.print(cur.data + " ");
+                if(cur.lt != null) queue.offer(cur.lt);
+                if(cur.rt != null) queue.offer(cur.rt);
+            }
+            System.out.println();
         }
-
     }
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        ch = new int[n + 1];
-        DFS(1);
-    }
+    public static void main(String[] args) {
+        Main tree = new Main();
+        tree.root = new Node(1);
 
+        tree.root.lt = new Node(2);
+        tree.root.rt = new Node(3);
+
+        tree.root.lt.lt = new Node(4);
+        tree.root.lt.rt = new Node(5);
+
+        tree.root.rt.lt = new Node(6);
+        tree.root.rt.rt = new Node(7);
+
+        tree.BFS(tree.root);
+    }
 }
