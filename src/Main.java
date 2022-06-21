@@ -1,49 +1,41 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
-class Node {
-    int data;
-    Node lt, rt;
-
-    public Node(int val) {
-        this.data = val;
-        lt = rt = null;
-    }
-}
-
-// 레벨 탐색 (넓이 우선 탐색)
 public class Main {
-    Node root;
-
-    // 이진트리 레벨탐색 (BFS)
-    private void BFS(Node root) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.offer(root);
+    int[] dis = {1, -1, 5};
+    int[] ch;
+    Queue<Integer> queue = new LinkedList<>();
+    public int BFS(int s, int e) {
+        ch = new int[10001];
+        ch[s] = 1;
+        queue.offer(s);
+        int level = 0;
         while (!queue.isEmpty()) {
             int len = queue.size();
             for (int i = 0; i < len; i++) {
-                Node cur = queue.poll();
-                System.out.print(cur.data + " ");
-                if(cur.lt != null) queue.offer(cur.lt);
-                if(cur.rt != null) queue.offer(cur.rt);
+                Integer poll = queue.poll();
+                for (int j = 0; j < dis.length; j++) {
+                    int next = poll + dis[j];
+                    if (next == e) return level + 1;
+                    if (next >= 1 && next <= 10000 && ch[next] == 0) {
+                        ch[next] = 1;
+                        queue.offer(next);
+                    }
+                }
             }
-            System.out.println();
+            level++;
         }
+        return 0;
     }
 
-    public static void main(String[] args) {
-        Main tree = new Main();
-        tree.root = new Node(1);
-
-        tree.root.lt = new Node(2);
-        tree.root.rt = new Node(3);
-
-        tree.root.lt.lt = new Node(4);
-        tree.root.lt.rt = new Node(5);
-
-        tree.root.rt.lt = new Node(6);
-        tree.root.rt.rt = new Node(7);
-
-        tree.BFS(tree.root);
+    public static void main(String[] args) throws IOException {
+        Main T = new Main();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int s = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
+        System.out.println(T.BFS(s, e));
     }
 }
