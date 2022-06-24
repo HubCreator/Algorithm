@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 class Node {
     int data;
     Node lt;
@@ -12,11 +15,18 @@ class Node {
 
 public class Main {
     Node root;
-    private int DFS(int level, Node root) {
-        if(root.lt == null && root.rt == null) return level;
-        else {
-            return Math.min(DFS(level + 1, root.lt), DFS(level + 1, root.rt));
+    static int level = 0;
+    static int answer = 0;
+    static Queue<Node> queue = new LinkedList<>();
+    private void BFS(Node root) {
+        level++;
+        for (int i = 0; i < queue.size(); i++) {
+            Node x = queue.poll();
+            if(x.lt == null && x.rt == null) answer = level;
+            if(x.lt != null) queue.offer(x.lt);
+            if(x.rt != null) queue.offer(x.rt);
         }
+        if(answer > 0) return;
     }
 
     public static void main(String[] args) {
@@ -28,6 +38,8 @@ public class Main {
         T.root.lt.lt = new Node(4);
         T.root.lt.rt = new Node(5);
 
-        System.out.println(T.DFS(0, T.root));
+        queue.offer(T.root);
+        T.BFS(T.root);
+        System.out.println(answer);
     }
 }
