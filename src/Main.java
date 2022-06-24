@@ -15,18 +15,22 @@ class Node {
 
 public class Main {
     Node root;
-    static int level = 0;
-    static int answer = 0;
-    static Queue<Node> queue = new LinkedList<>();
-    private void BFS(Node root) {
-        level++;
-        for (int i = 0; i < queue.size(); i++) {
-            Node x = queue.poll();
-            if(x.lt == null && x.rt == null) answer = level;
-            if(x.lt != null) queue.offer(x.lt);
-            if(x.rt != null) queue.offer(x.rt);
+
+    private int BFS(Node root) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root); // 초기값
+        int level = 0;
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Node x = queue.poll();
+                if (x.lt == null && x.rt == null) return level;
+                if (x.lt != null) queue.offer(x.lt);
+                if (x.rt != null) queue.offer(x.rt);
+            }
+            level++;
         }
-        if(answer > 0) return;
+        return -1;
     }
 
     public static void main(String[] args) {
@@ -38,8 +42,6 @@ public class Main {
         T.root.lt.lt = new Node(4);
         T.root.lt.rt = new Node(5);
 
-        queue.offer(T.root);
-        T.BFS(T.root);
-        System.out.println(answer);
+        System.out.println(T.BFS(T.root));
     }
 }
