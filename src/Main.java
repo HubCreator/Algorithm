@@ -1,47 +1,44 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Node {
-    int data;
-    Node lt;
-    Node rt;
-
-    public Node(int data) {
-        this.data = data;
-        lt = null;
-        rt = null;
-    }
-}
-
+// 경로 탐색 (인접 행렬)
 public class Main {
-    Node root;
+    static int n, m;
+    static int[][] graph;
+    static int[] check;
+    static int answer = 0;
 
-    private int BFS(Node root) {
-        Queue<Node> queue = new LinkedList<>();
-        queue.offer(root); // 초기값
-        int level = 0;
-        while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                Node x = queue.poll();
-                if (x.lt == null && x.rt == null) return level;
-                if (x.lt != null) queue.offer(x.lt);
-                if (x.rt != null) queue.offer(x.rt);
+    private void DFS(int val) {
+        if (val == n) {
+            answer++;
+        } else {
+            for (int i = 1; i <= n; i++) {
+                if (graph[val][i] == 1 && check[i] == 0) {
+                    check[i] = 1;
+                    DFS(i);
+                    check[i] = 0;
+                }
             }
-            level++;
         }
-        return -1;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main T = new Main();
-        T.root = new Node(1);
-        T.root.lt = new Node(2);
-        T.root.rt = new Node(3);
-
-        T.root.lt.lt = new Node(4);
-        T.root.lt.rt = new Node(5);
-
-        System.out.println(T.BFS(T.root));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        graph = new int[n + 1][n + 1];
+        check = new int[n + 1];
+        StringTokenizer[] stArr = new StringTokenizer[m + 1];
+        for (int i = 1; i <= m; i++) {
+            stArr[i] = new StringTokenizer(br.readLine(), " ");
+            graph[Integer.parseInt(stArr[i].nextToken())][Integer.parseInt(stArr[i].nextToken())] = 1;
+        }
+        check[1] = 1;
+        T.DFS(1);
+        System.out.println(answer);
     }
 }
