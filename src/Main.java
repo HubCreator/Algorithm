@@ -1,39 +1,45 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    public static List<List<Integer>> list;
-    public static int v, e;
-    public static int ch[];
-    public static int answer = 0;
+    static List<List<Integer>> list = new ArrayList<>();
+    static int[] answer;
 
-    private void DFS(int val) {
-        if (val == v) {
-            answer++;
-        } else {
-            for (int t : list.get(val)) {
-                if (ch[t] == 0) {
-                    ch[t] = 1;
-                    DFS(t);
-                    ch[t] = 0;
+    private void BFS(int val) { // val 은 목표지점
+        Queue<Integer> queue = new LinkedList<>();
+        List<Integer> ch = new ArrayList<>();
+        int cnt = 0;
+        for (int i = 0; i < list.get(1).size(); i++) {
+            queue.offer(list.get(1).get(i)); // 1번 노드에서 출발하는 노드들을 queue에 추가 (초기 설정)
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer t = queue.poll();
+                if (t == val) {
+                    answer[val] = cnt + 1;
+                    return;
+                }
+                ch.add(t);
+                for (int j = 0; j < list.get(t).size(); j++) {
+                    if (!ch.contains(list.get(t).get(j)) && !queue.contains(list.get(t).get(j)))
+                        queue.offer(list.get(t).get(j));
                 }
             }
+            cnt++;
         }
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
-        list = new ArrayList<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        v = Integer.parseInt(st.nextToken());
-        e = Integer.parseInt(st.nextToken());
-        ch = new int[v + 1];
-        for (int i = 1; i <= v; i++) {
+        int v = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
+        answer = new int[v + 1];
+        for (int i = 0; i <= v; i++) {
             list.add(new ArrayList<>(i));
         }
         StringTokenizer[] stArr = new StringTokenizer[e];
@@ -44,8 +50,12 @@ public class Main {
             list.get(_v).add(_e);
         }
 
-        ch[1] = 1;
-        T.DFS(1);
-        System.out.println(answer);
+        for (int i = 2; i <= v; i++) {
+            T.BFS(i);
+        }
+
+        for (int i = 2; i < answer.length; i++) {
+            System.out.println(i + " : " + answer[i]);
+        }
     }
 }
