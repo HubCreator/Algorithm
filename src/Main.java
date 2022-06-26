@@ -1,45 +1,44 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
+    static int c, n;
     static int[] arr, ch;
-    static int n, answer;
-    static boolean flag = false;
+    static List<Integer> answer = new ArrayList<>();
 
     private void DFS(int L) {
         if (L == n + 1) {
             int sum = 0;
-            for (int i = 0; i < arr.length; i++) {
-                if (ch[i] == 1) sum += arr[i];
+            for (int i = 1; i <= n; i++) {
+                if (ch[i] == 1)
+                    sum += arr[i];
             }
-            if (sum == answer) flag = true;
+            if (sum < c) answer.add(sum);
         } else {
             ch[L] = 1;
             DFS(L + 1);
             ch[L] = 0;
             DFS(L + 1);
         }
-
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        arr = new int[n + 1];
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+        c = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        arr = new int[n + 1];
         ch = new int[n + 1];
-        answer = Arrays.stream(arr).sum() / 2;
+        for (int i = 1; i <= n; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
         T.DFS(1);
-        if (flag)
-            System.out.println("YES");
-        else
-            System.out.println("NO");
+        System.out.println(Collections.max(answer));
     }
 }
