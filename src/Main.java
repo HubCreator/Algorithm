@@ -1,24 +1,25 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
-// 거스름 돈 걸러주기
+// 순열 구하기
 public class Main {
     static int n, m;
-    static int answer = Integer.MAX_VALUE;
-    static Integer[] arr;
-    static int[] ch;
+    static int[] arr, ch, pm;
 
-    private void DFS(int L, int sum) {
-        if(sum > m || L >= answer) return;
-        if (sum == m) {
-            answer = Math.min(answer, L);
+    private void DFS(int L) {
+        if (L == m) {
+            for (int x : pm) System.out.print(x + " ");
+            System.out.println();
         } else {
             for (int i = 0; i < n; i++) {
-                DFS(L + 1, sum + arr[i]);
+                if (ch[i] == 0) {
+                    ch[i] = 1;
+                    pm[L] = arr[i];
+                    DFS(L + 1);
+                    ch[i] = 0;
+                }
             }
         }
     }
@@ -26,14 +27,14 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        arr = new Integer[n];
-        ch = new int[n + 1];
-        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st.nextToken());
-        Arrays.sort(arr, Collections.reverseOrder());
-        m = Integer.parseInt(br.readLine());
-        T.DFS(0, 0);
-        System.out.println(answer);
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        n = Integer.parseInt(st1.nextToken());
+        m = Integer.parseInt(st1.nextToken());
+        arr = new int[n];
+        ch = new int[n];
+        pm = new int[m];
+        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st2.nextToken());
+        T.DFS(0);
     }
 }
