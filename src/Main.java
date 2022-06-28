@@ -3,38 +3,36 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// 순열 구하기
+// 조합수 메모이제이션
 public class Main {
-    static int n, m;
-    static int[] arr, ch, pm;
+    static int[][] ch;
+    static int sum = 0;
 
-    private void DFS(int L) {
-        if (L == m) {
-            for (int x : pm) System.out.print(x + " ");
-            System.out.println();
+    private void DFS(int n, int r) {
+        if (ch[n][r] > 0) {
+            sum += ch[n][r];
+            return;
+        }
+        if (n == r){
+            ch[n][r] = 1;
+            sum += ch[n][r];
+        } else if (r == 1) {
+            ch[n][r] = n;
+            sum += ch[n][r];
         } else {
-            for (int i = 0; i < n; i++) {
-                if (ch[i] == 0) {
-                    ch[i] = 1;
-                    pm[L] = arr[i];
-                    DFS(L + 1);
-                    ch[i] = 0;
-                }
-            }
+            DFS(n - 1, r - 1);
+            DFS(n - 1, r);
         }
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        n = Integer.parseInt(st1.nextToken());
-        m = Integer.parseInt(st1.nextToken());
-        arr = new int[n];
-        ch = new int[n];
-        pm = new int[m];
-        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st2.nextToken());
-        T.DFS(0);
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st.nextToken());
+        int r = Integer.parseInt(st.nextToken());
+        ch = new int[n + 1][n + 1];
+        T.DFS(n, r);
+        System.out.println(sum);
     }
 }
