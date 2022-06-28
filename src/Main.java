@@ -3,55 +3,48 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// 수열 추측하기
 public class Main {
-    static int n, f;
-    static int[] arr, ch, p, b;
-    static int[][] graph;
-    boolean flag = false;
+    static int BOARD_SIZE = 7;
+    static int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
+    static int[][] ch = new int[BOARD_SIZE][BOARD_SIZE];
+    static int answer = 0;
 
-    private void DFS(int L, int sum) {
-        if (flag) return;
-        if (L == n) {
-            if (sum == f) {
-                for (int x : p) System.out.print(x + " ");
-                System.out.println();
-                flag = true;
-            }
+    private void DFS(int x, int y) {
+        if (x == BOARD_SIZE - 1 && y == BOARD_SIZE - 1) {
+            answer++;
         } else {
-            for (int i = 0; i < n; i++) {
-                if (ch[i] == 0) {
-                    ch[i] = 1;
-                    p[L] = arr[i];
-                    DFS(L + 1, sum + (p[L] * b[L]));
-                    ch[i] = 0;
-                }
+            // 상하좌우 방향으로 체크
+            if (x - 1 > 0 && ch[x - 1][y] == 0 && board[x - 1][y] == 0) {
+                ch[x - 1][y] = 1;
+                DFS(x - 1, y);
+                ch[x - 1][y] = 0;
             }
-        }
-    }
-
-    private int combi(int n, int r) {
-        if (graph[n][r] > 0) return graph[n][r];
-        if (n == r || r == 0) return 1;
-        else {
-            return graph[n][r] = combi(n - 1, r - 1) + combi(n - 1, r);
+            if (x + 1 < BOARD_SIZE && ch[x + 1][y] == 0 && board[x + 1][y] == 0) {
+                ch[x + 1][y] = 1;
+                DFS(x + 1, y);
+                ch[x + 1][y] = 0;
+            }
+            if (y - 1 > 0 && ch[x][y - 1] == 0 && board[x][y - 1] == 0) {
+                ch[x][y - 1] = 1;
+                DFS(x, y - 1);
+                ch[x][y - 1] = 0;
+            }
+            if (y + 1 < BOARD_SIZE && ch[x][y + 1] == 0 && board[x][y + 1] == 0) {
+                ch[x][y + 1] = 1;
+                DFS(x, y + 1);
+                ch[x][y + 1] = 0;
+            }
         }
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        n = Integer.parseInt(st.nextToken());
-        f = Integer.parseInt(st.nextToken());
-        arr = new int[n]; // n이 주어졌을 때, 1 ~ n 까지 담아내는 변수
-        p = new int[n]; // 순열을 구하기 위한 변수
-        ch = new int[n + 1]; // 순열의 중복을 체크하기 위한 변수
-        b = new int[n]; // 조합을 구하기 위한 변수
-        graph = new int[n + 1][n + 1]; // 조합을 구할 때, 메모이제이션을 위한 변수
-        for (int i = 0; i < n; i++) arr[i] = i + 1; // arr 초기화
-        for (int i = 0; i < n; i++) b[i] = T.combi(n - 1, i); // combination 구해서 저장
-
-        T.DFS(0, 0); // 순열 구하기
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            for (int j = 0; j < BOARD_SIZE; j++) board[i][j] = Integer.parseInt(st.nextToken());
+        }
+        T.DFS(0, 0); // 0, 0에서 출발
+        System.out.println(answer);
     }
 }
