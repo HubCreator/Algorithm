@@ -1,68 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
-
-class Point {
-    int x, y;
-
-    Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-}
 
 public class Main {
-    static int n, m;
-    static int[][] box, dis;
-    int[] dx = {-1, 0, 1, 0};
-    int[] dy = {0, 1, 0, -1};
+    static int[][] ch;
+    static char[][] board;
+    static int c, n;
+    static String[] arr;
+    static int[] answer;
+    int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
+    int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
 
-    private void BFS() {
-        int answer = 0;
-        Queue<Point> queue = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (box[i][j] == 1) queue.offer(new Point(i, j)); // 초기에 1인 곳들을 queue에 offer
-            }
+    private boolean DFS(int y, int x, String word) {
+        if (y < 0 || y >= 5 || x < 0 || x >= 5) return false; // 범위 조건
+        if (board[y][x] != word.charAt(0)) return false; // 해당 위치에 첫 번째 문자가 없으면 false
+        if (word.length() == 1) return true; // 위의 조건을 다 뚫고 str이 하나만 남았다면 true
+        for (int k = 0; k < 8; k++) { // 8방향으로 찾음
+            int ny = y + dy[k];
+            int nx = x + dx[k];
+            if (DFS(ny, nx, word.substring(1))) return true;
         }
-        while (!queue.isEmpty()) {
-            Point p = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int nx = p.x + dx[i];
-                int ny = p.y + dy[i];
-                if (nx >= 0 && nx < n && ny >= 0 && ny < m && box[nx][ny] == 0) {
-                    box[nx][ny] = 1;
-                    queue.offer(new Point(nx, ny));
-                    dis[nx][ny] = dis[p.x][p.y] + 1;
-                }
-            }
-        }
+        return false;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        m = Integer.parseInt(st.nextToken());
-        n = Integer.parseInt(st.nextToken());
-        box = new int[n][m];
-        dis = new int[n][m];
-        for (int i = 0; i < n; i++) {
-            StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
-            for (int j = 0; j < m; j++) {
-                box[i][j] = Integer.parseInt(tmp.nextToken());
+        c = Integer.parseInt(br.readLine());
+        board = new char[5][5];
+        ch = new int[5][5];
+        answer = new int[5];
+        for (int i = 0; i < 5; i++) {
+            String s = br.readLine();
+            for (int j = 0; j < 5; j++) {
+                board[i][j] = s.charAt(j);
             }
         }
-        T.BFS();
-        for (int[] di : dis) {
-            for (int x : di) {
-                System.out.print(x + " ");
+        n = Integer.parseInt(br.readLine());
+        arr = new String[n];
+        for (int i = 0; i < n; i++) arr[i] = br.readLine();
+        for (int i = 0; i < n; i++) {
+            boolean result = false;
+            Loop1:
+            for (int a = 0; a < 5; a++) {
+                for (int b = 0; b < 5; b++) {
+                    if (board[a][b] == arr[i].charAt(0)) {
+                        result = T.DFS(a, b, arr[i]);
+                        if (result) {
+                            break Loop1;
+                        }
+                    }
+                }
             }
-            System.out.println();
+            System.out.println(arr[i] + " " + (result ? "YES" : "NO"));
         }
     }
-
 }
