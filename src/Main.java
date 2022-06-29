@@ -17,27 +17,32 @@ class Point {
 public class Main {
     static int BOARD_SIZE = 7;
     static int[][] board = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
-    static int[][] dis = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
-    int[] _x = {-1, 0, 1, 0};
-    int[] _y = {0, 1, 0, -1};
+    int[] dx = {-1, 0, 1, 0};
+    int[] dy = {0, 1, 0, -1};
 
-    private void BFS(int x, int y) {
+    private int BFS(int x, int y) {
+        int answer = 0;
         Queue<Point> queue = new LinkedList<>();
         board[x][y] = 1;
         queue.offer(new Point(x, y));
         while (!queue.isEmpty()) {
-            Point poll = queue.poll();
-            for (int j = 0; j < 4; j++) {
-                int nx = poll.x + _x[j];
-                int ny = poll.y + _y[j];
-                if ((nx >= 1 && nx <= BOARD_SIZE && ny >= 1 && ny <= BOARD_SIZE) // board의 범위 내에 있는지 확인
-                        && board[nx][ny] == 0) {
-                    board[nx][ny] = 1;
-                    queue.offer(new Point(nx, ny));
-                    dis[nx][ny] = dis[poll.x][poll.y] + 1;
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Point poll = queue.poll();
+                for (int j = 0; j < 4; j++) {
+                    int nx = poll.x + dx[j];
+                    int ny = poll.y + dy[j];
+                    if ((nx >= 1 && nx <= BOARD_SIZE && ny >= 1 && ny <= BOARD_SIZE) // board의 범위 내에 있는지 확인
+                            && board[nx][ny] == 0) {
+                        if(nx == BOARD_SIZE && ny == BOARD_SIZE) return answer + 1;
+                        board[nx][ny] = 1;
+                        queue.offer(new Point(nx, ny));
+                    }
                 }
             }
+            answer++;
         }
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
@@ -48,8 +53,6 @@ public class Main {
             for (int j = 1; j <= BOARD_SIZE; j++) board[i][j] = Integer.parseInt(st.nextToken());
         }
 
-        T.BFS(1, 1);
-        if (dis[BOARD_SIZE][BOARD_SIZE] == 0) System.out.println(-1);
-        else System.out.println(dis[BOARD_SIZE][BOARD_SIZE]);
+        System.out.println(T.BFS(1, 1));;
     }
 }
