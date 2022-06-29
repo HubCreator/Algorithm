@@ -15,44 +15,54 @@ class Point {
 }
 
 public class Main {
-    static int BOARD_SIZE = 7;
-    static int[][] board = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
+    static int n, m;
+    static int[][] box, dis;
     int[] dx = {-1, 0, 1, 0};
     int[] dy = {0, 1, 0, -1};
 
-    private int BFS(int x, int y) {
+    private void BFS() {
         int answer = 0;
         Queue<Point> queue = new LinkedList<>();
-        board[x][y] = 1;
-        queue.offer(new Point(x, y));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (box[i][j] == 1) queue.offer(new Point(i, j)); // 초기에 1인 곳들을 queue에 offer
+            }
+        }
         while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                Point poll = queue.poll();
-                for (int j = 0; j < 4; j++) {
-                    int nx = poll.x + dx[j];
-                    int ny = poll.y + dy[j];
-                    if ((nx >= 1 && nx <= BOARD_SIZE && ny >= 1 && ny <= BOARD_SIZE) // board의 범위 내에 있는지 확인
-                            && board[nx][ny] == 0) {
-                        if(nx == BOARD_SIZE && ny == BOARD_SIZE) return answer + 1;
-                        board[nx][ny] = 1;
-                        queue.offer(new Point(nx, ny));
-                    }
+            Point p = queue.poll();
+            for (int i = 0; i < 4; i++) {
+                int nx = p.x + dx[i];
+                int ny = p.y + dy[i];
+                if (nx >= 0 && nx < n && ny >= 0 && ny < m && box[nx][ny] == 0) {
+                    box[nx][ny] = 1;
+                    queue.offer(new Point(nx, ny));
+                    dis[nx][ny] = dis[p.x][p.y] + 1;
                 }
             }
-            answer++;
         }
-        return -1;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        for (int i = 1; i <= BOARD_SIZE; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            for (int j = 1; j <= BOARD_SIZE; j++) board[i][j] = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        box = new int[n][m];
+        dis = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+            for (int j = 0; j < m; j++) {
+                box[i][j] = Integer.parseInt(tmp.nextToken());
+            }
         }
-
-        System.out.println(T.BFS(1, 1));;
+        T.BFS();
+        for (int[] di : dis) {
+            for (int x : di) {
+                System.out.print(x + " ");
+            }
+            System.out.println();
+        }
     }
+
 }
