@@ -1,10 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Time implements Comparable<Time> {
     int start, end;
@@ -14,6 +11,10 @@ class Time implements Comparable<Time> {
         this.end = end;
     }
 
+    public boolean inBetween(int time) {
+        return time >= start && time < end;
+    }
+
     @Override
     public int compareTo(Time o) {
         return this.end - o.end; // 끝나는 시간으로 정렬
@@ -21,17 +22,16 @@ class Time implements Comparable<Time> {
 }
 
 public class Main {
-    private int solution(int n, List<Time> list) {
-        int answer = 0;
-        int lt = 0, rt = 0;
-        while (lt <= rt && rt < n) {
-            if (list.get(lt).end <= list.get(rt).start) {
-                answer++;
-                lt = rt;
+    private int solution(int n, List<Time> list, Set<Integer> set) {
+        int answer = Integer.MIN_VALUE;
+        for (Integer t : set) {
+            int cnt = 0;
+            for (Time time : list) {
+                if(time.inBetween(t)) cnt++;
             }
-            rt++;
+            answer = Math.max(answer, cnt);
         }
-        return answer + 1;
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
@@ -39,13 +39,16 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
         List<Time> list = new ArrayList<>();
+        Set<Integer> set = new HashSet<>();
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
             int start = Integer.parseInt(st.nextToken());
             int end = Integer.parseInt(st.nextToken());
             list.add(new Time(start, end));
+            set.add(start);
+            set.add(end);
         }
         Collections.sort(list);
-        System.out.println(T.solution(n, list));
+        System.out.println(T.solution(n, list, set));
     }
 }
