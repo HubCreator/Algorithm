@@ -1,62 +1,50 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] student;
-    static List<boolean[][]> areFriends = new ArrayList<>();
-    static boolean[] ch;
+    static int[][] board, dis;
+    static int n;
+    int[] dx = {-1, 0, 1, 1, 1, 0, -1, -1};
+    int[] dy = {1, -1, -1, 0, 1, 1, -1, 0};
 
-    private int DFS(int maxStudent, boolean[][] friend, boolean[] ch) {
-        // 남은 학생 중 가장 번호가 빠른 학생을 찾음
-        int firstFree = -1;
-        for (int i = 0; i < maxStudent; i++) {
-            if (!ch[i]) { // false -> 확인 대상
-                firstFree = i;
-                break;
+    private void DFS(int _x, int _y) {
+        for (int i = 0; i < 8; i++) { // 8 방향
+            int nx = _x + dx[i];
+            int ny = _y + dy[i];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < n && board[ny][nx] == 1) {
+                board[ny][nx] = 0;
+                DFS(nx, ny);
             }
         }
-        // 기저 사례 : 모든 학생이 짝을 찾았으면 한 가지 방법을 찾았으니 종료함
-        if (firstFree == -1) return 1; // 확인 대상이 없으면 종료
-        int answer = 0;
-        // 이 학생과 짝지을 학생을 결정함
-        for (int pairWith = firstFree + 1; pairWith < maxStudent; pairWith++) {
-            if (!ch[pairWith] && friend[firstFree][pairWith]) {
-                ch[firstFree] = ch[pairWith] = true;
-                answer += DFS(maxStudent, friend, ch);
-                ch[firstFree] = ch[pairWith] = false;
-            }
-        }
-        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine().trim());
-        student = new int[n];
+        n = Integer.parseInt(br.readLine());
+        board = new int[n][n];
+        dis = new int[n][n];
         for (int i = 0; i < n; i++) {
-            StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-            StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-            int p = Integer.parseInt(st1.nextToken());
-            int pairsCnt = Integer.parseInt(st1.nextToken());
-            student[i] = p; // 몇 명의 학생
-            areFriends.add(new boolean[p][p]);
-
-            for (int j = 0; j < pairsCnt; j++) {
-                int f1 = Integer.parseInt(st2.nextToken());
-                int f2 = Integer.parseInt(st2.nextToken());
-                areFriends.get(i)[f1][f2] = true; // 둘은 친구임
-                areFriends.get(i)[f2][f1] = true;
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            for (int j = 0; j < n; j++) board[i][j] = Integer.parseInt(st.nextToken());
+        }
+        int answer = 0;
+        boolean flag;
+        do {
+            flag = false;
+            for (int y = 0; y < n; y++) {
+                for (int x = 0; x < n; x++) {
+                    if (board[y][x] == 1) {
+                        board[y][x] = 0;
+                        T.DFS(x, y);
+                        answer++;
+                        flag = true;
+                    }
+                }
             }
-        }
-        for (int i = 0; i < n; i++) {
-            int maxStudent = student[i];
-            ch = new boolean[maxStudent];
-            System.out.println(T.DFS(maxStudent, areFriends.get(i), ch));
-        }
+        } while (flag);
+        System.out.println(answer);
     }
 }
