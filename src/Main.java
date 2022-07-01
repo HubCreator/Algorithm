@@ -3,48 +3,53 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-class Work implements Comparable<Work> {
-    int money;
-    int date;
+class Brick implements Comparable<Brick> {
+    int s, h, w;
 
-    public Work(int money, int date) {
-        this.money = money;
-        this.date = date;
+    public Brick(int s, int h, int w) {
+        this.s = s;
+        this.h = h;
+        this.w = w;
     }
 
     @Override
-    public int compareTo(Work o) {
-        return o.date - this.date;
+    public int compareTo(Brick o) {
+        return o.s - this.s; // 밑면 기준으로 내림차순 정렬
     }
 }
+
 public class Main {
-    private int solution(List<Work> list, int n) {
-        int answer = 0;
-        PriorityQueue<Integer> pQueue = new PriorityQueue<>(Collections.reverseOrder()); // 큰 값의 우선순위가 제일 높게
-        Collections.sort(list); // 날짜 내림차순 정렬
-        int max = list.get(0).date;
-        int j = 0;
-        for (int i = max; i > 0; i--) {
-            for (; j < n; j++) {
-                if(list.get(j).date < i) break;
-                pQueue.offer(list.get(j).money);
+    static int[] dy;
+
+    private void solution(int n, List<Brick> list) {
+        Collections.sort(list);
+        dy = new int[n]; // 각 인덱스의 brick이 최상위에 있을 때 탑의 최대 높이
+        dy[0] = list.get(0).h; // 첫 번재 값 초기화
+
+        for (int i = 1; i < n; i++) {
+            int sum = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                if (list.get(j).w > list.get(i).w) {
+                    sum = Math.max(sum, dy[j]);
+                }
             }
-            if(!pQueue.isEmpty()) answer += pQueue.poll();
+            dy[i] = sum + list.get(i).h;
         }
-        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        List<Brick> list = new ArrayList<>();
         int n = Integer.parseInt(br.readLine());
-        List<Work> list = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            int m = Integer.parseInt(st.nextToken());
-            int d = Integer.parseInt(st.nextToken());
-            list.add(new Work(m, d));
+            int s = Integer.parseInt(st.nextToken()); // 밑면 넓이
+            int h = Integer.parseInt(st.nextToken()); // 높이
+            int w = Integer.parseInt(st.nextToken()); // 무게
+            list.add(new Brick(s, h, w));
         }
-        System.out.println(T.solution(list, n));
+        T.solution(n, list);
+        System.out.println(Arrays.stream(dy).max().getAsInt());
     }
 }
