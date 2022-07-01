@@ -1,55 +1,42 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-
-class Brick implements Comparable<Brick> {
-    int s, h, w;
-
-    public Brick(int s, int h, int w) {
-        this.s = s;
-        this.h = h;
-        this.w = w;
-    }
-
-    @Override
-    public int compareTo(Brick o) {
-        return o.s - this.s; // 밑면 기준으로 내림차순 정렬
-    }
-}
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int[] dy;
+    private int[] solution(String str, char c) {
+        int[] answer = new int[str.length()];
+        Arrays.fill(answer, 10000);
 
-    private void solution(int n, List<Brick> list) {
-        Collections.sort(list);
-        dy = new int[n]; // 각 인덱스의 brick이 최상위에 있을 때 탑의 최대 높이
-        dy[0] = list.get(0).h; // 첫 번재 값 초기화
-
-        for (int i = 1; i < n; i++) {
-            int sum = 0;
-            for (int j = i - 1; j >= 0; j--) {
-                if (list.get(j).w > list.get(i).w) {
-                    sum = Math.max(sum, dy[j]);
-                }
+        int index = 10000;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == c) {
+                index = i;
+                answer[i] = 0;
+            } else {
+                answer[i] = Math.abs(index - i);
             }
-            dy[i] = sum + list.get(i).h;
         }
+
+        index = 10000;
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if (str.charAt(i) == c) {
+                index = i;
+                answer[i] = 0;
+            } else {
+                answer[i] = Math.min(Math.abs(index - i), answer[i]);
+            }
+        }
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        List<Brick> list = new ArrayList<>();
-        int n = Integer.parseInt(br.readLine());
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            int s = Integer.parseInt(st.nextToken()); // 밑면 넓이
-            int h = Integer.parseInt(st.nextToken()); // 높이
-            int w = Integer.parseInt(st.nextToken()); // 무게
-            list.add(new Brick(s, h, w));
-        }
-        T.solution(n, list);
-        System.out.println(Arrays.stream(dy).max().getAsInt());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        String str = st.nextToken();
+        char c = st.nextToken().toCharArray()[0];
+        for (int x : T.solution(str, c)) System.out.print(x + " ");
     }
 }
