@@ -4,14 +4,15 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    private int solution(int n, int k, int[] arr) {
-        int answer = Integer.MIN_VALUE;
-        int sum = 0;
-        for (int i = 0; i < k - 1; i++) sum += arr[i]; // 초기 윈도우값 설정
-        for (int i = k - 1; i < n - k + 1; i++) {
-            sum += arr[i];
-            answer = Math.max(answer, sum);
-            sum -= arr[i - (k - 1)];
+    private int solution(int n, int m, int[] arr) {
+        int lt = 0, sum = 0, answer = 0;
+        for (int rt = 0; rt < n; rt++) {
+            sum += arr[rt];
+            if(sum == m) answer++;
+            while (sum > m) {
+                sum -= arr[lt++];
+                if(sum == m) answer++; // 이게 ㄹㅇ 에바네
+            }
         }
         return answer;
     }
@@ -21,10 +22,10 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
         int n = Integer.parseInt(st1.nextToken());
-        int k = Integer.parseInt(st1.nextToken());
+        int m = Integer.parseInt(st1.nextToken());
         int[] arr = new int[n];
         StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
         for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st2.nextToken());
-        System.out.println(T.solution(n, k, arr));
+        System.out.println(T.solution(n, m, arr));
     }
 }
