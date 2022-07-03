@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 class Point {
     int x, y;
@@ -13,61 +15,41 @@ class Point {
 }
 
 public class Main {
-    static int n, m;
-    static int[][] box, dis;
+    static final int SIZE = 7;
+    static int[][] board = new int[SIZE + 1][SIZE + 1];
     int[] dx = {-1, 0, 1, 0};
-    int[] dy = {0, 1, 0, -1};
+    int[] dy = {0, -1, 0, 1};
 
-    private void BFS(List<Point> list) {
+    private int BFS(int y, int x) {
         Queue<Point> queue = new LinkedList<>();
-        for (int i = 0; i < list.size(); i++) queue.offer(new Point(list.get(i).y, list.get(i).x));
+        queue.offer(new Point(y, x));
+        int answer = 0;
         while (!queue.isEmpty()) {
-            Point p = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int ny = p.y + dy[i];
-                int nx = p.x + dx[i];
-                // 조건 체크
-                if (ny >= 0 && ny < n && nx >= 0 && nx < m && box[ny][nx] == 0) {
-                    box[ny][nx] = 1;
-                    queue.offer(new Point(ny, nx));
-                    dis[ny][nx] = dis[p.y][p.x] + 1;
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Point p = queue.poll();
+                for (int j = 0; j < 4; j++) { // 4 방향
+                    int ny = p.y + dy[j];
+                    int nx = p.x + dx[j];
+                    if (ny > 0 && ny <= SIZE && nx > 0 && nx <= SIZE && board[ny][nx] == 0) {
+                        if (ny == 7 && nx == 7) return answer + 1;
+                        board[ny][nx] = 1;
+                        queue.offer(new Point(ny, nx));
+                    }
                 }
             }
+            answer++;
         }
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
-        m = Integer.parseInt(tmp.nextToken()); // 6 가로
-        n = Integer.parseInt(tmp.nextToken()); // 4 세로
-        box = new int[n][m];
-        dis = new int[n][m];
-        List<Point> list = new ArrayList<>();
-
-        boolean flag = false;
-        for (int i = 0; i < n; i++) {
+        for (int y = 1; y < SIZE; y++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            for (int j = 0; j < m; j++) {
-                box[i][j] = Integer.parseInt(st.nextToken());
-                if (box[i][j] == 0) flag = true; // 익지 않은 토마토가 하나라도 있으면
-                if (box[i][j] == 1) list.add(new Point(i, j)); // 초기 BFS 시작값
-            }
+            for (int x = 1; x < SIZE; x++) board[y][x] = Integer.parseInt(st.nextToken());
         }
-        if (flag) {
-            T.BFS(list);
-            int answer = Integer.MIN_VALUE;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (box[i][j] == 0) {
-                        System.out.println(-1);
-                        return;
-                    }
-                    answer = Math.max(answer, dis[i][j]);
-                }
-            }
-            System.out.println(answer);
-        } else System.out.println(-1);
+        System.out.println(T.BFS(1, 1));
     }
 }
