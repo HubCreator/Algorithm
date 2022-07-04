@@ -3,37 +3,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-class Point {
-    int y, x;
+class Edge implements Comparable<Edge> {
+    int v, cost;
 
-    public Point(int y, int x) {
-        this.y = y;
-        this.x = x;
+    public Edge(int v, int cost) {
+        this.v = v;
+        this.cost = cost;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return this.cost - o.cost;
     }
 }
 
 public class Main {
-    static int n, m, len, answer = Integer.MAX_VALUE;
-    static int[] combi;
-    static List<Point> pizzaHs = new ArrayList<>();
-    static List<Point> hs = new ArrayList<>();
+    static int[] dis;
+    static List<List<Edge>> list = new ArrayList<>();
 
-    private void DFS(int L, int s) {
-        if (L == m) { // 조합을 만족하는 경우
-            int sum = 0;
-            for (Point hsPoint : hs) { // 집을 기준으로
-                int dis = Integer.MAX_VALUE;
-                for (int x : combi) { // 피자집에 대한 거리를 측정
-                    Point pzPoint = pizzaHs.get(x);
-                    dis = Math.min(dis, Math.abs(hsPoint.x - pzPoint.x) + Math.abs(hsPoint.y - pzPoint.y)); // 거리들 중 가장 작은 값만을 취급
+    private void solution(int v) {
+        PriorityQueue<Edge> pQueue = new PriorityQueue<>();
+        pQueue.offer(new Edge(v, 0));
+        dis[v] = 0;
+        while (!pQueue.isEmpty()) {
+            Edge p = pQueue.poll();
+            int curV = p.v;
+            int curCost = p.cost;
+            if(dis[curV] < curCost) continue; // 기존에 구해놓은 것보다 크다면 아래의 로직을 돌 필요가 없음
+            for (Edge e : list.get(curV)) {
+                if (dis[e.v] > curCost + e.cost) {
+                    dis[e.v] = curCost + e.cost;
+                    pQueue.offer(new Edge(e.v, curCost + e.cost));
                 }
-                sum += dis; // 다른 집들도 똑같이 최소 거리값만 뽑아 저장
-            }
-            answer = Math.min(answer, sum);
-        } else {
-            for (int i = s; i < len; i++) {
-                combi[L] = i; // combi 배열에 인덱스 값을 저장
-                DFS(L + 1, i + 1);
             }
         }
     }
@@ -41,21 +42,23 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        n = Integer.parseInt(st.nextToken()); // n x n
-        m = Integer.parseInt(st.nextToken()); // m 개의 매장 폐업
-
-        for (int y = 0; y < n; y++) {
-            StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
-            for (int x = 0; x < n; x++) {
-                int el = Integer.parseInt(tmp.nextToken());
-                if (el == 1) hs.add(new Point(y, x));
-                else if (el == 2) pizzaHs.add(new Point(y, x));
-            }
+        StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(tmp.nextToken());
+        int m = Integer.parseInt(tmp.nextToken());
+        for (int i = 0; i <= n; i++) list.add(new ArrayList<>()); // list 내의 list 초기화
+        dis = new int[n + 1];
+        Arrays.fill(dis, Integer.MAX_VALUE); // 최댓값으로 초기화함
+        for (int i = 0; i < m; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            list.get(from).add(new Edge(to, w));
         }
-        len = pizzaHs.size();
-        combi = new int[m];
-        T.DFS(0, 0);
-        System.out.println(answer);
+        T.solution(1); // 1번 정점에서 출발해라
+        for (int i = 2; i <= n; i++) {
+            if(dis[i] != Integer.MAX_VALUE) System.out.println(i + " : " + dis[i]);
+            else System.out.println("impossible");
+        }
     }
 }
