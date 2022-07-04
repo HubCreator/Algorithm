@@ -1,12 +1,10 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Point {
-    int x, y;
+    int y, x;
 
     public Point(int y, int x) {
         this.y = y;
@@ -15,41 +13,49 @@ class Point {
 }
 
 public class Main {
-    static final int SIZE = 7;
-    static int[][] board = new int[SIZE + 1][SIZE + 1];
-    int[] dx = {-1, 0, 1, 0};
-    int[] dy = {0, -1, 0, 1};
+    static int n, m, len, answer = Integer.MAX_VALUE;
+    static int[] combi;
+    static List<Point> pizzaHs = new ArrayList<>();
+    static List<Point> hs = new ArrayList<>();
 
-    private int BFS(int y, int x) {
-        Queue<Point> queue = new LinkedList<>();
-        queue.offer(new Point(y, x));
-        int answer = 0;
-        while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                Point p = queue.poll();
-                for (int j = 0; j < 4; j++) { // 4 방향
-                    int ny = p.y + dy[j];
-                    int nx = p.x + dx[j];
-                    if (ny > 0 && ny <= SIZE && nx > 0 && nx <= SIZE && board[ny][nx] == 0) {
-                        if (ny == 7 && nx == 7) return answer + 1;
-                        board[ny][nx] = 1;
-                        queue.offer(new Point(ny, nx));
-                    }
+    private void DFS(int L, int s) {
+        if (L == m) { // 조합을 만족하는 경우
+            int sum = 0;
+            for (Point hsPoint : hs) { // 집을 기준으로
+                int dis = Integer.MAX_VALUE;
+                for (int x : combi) { // 피자집에 대한 거리를 측정
+                    Point pzPoint = pizzaHs.get(x);
+                    dis = Math.min(dis, Math.abs(hsPoint.x - pzPoint.x) + Math.abs(hsPoint.y - pzPoint.y)); // 거리들 중 가장 작은 값만을 취급
                 }
+                sum += dis; // 다른 집들도 똑같이 최소 거리값만 뽑아 저장
             }
-            answer++;
+            answer = Math.min(answer, sum);
+        } else {
+            for (int i = s; i < len; i++) {
+                combi[L] = i; // combi 배열에 인덱스 값을 저장
+                DFS(L + 1, i + 1);
+            }
         }
-        return -1;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        for (int y = 1; y < SIZE; y++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            for (int x = 1; x < SIZE; x++) board[y][x] = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        n = Integer.parseInt(st.nextToken()); // n x n
+        m = Integer.parseInt(st.nextToken()); // m 개의 매장 폐업
+
+        for (int y = 0; y < n; y++) {
+            StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+            for (int x = 0; x < n; x++) {
+                int el = Integer.parseInt(tmp.nextToken());
+                if (el == 1) hs.add(new Point(y, x));
+                else if (el == 2) pizzaHs.add(new Point(y, x));
+            }
         }
-        System.out.println(T.BFS(1, 1));
+        len = pizzaHs.size();
+        combi = new int[m];
+        T.DFS(0, 0);
+        System.out.println(answer);
     }
 }
