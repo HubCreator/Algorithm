@@ -1,28 +1,47 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
+class Person {
+    int id, priority;
+
+    public Person(int id, int priority) {
+        this.id = id;
+        this.priority = priority;
+    }
+}
 public class Main {
-    private boolean solution(String t, String plan) {
-        Queue<Character> queue = new LinkedList<>();
-        for (char c : t.toCharArray()) queue.offer(c);
-        for (char x : plan.toCharArray()) {
-            if (queue.contains(x) ) {
-                if(queue.peek() == x)
-                    queue.poll();
-                else return false;
+    private int solution(int m, int[] arr) {
+        Queue<Person> queue = new LinkedList<>();
+        int answer = 0;
+        for (int i = 0; i < arr.length; i++) queue.offer(new Person(i, arr[i]));
+        while (!queue.isEmpty()) {
+            Person p = queue.poll();
+            for (Person x : queue) {
+                if (x.priority > p.priority) {
+                    queue.offer(p);
+                    p = null;
+                    break;
+                }
+            }
+            if (p != null) {
+                answer++;
+                if(p.id == m) return answer;
             }
         }
-        return queue.size() == 0;
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String t = br.readLine();
-        String plan = br.readLine();
-        System.out.println(T.solution(t, plan) ? "YES" : "NO");
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int[] arr = new int[n];
+        StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(tmp.nextToken());
+        System.out.println(T.solution(m, arr));
     }
 }
