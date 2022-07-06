@@ -1,22 +1,29 @@
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 class Solution {
-    public int[] solution(String[] id_list, String[] report, int k) {
-        List<String> list = Arrays.stream(report).distinct().collect(Collectors.toList()); // 중복된 report 제거
-        Map<String, Integer> count = new HashMap<>(); // 누가 몇 번 신고당했는지
-        for (String s : list) {
-            String target = s.split(" ")[1];
-            count.put(target, count.getOrDefault(target, 0) + 1);
-        }
+    int[] prize = {6, 6, 5, 4, 3, 2, 1};
 
-        return Arrays.stream(id_list).map(_user -> {
-            final String user = _user;
-            List<String> reportList = list.stream().filter(s -> s.startsWith(user + " ")).collect(Collectors.toList());
-            return reportList.stream().filter(s -> count.getOrDefault(s.split(" ")[1], 0) >= k).count();
-        }).mapToInt(Long::intValue).toArray();
+    public int[] solution(int[] lottos, int[] win_nums) {
+        List<Integer> winNums = new ArrayList<>();
+        for (int x : win_nums) winNums.add(x);
+        int matchCnt = 0, zCnt = 0;
+        for (int lotto : lottos) {
+            if (winNums.contains(lotto)) matchCnt++;
+            if (lotto == 0) zCnt++;
+        }
+//        System.out.println(matchCnt + " / " + zCnt);
+        int min = matchCnt;
+        int max = matchCnt + zCnt;
+
+        return new int[]{prize[max], prize[min]};
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        int[] a = {0, 0, 0, 0, 0, 0};
+        int[] b = {38, 19, 20, 40, 15, 25};
+        for (int x : T.solution(a, b)) System.out.print(x + " ");
     }
 }
