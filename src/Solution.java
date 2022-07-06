@@ -1,29 +1,38 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 class Solution {
-    int[] prize = {6, 6, 5, 4, 3, 2, 1};
+    public int solution(String s) {
+        int answer = s.length();
+        int winSize = 1;
 
-    public int[] solution(int[] lottos, int[] win_nums) {
-        List<Integer> winNums = new ArrayList<>();
-        for (int x : win_nums) winNums.add(x);
-        int matchCnt = 0, zCnt = 0;
-        for (int lotto : lottos) {
-            if (winNums.contains(lotto)) matchCnt++;
-            if (lotto == 0) zCnt++;
+        while (s.length() / 2 >= winSize) {
+            StringBuilder str = new StringBuilder(s);
+            int cnt = 1;
+            StringBuilder sb = new StringBuilder();
+            String win = str.substring(0, winSize); // 초기 윈도우
+            StringBuilder sub = new StringBuilder();
+            for (int i = winSize; i <= str.length() - winSize; ) {
+                sub = new StringBuilder(str.substring(i, i + winSize));
+                if (win.equals(sub.toString())) cnt++;
+                else {
+                    if (cnt > 1) {
+                        sb.append(cnt);
+                        cnt = 1;
+                    }
+                    sb.append(win);
+                }
+                win = sub.toString();
+                i += winSize;
+                if (i + winSize > str.length()) {
+                    StringBuilder tmp = new StringBuilder();
+                    for (int k = i; k < str.length(); k++) sb.append(str.charAt(k));
+                    sb.append(tmp);
+                }
+            }
+            if (cnt > 1) sb.append(cnt);
+            sb.append(sub);
+            System.out.println(sb);
+            answer = Math.min(answer, sb.length());
+            winSize++;
         }
-//        System.out.println(matchCnt + " / " + zCnt);
-        int min = matchCnt;
-        int max = matchCnt + zCnt;
-
-        return new int[]{prize[max], prize[min]};
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[] a = {0, 0, 0, 0, 0, 0};
-        int[] b = {38, 19, 20, 40, 15, 25};
-        for (int x : T.solution(a, b)) System.out.print(x + " ");
+        return answer;
     }
 }
