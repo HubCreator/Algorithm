@@ -1,27 +1,68 @@
-import java.util.Arrays;
+
+class Point {
+    int x, y;
+
+    public Point(int y, int x) {
+        this.y = y;
+        this.x = x;
+    }
+}
 
 class Solution {
-    public int solution(int[] A, int[] B) {
-        int answer = 0;
-        Arrays.sort(A);
-        Arrays.sort(B);
+    public String solution(int[] numbers, String hand) {
+        StringBuilder answer = new StringBuilder();
+        Point left = new Point(3, 0);
+        Point right = new Point(3, 2);
+        int[][] board = {
+                {1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 9},
+                {-1, 0, -1}
+        };
 
-        for (int i = A.length - 1, j = B.length - 1; i >= 0; i--) {
-            if (A[i] < B[j]) {
-                answer++;
-                j--;
+        for (int n : numbers) {
+            for (int y = 0; y < 4; y++) { // board를 돌면서
+                for (int x = 0; x < 3; x++) {
+                    if (board[y][x] == n) {
+                        Point t = new Point(y, x);
+                        if (x == 0) { // left
+                            answer.append("L");
+                            left = t;
+                        } else if (x == 2) { // right
+                            answer.append("R");
+                            right = t;
+                        } else { // middle
+                            // 가까운 손을 비교해야 함
+                            int l = Math.abs(left.x - t.x) + Math.abs(left.y - t.y);
+                            int r = Math.abs(right.x - t.x) + Math.abs(right.y - t.y);
+                            if (l < r) {
+                                answer.append("L");
+                                left = t;
+                            } else if (l > r) {
+                                answer.append("R");
+                                right = t;
+                            } else {
+                                if (hand.equals("left")) {
+                                    answer.append("L");
+                                    left = t;
+                                } else {
+                                    answer.append("R");
+                                    right = t;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        return answer;
+        return answer.toString();
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int[] a = new int[]{5, 1, 3, 7};
-        int[] b = new int[]{2, 2, 6, 8};
-        int[] c = new int[]{2, 2, 2, 2};
-        int[] d = new int[]{1, 1, 1, 1};
-        System.out.println(T.solution(a, b)); // 3
-        System.out.println(T.solution(c, d)); // 0
+        int[] numbers = {7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2};
+        String hand = "left";
+        System.out.println(T.solution(numbers, hand).equals("LRLLRRLLLRR") ? "YES" : "NO");
+
     }
 }
