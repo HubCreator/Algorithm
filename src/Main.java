@@ -5,18 +5,33 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
+    private int canPut(int[] arr, int c) { // m : cd의 갯수, c : cd 하나의 용량
+        int cnt = 1, sum = 0;
+        int idx = 0;
+        while (idx < arr.length) {
+            sum += arr[idx];
+            if (sum > c) {
+                sum = arr[idx];
+                cnt++;
+            }
+            idx++;
+        }
+        return cnt;
+    }
+
     private int solution(int n, int m, int[] arr) {
         Arrays.sort(arr);
-        int lt = 0, rt = n - 1, answer = 0;
+        int lt = Arrays.stream(arr).max().getAsInt();
+        int rt = Arrays.stream(arr).sum();
+        int mid = 0;
         while (lt <= rt) {
-            int mid = (lt + rt) / 2;
-            if (arr[mid] == m) {
-                answer = mid + 1;
-                break;
-            } else if (m < arr[mid]) rt = mid - 1;
-            else lt = mid + 1;
+            mid = (lt + rt) / 2;
+            int t = canPut(arr, mid);
+            if (t == m) return mid;
+            else if (t > m) lt = mid + 1; // 용량을 더 키움
+            else rt = mid - 1;
         }
-        return answer;
+        return mid;
     }
 
     public static void main(String[] args) throws IOException {
