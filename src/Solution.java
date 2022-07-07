@@ -1,34 +1,31 @@
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    public int[] solution(int[] array, int[][] commands) {
-        int[] answer = new int[commands.length];
-        int idx = 0;
-        List<Integer> list = new ArrayList<>();
+    public int[] solution(int[] answers) {
+        int[] tmp = new int[3];
+        int[] a = {1, 2, 3, 4, 5};
+        int[] b = {2, 1, 2, 3, 2, 4, 2, 5};
+        int[] c = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
 
-        for (int[] command : commands) {
-            int from = command[0] - 1;
-            int to = command[1] - 1;
-            int at = command[2] - 1;
-
-            for (int i = from; i <= to; i++) list.add(array[i]);
-            Collections.sort(list);
-
-            answer[idx] = list.get(at);
-
-            list.clear();
-            idx++;
+        for (int i = 0; i < answers.length; i++) {
+            if (a[i % a.length] == answers[i]) tmp[0]++;
+            if (b[i % b.length] == answers[i]) tmp[1]++;
+            if (c[i % c.length] == answers[i]) tmp[2]++;
         }
 
-        return answer;
+        int max = Arrays.stream(tmp).max().getAsInt();
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < tmp.length; i++) {
+            if(tmp[i] == max) list.add(i + 1);
+        }
+        return list.stream().mapToInt(i -> i.intValue()).toArray();
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int[] arr = {1, 5, 2, 6, 3, 7, 4};
-        int[][] command = {{2, 5, 3}, {4, 4, 1}, {1, 7, 3}};
-        for (int x : T.solution(arr, command)) System.out.print(x + " ");
+        int[] arr = {1, 3, 2, 4, 2};
+        for (int x : T.solution(arr)) System.out.print(x + " ");
     }
 }
