@@ -1,38 +1,24 @@
 class Solution {
     public int solution(String s) {
-        int answer = s.length();
-        int winSize = 1;
-
-        while (s.length() / 2 >= winSize) {
-            StringBuilder str = new StringBuilder(s);
-            int cnt = 1;
-            StringBuilder sb = new StringBuilder();
-            String win = str.substring(0, winSize); // 초기 윈도우
-            StringBuilder sub = new StringBuilder();
-            for (int i = winSize; i <= str.length() - winSize; ) {
-                sub = new StringBuilder(str.substring(i, i + winSize));
-                if (win.equals(sub.toString())) cnt++;
-                else {
-                    if (cnt > 1) {
-                        sb.append(cnt);
-                        cnt = 1;
+        StringBuilder sb = new StringBuilder();
+        String[] ch = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        for (int i = 0; i < s.length(); i++) {
+            char t = s.charAt(i);
+            if (Character.isDigit(t)) sb.append(t);
+            else {
+                for (int j = 0; j < ch.length; j++) {
+                    if (s.substring(i).startsWith(ch[j])) {
+                        sb.append(j);
+                        i += ch[j].length() - 1;
                     }
-                    sb.append(win);
-                }
-                win = sub.toString();
-                i += winSize;
-                if (i + winSize > str.length()) {
-                    StringBuilder tmp = new StringBuilder();
-                    for (int k = i; k < str.length(); k++) sb.append(str.charAt(k));
-                    sb.append(tmp);
                 }
             }
-            if (cnt > 1) sb.append(cnt);
-            sb.append(sub);
-            System.out.println(sb);
-            answer = Math.min(answer, sb.length());
-            winSize++;
         }
-        return answer;
+        return Integer.parseInt(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        System.out.println(T.solution("one4seveneight"));
     }
 }
