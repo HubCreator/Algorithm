@@ -1,14 +1,14 @@
-import java.util.Arrays;
-
 class Solution {
-    public int solution(int[] d, int budget) {
-        int answer = 0, sum = 0;
-        Arrays.sort(d);
-        for (int x : d) {
-            sum += x;
-            if (sum <= budget) answer++;
-            else break;
+    public long getGCD(int _a, int _b) {
+        long a = _a, b = _b, c = 0;
+        while (b != 0) {
+            c = a % b;
+            a = b;
+            b = c;
         }
-        return answer;
+        return a;
+    }
+    public long solution(int w, int h) {
+        return ((long) w * h) - (w + h - getGCD(w, h));
     }
 }
