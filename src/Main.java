@@ -1,32 +1,37 @@
-class Node {
-    int data;
-    Node lt;
-    Node rt;
-
-    public Node(int data) {
-        this.data = data;
-        lt = null;
-        rt = null;
-    }
-}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    Node root;
+    static boolean answer = false;
+    static int n, arrSum;
+    static int[] arr, ch;
 
-    private int DFS(int level, Node root) {
-        if (root.lt == null && root.rt == null) return level;
-        else return Math.min(DFS(level + 1, root.lt), DFS(level + 1, root.rt));
+    private void DFS(int L) {
+        if (L == n) {
+            int sum = 0;
+            for (int i = 0; i < ch.length; i++) if (ch[i] == 1) sum += arr[i];
+            if(sum * 2 == arrSum) answer = true;
+        } else {
+            ch[L] = 1;
+            DFS(L + 1);
+            ch[L] = 0;
+            DFS(L + 1);
+        }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main T = new Main();
-        T.root = new Node(1);
-        T.root.lt = new Node(2);
-        T.root.rt = new Node(3);
-
-        T.root.lt.lt = new Node(4);
-        T.root.lt.rt = new Node(5);
-
-        System.out.println(T.DFS(0, T.root));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        arr = new int[n];
+        ch = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st.nextToken());
+        arrSum = Arrays.stream(arr).sum();
+        T.DFS(0);
+        System.out.println(answer ? "YES" : "NO");
     }
 }
