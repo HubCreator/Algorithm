@@ -1,14 +1,16 @@
+import java.util.*;
+
 class Solution {
-    public long getGCD(int _a, int _b) {
-        long a = _a, b = _b, c = 0;
-        while (b != 0) {
-            c = a % b;
-            a = b;
-            b = c;
+
+    public int solution(int[] scoville, int K) {
+        int answer = 0;
+        PriorityQueue<Integer> pQueue = new PriorityQueue<>();
+        for (int x : scoville) pQueue.add(x);
+
+        while (pQueue.size() > 1 && pQueue.peek() < K) {
+            pQueue.add(pQueue.poll() + pQueue.poll() * 2);
+            answer++;
         }
-        return a;
-    }
-    public long solution(int w, int h) {
-        return ((long) w * h) - (w + h - getGCD(w, h));
+        return !pQueue.isEmpty() && pQueue.peek() >= K ? answer : -1;
     }
 }
