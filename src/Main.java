@@ -1,43 +1,32 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+class Node {
+    int data;
+    Node lt;
+    Node rt;
+
+    public Node(int data) {
+        this.data = data;
+        lt = null;
+        rt = null;
+    }
+}
 
 public class Main {
-    int[] dx = {1, 5, -1};
-    int[] ch;
+    Node root;
 
-    private int BFS(int s, int e) {
-        int answer = 0;
-         ch = new int[10001];
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(s); // 초기값
-        while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                Integer p = queue.poll();
-                for (int j = 0; j < 3; j++) {
-                    int nx = p + dx[j];
-                    if (nx == e) return answer + 1;
-                    if (nx >= 1 && nx <= 10000 && ch[nx] == 0) {
-                        queue.offer(nx);
-                        ch[nx] = 1;
-                    }
-                }
-            }
-            answer++;
-        }
-        return answer;
+    private int DFS(int level, Node root) {
+        if (root.lt == null && root.rt == null) return level;
+        else return Math.min(DFS(level + 1, root.lt), DFS(level + 1, root.rt));
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Main T = new Main();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int s = Integer.parseInt(st.nextToken());
-        int e = Integer.parseInt(st.nextToken());
-        System.out.println(T.BFS(s, e));
+        T.root = new Node(1);
+        T.root.lt = new Node(2);
+        T.root.rt = new Node(3);
+
+        T.root.lt.lt = new Node(4);
+        T.root.lt.rt = new Node(5);
+
+        System.out.println(T.DFS(0, T.root));
     }
 }
