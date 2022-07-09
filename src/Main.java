@@ -1,37 +1,38 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    static boolean answer = false;
-    static int n, arrSum;
-    static int[] arr, ch;
+    static int[] unf;
+    private int find(int a) {
+        if(unf[a] == a) return unf[a];
+        else return unf[a] = find(unf[a]);
+    }
 
-    private void DFS(int L) {
-        if (L == n) {
-            int sum = 0;
-            for (int i = 0; i < ch.length; i++) if (ch[i] == 1) sum += arr[i];
-            if(sum * 2 == arrSum) answer = true;
-        } else {
-            ch[L] = 1;
-            DFS(L + 1);
-            ch[L] = 0;
-            DFS(L + 1);
-        }
+    private void union(int a, int b) {
+        int fa = find(a);
+        int fb = find(b);
+        if(fa != fb) unf[fa] = fb;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        arr = new int[n];
-        ch = new int[n];
-        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(st.nextToken());
-        arrSum = Arrays.stream(arr).sum();
-        T.DFS(0);
-        System.out.println(answer ? "YES" : "NO");
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        unf = new int[n + 1];
+        for (int i = 1; i <= n; i++) unf[i] = i;
+        for (int i = 0; i < m; i++) {
+            StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+            int a = Integer.parseInt(tmp.nextToken());
+            int b = Integer.parseInt(tmp.nextToken());
+            T.union(a, b);
+        }
+        StringTokenizer q = new StringTokenizer(br.readLine(), " ");
+        int a = Integer.parseInt(q.nextToken());
+        int b = Integer.parseInt(q.nextToken());
+        System.out.println(T.find(a) == T.find(b) ? "YES" : "NO");
     }
 }
