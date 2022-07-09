@@ -1,42 +1,45 @@
+import java.util.*;
+
+class Stage implements Comparable<Stage> {
+    int stageNum;
+    double faultRate;
+
+
+    public Stage(int stageNum) {
+        this.stageNum = stageNum;
+    }
+
+    public void setFaultRate(int[] stages) {
+        int i, cnt = 0;
+        for (i = 0; i < stages.length; i++) {
+            if (stages[i] > stageNum) break;
+            if (stages[i] == stageNum) cnt++;
+        }
+        if (cnt > 0) faultRate = (double) cnt / (cnt + (stages.length - i));
+        else faultRate = 0d;
+    }
+
+    @Override
+    public int compareTo(Stage o) {
+        if (o.faultRate == this.faultRate) return this.stageNum - o.stageNum;
+        else {
+            if (this.faultRate > o.faultRate) return -1;
+            else return 1;
+        }
+    }
+}
+
 class Solution {
-    public int getDividedIdx(String str) {
-        int ch = 0;
-        for (int i = 0; i < str.length(); i++) {
-            ch += (str.charAt(i) == '(') ? 1 : -1;
-            if (ch == 0) return i + 1;
-        }
-        return -1;
-    }
+    static int[] _stages;
 
-    public boolean isCorrect(String str) {
-        int cnt = 0;
-        for (int i = 0; i < str.length(); i++) {
-            cnt += str.charAt(i) == '(' ? 1 : -1;
-            if (cnt < 0) return false;
-        }
-        return cnt == 0;
-    }
+    public int[] solution(int N, int[] stages) {
+        int[] _stages = stages.clone();
+        Arrays.sort(_stages);
+        ArrayList<Stage> list = new ArrayList<>();
+        for (int i = 1; i <= N; i++) list.add(new Stage(i)); // 1 ~ N까지의 stage 생성
 
-    private String change(String u, String v) {
-        StringBuilder s = new StringBuilder("(" + getAnswer(v) + ")");
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < u.length() - 1; i++) {
-            sb.append(u.charAt(i) == ')' ? '(' : ')');
-        }
-        s.append(sb);
-        return s.toString();
-    }
-
-    private String getAnswer(String w) {
-        if (w.equals("")) return "";
-        int idx = getDividedIdx(w);
-        String u = w.substring(0, idx);
-        String v = w.substring(idx);
-        if (isCorrect(u)) return u + getAnswer(v);
-        else return change(u, v);
-    }
-
-    public String solution(String p) {
-        return getAnswer(p);
+        for (Stage el : list) el.setFaultRate(_stages);
+        Collections.sort(list);
+        return list.stream().map(m -> m.stageNum).mapToInt(Integer::intValue).toArray();
     }
 }
