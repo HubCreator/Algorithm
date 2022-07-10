@@ -1,29 +1,44 @@
-class Solution {
-    static int[] arr, ch;
-    static int n, tNum, answer = 0;
+import java.util.LinkedList;
+import java.util.Queue;
 
-    private void DFS(int L) {
-        if (L == n) {
-            int sum = 0;
-            for (int i = 0; i < n; i++) {
-                int t = arr[i];
-                sum += ch[i] == 1 ? t : (-1) * t;
-            }
-            if (sum == tNum) answer++;
-        } else {
-            ch[L] = 1;
-            DFS(L + 1);
-            ch[L] = 0;
-            DFS(L + 1);
+class Entry {
+    int idx, priority;
+
+    public Entry(int idx, int priority) {
+        this.idx = idx;
+        this.priority = priority;
+    }
+}
+
+class Solution {
+    public int solution(int[] priorities, int location) {
+        Queue<Entry> queue = new LinkedList<>();
+        int answer = 0;
+        for (int i = 0; i < priorities.length; i++) {
+            queue.offer(new Entry(i, priorities[i]));
         }
+        while (!queue.isEmpty()) {
+            Entry p = queue.poll();
+            for (Entry entry : queue) {
+                if (entry.priority > p.priority) {
+                    queue.offer(p);
+                    p = null;
+                    break;
+                }
+            }
+
+            if (p != null) {
+                answer++;
+                if (p.idx == location) return answer;
+            }
+        }
+        return -1;
     }
 
-    public int solution(int[] numbers, int target) {
-        n = numbers.length;
-        arr = numbers;
-        tNum = target;
-        ch = new int[n];
-        DFS(0);
-        return answer;
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        int[] p = {2, 1, 3, 2};
+        int l = 2;
+        System.out.println(T.solution(p, l));
     }
 }
