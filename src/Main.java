@@ -1,66 +1,43 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
-class Edge implements Comparable<Edge>{
-    int from, to, cost;
-
-    public Edge(int from, int to, int cost) {
-        this.from = from;
-        this.to = to;
-        this.cost = cost;
-    }
-
-    @Override
-    public int compareTo(Edge o) {
-        return this.cost - o.cost;
-    }
-}
 public class Main {
-    static int[] unf;
+    static int[][] graph;
+    static int n, answer = 0;
+    static int[] ch;
 
-    private int find(int v) {
-        if(unf[v] == v) return unf[v];
-        else return unf[v] = find(unf[v]);
-    }
-
-    private void union(int a, int b) {
-        int fa = find(a);
-        int fb = find(b);
-        if(fa != fb) unf[fa] = fb;
-    }
-
-    private int solution(ArrayList<Edge> list) {
-        int answer = 0;
-        Collections.sort(list);
-        for (Edge e : list) {
-            if (find(e.from) != find(e.to)) {
-                union(e.from, e.to);
-                answer += e.cost;
+    private void DFS(int val) {
+        if (val == n) {
+            answer++;
+        } else {
+            for (int i = 1; i <= n; i++) {
+                if (ch[i] == 0 && graph[val][i] == 1) {
+                    ch[i] = 1;
+                    DFS(i);
+                    ch[i] = 0;
+                }
             }
         }
-        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
-        ArrayList<Edge> list = new ArrayList<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int v = Integer.parseInt(st.nextToken());
-        int e = Integer.parseInt(st.nextToken());
-        unf = new int[v + 1];
-        for (int i = 1; i <= v; i++) unf[i] = i;
-        for (int i = 0; i < e; i++) {
+        n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        graph = new int[n + 1][n + 1];
+        ch = new int[n + 1];
+        for (int i = 0; i < m; i++) {
             StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
             int from = Integer.parseInt(tmp.nextToken());
             int to = Integer.parseInt(tmp.nextToken());
-            int cost = Integer.parseInt(tmp.nextToken());
-            list.add(new Edge(from, to, cost));
+            graph[from][to] = 1;
         }
-        System.out.println(T.solution(list));
+        ch[1] = 1;
+        T.DFS(1);
+        System.out.println(answer);
     }
 }
