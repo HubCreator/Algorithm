@@ -15,12 +15,12 @@ class Solution {
         return true;
     }
 
-    private void DFS(int L) {
+    private void DFS(int L) { // 순열 구하기
         if (L == len) {
             List<Integer> visited = new ArrayList<>();
             StringBuilder tmp = new StringBuilder();
             for (int x : ch) {
-                if (visited.contains(x)) return;
+                if (visited.contains(x)) return; // 중복된 인덱스 값을 허용하지 않음
                 visited.add(x);
                 tmp.append(nums.charAt(x));
             }
@@ -36,12 +36,7 @@ class Solution {
 
     public int solution(String numbers) {
         nums = numbers;
-        for (int i = 0; i < numbers.length(); i++) {
-            int o = Integer.parseInt(String.valueOf(numbers.charAt(i)));
-            if (!primeList.contains(o) && isPrime(o))
-                primeList.add(o);
-        }
-        for (int i = 2; i <= numbers.length(); i++) {
+        for (int i = 1; i <= numbers.length(); i++) {
             len = i;
             ch = new int[len];
             DFS(0);
