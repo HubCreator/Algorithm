@@ -1,39 +1,55 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Main {
-    static int n, m;
-    static int[] arr, pm, ch;
+class Point {
+    int y, x;
 
-    private void DFS(int L) {
-        if (L == m) {
-            for (int x : pm) System.out.print(arr[x] + " ");
-            System.out.println();
-        } else {
-            for (int i = 0; i < n; i++) {
-                if (ch[i] == 0) {
-                    ch[i] = 1;
-                    pm[L] = i;
-                    DFS(L + 1);
-                    ch[i] = 0;
+    public Point(int y, int x) {
+        this.y = y;
+        this.x = x;
+    }
+}
+public class Main {
+    public static final int BOARD_SIZE = 7;
+    public static int[][] board = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
+    public int[] dx = {-1, 0, 1, 0};
+    public int[] dy = {0, 1, 0, -1};
+
+    private int BFS(int y, int x) {
+        int answer = 0;
+        Queue<Point> queue = new LinkedList<>();
+        queue.offer(new Point(y, x));
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Point p = queue.poll();
+                if(p.y == BOARD_SIZE && p.x == BOARD_SIZE) return answer;
+                for (int j = 0; j < 4; j++) {
+                    int ny = p.y + dy[j];
+                    int nx = p.x + dx[j];
+                    if (ny > 0 && ny <= BOARD_SIZE && nx > 0 && nx <= BOARD_SIZE && board[ny][nx] == 0) {
+                        board[ny][nx] = 1;
+                        queue.offer(new Point(ny, nx));
+                    }
                 }
             }
+            answer++;
         }
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-        arr = new int[n];
-        ch = new int[n];
-        pm = new int[m];
-        StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
-        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(tmp.nextToken());
-        T.DFS(0);
+
+        for (int i = 1; i <= BOARD_SIZE; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            for (int j = 1; j <= BOARD_SIZE; j++) board[i][j] = Integer.parseInt(st.nextToken());
+        }
+        System.out.println(T.BFS(1, 1));
     }
 }

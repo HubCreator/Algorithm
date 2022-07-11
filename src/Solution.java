@@ -1,51 +1,46 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+class Log {
+    String status, userId;
+
+    public Log(String status, String userId) {
+        this.status = status;
+        this.userId = userId;
+    }
+}
+
 class Solution {
-    String nums;
-    List<Integer> primeList = new ArrayList<>();
-    int[] ch;
-    int len;
-
-    public boolean isPrime(int v) {
-        if (v <= 1) return false;
-        for (int i = 2; i < v; i++) {
-            if (v % i == 0) return false;
+    List<Log> list;
+    HashMap<String, String> map;
+    private void writeLog(String r) {
+        String[] split = r.split(" ");
+        if(r.startsWith("Enter")) {
+            list.add(new Log(split[0], split[1])); // status와 userId를 기록
+            map.put(split[1], split[2]); // userId에 해당하는 userName을 저장
+        } else if (r.startsWith("Change")) {
+            map.put(split[1], split[2]); // userId에 해당하는 userName을 수정
+        } else if (r.startsWith("Leave")) {
+            list.add(new Log(split[0], split[1])); // status와 userId를 기록
         }
-        return true;
     }
 
-    private void DFS(int L) { // 순열 구하기
-        if (L == len) {
-            List<Integer> visited = new ArrayList<>();
-            StringBuilder tmp = new StringBuilder();
-            for (int x : ch) {
-                if (visited.contains(x)) return; // 중복된 인덱스 값을 허용하지 않음
-                visited.add(x);
-                tmp.append(nums.charAt(x));
+    public String[] solution(String[] record) {
+        ArrayList<String> answer = new ArrayList<>();
+        list = new ArrayList<>();
+        map = new HashMap<>();
+
+        for (String r : record) writeLog(r);
+        for (Log log : list) {
+            StringBuilder sb = new StringBuilder();
+            if (log.status.equals("Enter")) {
+                sb.append(map.get(log.userId)).append("님이 들어왔습니다.");
+            } else {
+                sb.append(map.get(log.userId)).append("님이 나갔습니다.");
             }
-            Integer t = Integer.parseInt(String.valueOf(tmp));
-            if (!primeList.contains(t) && isPrime(t)) primeList.add(t);
-        } else {
-            for (int i = 0; i < nums.length(); i++) {
-                ch[L] = i;
-                DFS(L + 1);
-            }
+            answer.add(sb.toString());
         }
-    }
-
-    public int solution(String numbers) {
-        nums = numbers;
-        for (int i = 1; i <= numbers.length(); i++) {
-            len = i;
-            ch = new int[len];
-            DFS(0);
-        }
-        return primeList.size();
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        System.out.println(T.solution("17"));
+        return answer.toArray(new String[0]);
     }
 }
