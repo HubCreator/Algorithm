@@ -5,20 +5,22 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int n, m;
-    static int[] ch;
+    static int[] arr, pm, ch;
 
     private void DFS(int L) {
         if (L == m) {
-            for (int x : ch) System.out.print(x + " ");
+            for (int x : pm) System.out.print(arr[x] + " ");
             System.out.println();
-
         } else {
-            for (int i = 1; i <= n; i++) { // 1부터 시작해서 n까지 돌아야 하니까
-                ch[L] = i; // L은 0부터 인덱스의 숫자와 함께 올라감
-                DFS(L + 1);
+            for (int i = 0; i < n; i++) {
+                if (ch[i] == 0) {
+                    ch[i] = 1;
+                    pm[L] = i;
+                    DFS(L + 1);
+                    ch[i] = 0;
+                }
             }
         }
-
     }
 
     public static void main(String[] args) throws IOException {
@@ -27,9 +29,11 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        ch = new int[m];
-
+        arr = new int[n];
+        ch = new int[n];
+        pm = new int[m];
+        StringTokenizer tmp = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < n; i++) arr[i] = Integer.parseInt(tmp.nextToken());
         T.DFS(0);
-
     }
 }
