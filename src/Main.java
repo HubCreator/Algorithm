@@ -13,33 +13,30 @@ class Point {
         this.x = x;
     }
 }
+
 public class Main {
     public static final int BOARD_SIZE = 7;
     public static int[][] board = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
+    public static int[][] dis = new int[BOARD_SIZE + 1][BOARD_SIZE + 1];
+
     public int[] dx = {-1, 0, 1, 0};
     public int[] dy = {0, 1, 0, -1};
 
-    private int BFS(int y, int x) {
-        int answer = 0;
+    private void BFS(int y, int x) {
         Queue<Point> queue = new LinkedList<>();
         queue.offer(new Point(y, x));
         while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                Point p = queue.poll();
-                if(p.y == BOARD_SIZE && p.x == BOARD_SIZE) return answer;
-                for (int j = 0; j < 4; j++) {
-                    int ny = p.y + dy[j];
-                    int nx = p.x + dx[j];
-                    if (ny > 0 && ny <= BOARD_SIZE && nx > 0 && nx <= BOARD_SIZE && board[ny][nx] == 0) {
-                        board[ny][nx] = 1;
-                        queue.offer(new Point(ny, nx));
-                    }
+            Point p = queue.poll();
+            for (int j = 0; j < 4; j++) {
+                int ny = p.y + dy[j];
+                int nx = p.x + dx[j];
+                if (ny > 0 && ny <= BOARD_SIZE && nx > 0 && nx <= BOARD_SIZE && board[ny][nx] == 0) {
+                    board[ny][nx] = 1;
+                    queue.offer(new Point(ny, nx));
+                    dis[ny][nx] = dis[p.y][p.x] + 1;
                 }
             }
-            answer++;
         }
-        return -1;
     }
 
     public static void main(String[] args) throws IOException {
@@ -50,6 +47,7 @@ public class Main {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
             for (int j = 1; j <= BOARD_SIZE; j++) board[i][j] = Integer.parseInt(st.nextToken());
         }
-        System.out.println(T.BFS(1, 1));
+        T.BFS(1, 1);
+        System.out.println(dis[BOARD_SIZE][BOARD_SIZE]);
     }
 }
