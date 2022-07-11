@@ -6,38 +6,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-class Schedule implements Comparable<Schedule>{
-    int start, end;
+class Time implements Comparable<Time> {
+    char status;
+    int time;
 
-    public Schedule(int start, int end) {
-        this.start = start;
-        this.end = end;
+    public Time(char status, int time) {
+        this.status = status;
+        this.time = time;
     }
 
     @Override
-    public int compareTo(Schedule o) {
-        if(this.end == o.end) return this.start - o.start;
-        return this.end - o.end;
+    public int compareTo(Time o) {
+        if (this.time == o.time) return this.status - o.status;
+        return this.time - o.time;
     }
 }
+
 public class Main {
-    private int solution(List<Schedule> list) {
-        int answer = 1;
+    private int solution(List<Time> list) {
+        int cnt = 0, answer = Integer.MIN_VALUE;
         Collections.sort(list);
-        int lt = 0, rt = 0;
-//        Schedule curSchedule = list.get(0);
-//        for (int i = 1; i < list.size(); i++) {
-//            if (curSchedule.end <= list.get(i).start) {
-//                curSchedule = list.get(i);
-//                answer++;
-//            }
-//        }
-        while (lt <= rt && rt < list.size()) {
-            if (list.get(lt).end <= list.get(rt).start) {
-                answer++;
-                lt = rt;
-            }
-            rt++;
+        for (Time t : list) {
+            if (t.status == 's') cnt++;
+            else cnt--;
+            answer = Math.max(answer, cnt);
         }
 
         return answer;
@@ -47,12 +39,13 @@ public class Main {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        List<Schedule> list = new ArrayList<>();
+        List<Time> list = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            list.add(new Schedule(start, end));
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            list.add(new Time('s', s));
+            list.add(new Time('e', e));
         }
         System.out.println(T.solution(list));
     }
