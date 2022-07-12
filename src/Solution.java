@@ -1,15 +1,19 @@
-import java.util.HashMap;
-
 class Solution {
-    public int solution(String[][] clothes) {
-        int answer = 1;
-        HashMap<String, Integer> map = new HashMap<>();
+    public String solution(String s, int n) {
+        StringBuilder answer = new StringBuilder();
+        for(int i = 0; i < s.length(); i++) {
+            if(Character.isAlphabetic(s.charAt(i))) {
+                char t = s.charAt(i);
+                int tmp = t + n;
 
-        for (String[] clothe : clothes) {
-            map.put(clothe[1], map.getOrDefault(clothe[1], 1) + 1);
+                if(Character.isUpperCase(t)) {
+                    if(tmp > 'Z') tmp -= 26;
+                } else if(Character.isLowerCase(t)) {
+                    if(tmp > 'z') tmp -= 26;
+                }
+                answer.append((char) tmp);
+            } else answer.append(" ");
         }
-
-        for (Integer x : map.values()) answer *= x;
-        return answer - 1;
+        return answer.toString();
     }
 }
