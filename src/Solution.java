@@ -1,28 +1,15 @@
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 
 class Solution {
-    public String[] solution(String[] strings, int n) {
-        String[] answer = strings.clone();
+    public int solution(String[][] clothes) {
+        int answer = 1;
+        HashMap<String, Integer> map = new HashMap<>();
 
-        Comparator<String> comp = (s1, s2) -> {
-            char str1 = s1.charAt(n);
-            char str2 = s2.charAt(n);
+        for (String[] clothe : clothes) {
+            map.put(clothe[1], map.getOrDefault(clothe[1], 1) + 1);
+        }
 
-            if (str1 > str2)
-                return 1;
-            else if (str1 < str2)
-                return -1;
-            else
-                return 0;
-        };
-
-        Arrays.sort(strings);
-        Arrays.sort(strings, comp);
-
-        for (int i = 0; i < strings.length; i++)
-            answer[i] = strings[i];
-
-        return answer;
+        for (Integer x : map.values()) answer *= x;
+        return answer - 1;
     }
 }
