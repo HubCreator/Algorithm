@@ -7,20 +7,20 @@ class Solution {
         Queue<Integer> bridge = new LinkedList<>();
         bridge.offer(truck_weights[0]);
 
-        int sum;
+        int sum = truck_weights[0];
         do {
-            if (bridge.size() >= bridge_length) bridge.poll();
+            if (bridge.size() >= bridge_length) {
+                Integer p = bridge.poll();
+                sum -= p;
+            }
 
-            sum = 0;
-            for (Integer x : bridge) sum += x;
             if (curIdx < truck_weights.length && sum + truck_weights[curIdx] <= weight) {
+                sum += truck_weights[curIdx];
                 bridge.offer(truck_weights[curIdx++]);
             } else {
                 bridge.offer(0);
             }
             answer++;
-            sum = 0;
-            for (Integer x : bridge) sum += x;
         } while (sum != 0);
 
         return answer;
