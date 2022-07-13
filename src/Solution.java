@@ -1,11 +1,20 @@
+import java.util.Arrays;
+import java.util.Collections;
+
 class Solution {
-    public int[] solution(long n) {
-        int[] answer = new int[(int)Math.log10(n) + 1];
-        String s = String.valueOf(n);
-        for(int i = 0; i < answer.length; i++) {
-            answer[i] = Integer.parseInt(String.valueOf(s.charAt(answer.length - 1 - i)));
+    public int solution(int[] citations) {
+        Integer[] intArray = new Integer[citations.length];
+
+        for(int i = 0; i < citations.length; i++)
+            intArray[i] = citations[i];
+
+        Arrays.sort(intArray, Collections.reverseOrder());
+
+        for(int i = 0; i < intArray.length; i++) {
+            if(intArray[i] <= i+1)
+                return i;
         }
 
-        return answer;
+        return intArray.length;
     }
 }
