@@ -1,14 +1,9 @@
 class Solution {
-    boolean solution(String s) {
-        boolean answer = true;
-        int pCnt = 0, yCnt = 0;
-        s = s.toLowerCase();
-
-        for(int i = 0; i < s.length(); i++) {
-            if(s.charAt(i) == 'y') yCnt++;
-            if(s.charAt(i) == 'p') pCnt++;
-        }
-
-        return pCnt == yCnt || (pCnt == 0 && yCnt == 0);
+    public String solution(String s) {
+        if(s.length() % 2 == 0) return new StringBuilder()
+                .append(s.charAt(s.length() / 2 - 1))
+                .append(s.charAt(s.length() / 2)).toString();
+        else return new StringBuilder()
+                .append(s.charAt(s.length() / 2)).toString();
     }
 }
