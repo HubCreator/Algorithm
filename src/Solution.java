@@ -1,11 +1,12 @@
 class Solution {
-    public boolean solution(int x) {
-        boolean answer = true;
-        String s = String.valueOf(x);
-        int sum = 0;
-        for(int i = 0; i < s.length(); i++) {
-            sum += Integer.parseInt(String.valueOf(s.charAt(i)));
+    public int solution(int num) {
+        int answer = 0;
+        long _num = (long) num;
+        for(int i = 0; i < 500; i++)  {
+            if(_num == 1) return answer;
+            _num = (_num % 2 == 0) ? _num / 2 : (_num * 3) + 1;
+            answer++;
         }
-        return x % sum == 0;
+        return -1;
     }
 }
