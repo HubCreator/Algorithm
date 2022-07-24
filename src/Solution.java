@@ -1,8 +1,15 @@
+import java.util.*;
+
 class Solution {
     public long solution(long n) {
-        double sqrt = Math.sqrt(n);
-        return (double)(sqrt % 1d) == 0d ?
-                (long)((sqrt + 1) * (sqrt + 1)) :
-                -1l;
+        StringBuilder sb = new StringBuilder();
+        String str = String.valueOf(n);
+        PriorityQueue<Integer> pQ = new PriorityQueue<>(Collections.reverseOrder());
+        for(int i = 0; i < str.length(); i++)
+            pQ.offer(Integer.parseInt(String.valueOf(str.charAt(i))));
+        for(int i = 0; i < str.length(); i++)
+            sb.append(pQ.poll());
+
+        return Long.parseLong(sb.toString());
     }
 }
