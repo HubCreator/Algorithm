@@ -1,33 +1,36 @@
-import java.util.Arrays;
-
 class Solution {
-    public long[] solution(long[] numbers) {
-        long[] answer = new long[numbers.length];
-        Arrays.fill(answer, Long.MAX_VALUE);
-        for (int i = 0; i < numbers.length; i++) {
-            for (long j = numbers[i] + 1; ; j++) {
-                int cnt = 0;
-                long l1 = Long.parseLong(Long.toBinaryString(numbers[i]));
-                long l2 = Long.parseLong(Long.toBinaryString(j));
-                String format = "%0" + Math.max((int) Math.log10(l1) + 1, (int) Math.log10(l2) + 1) + "d";
-                String s1 = String.format(format, l1);
-                String s2 = String.format(format, l2);
-
-                for (int k = 0; k < s1.length(); k++) {
-                    if (s1.charAt(k) != s2.charAt(k)) cnt++;
+    public int solution(int N, int[][] road, int K) {
+        int answer = 0;
+        int[][] arr = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (i == j) {
+                    arr[i][j] = 0;
+                    continue;
                 }
-                if (cnt <= 2) answer[i] = Math.min(answer[i], j);
-                if (answer[i] < Long.MAX_VALUE && cnt > 2) break;
+                arr[i][j] = 10000000;
             }
         }
-        return answer;
-    }
+        for (int[] r : road) {
+            int v1 = r[0] - 1;
+            int v2 = r[1] - 1;
+            int cost = r[2];
 
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        long[] arr = {2, 7};
-        for (long x : T.solution(arr)) {
-            System.out.println("x = " + x);
+            arr[v1][v2] = Math.min(arr[v1][v2], cost);
+            arr[v2][v1] = Math.min(arr[v2][v1], cost);
         }
+
+        for (int k = 0; k < N; k++) {
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    arr[i][j] = Math.min(arr[i][j], arr[i][k] + arr[k][j]);
+                }
+            }
+        }
+
+        for (int j = 0; j < arr.length; j++) {
+            if (arr[0][j] <= K) answer++;
+        }
+        return answer;
     }
 }
