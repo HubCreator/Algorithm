@@ -1,36 +1,26 @@
 class Solution {
-    public int solution(int N, int[][] road, int K) {
-        int answer = 0;
-        int[][] arr = new int[N][N];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (i == j) {
-                    arr[i][j] = 0;
-                    continue;
-                }
-                arr[i][j] = 10000000;
-            }
-        }
-        for (int[] r : road) {
-            int v1 = r[0] - 1;
-            int v2 = r[1] - 1;
-            int cost = r[2];
-
-            arr[v1][v2] = Math.min(arr[v1][v2], cost);
-            arr[v2][v1] = Math.min(arr[v2][v1], cost);
-        }
-
-        for (int k = 0; k < N; k++) {
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    arr[i][j] = Math.min(arr[i][j], arr[i][k] + arr[k][j]);
+    public long solution(int n, int[] times) {
+        long lt = 0, rt = (long) 1e18;
+        long answer = (long) 1e18;
+        while (lt <= rt) {
+            long cnt = 0;
+            long mid = (lt + rt) / 2;
+            for (int time : times) {
+                cnt += mid / time;
+                if (cnt >= n) {
+                    rt = mid - 1;
+                    answer = mid;
+                    break;
                 }
             }
-        }
-
-        for (int j = 0; j < arr.length; j++) {
-            if (arr[0][j] <= K) answer++;
+            if (cnt < n) lt = mid + 1;
         }
         return answer;
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        int[] arr = {1, 5};
+        System.out.println(T.solution(10, arr));
     }
 }
