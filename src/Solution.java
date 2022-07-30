@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 class Solution {
     public int solution(int[] people, int limit) {
@@ -9,15 +6,17 @@ class Solution {
         for (int p : people) list.add(p);
         list.sort(Collections.reverseOrder());
 
+        ArrayDeque<Integer> deque = new ArrayDeque<>(50000);
+        for (Integer x : list) deque.offer(x);
+
         int answer = 0;
-        while (!list.isEmpty()) {
-            Integer last = list.get(list.size() - 1);
-            if (last * 2 > limit) return answer + list.size();
+        while (!deque.isEmpty()) {
+            if (deque.getLast() * 2 > limit) return answer + deque.size();
 
-            Integer t = list.remove(0);
-            if (list.isEmpty()) return answer + 1;
+            Integer p = deque.pollFirst();
+            if(deque.isEmpty()) return answer + 1;
 
-            if (t + last <= limit) list.remove(last);
+            else if (p + deque.getLast() <= limit) deque.pollLast();
             answer++;
         }
         return answer;
