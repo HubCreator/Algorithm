@@ -1,24 +1,26 @@
-import java.util.*;
-
 class Solution {
-    public int solution(int[] people, int limit) {
-        List<Integer> list = new ArrayList<>();
-        for (int p : people) list.add(p);
-        list.sort(Collections.reverseOrder());
+    static StringBuilder sb = new StringBuilder();
 
-        ArrayDeque<Integer> deque = new ArrayDeque<>(50000);
-        for (Integer x : list) deque.offer(x);
-
-        int answer = 0;
-        while (!deque.isEmpty()) {
-            if (deque.getLast() * 2 > limit) return answer + deque.size();
-
-            Integer p = deque.pollFirst();
-            if(deque.isEmpty()) return answer + 1;
-
-            else if (p + deque.getLast() <= limit) deque.pollLast();
-            answer++;
+    static void hello(int n) {
+        if (n == 1) {
+            sb.append("1");
+        } else if (n == 2) {
+            sb.append("2");
+        } else if (n == 3 || n == 0) {
+            sb.append("4");
+        } else {
+            hello((n - 1) / 3);
+            hello(n % 3);
         }
-        return answer;
+    }
+
+    public String solution(int n) {
+        hello(n);
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        System.out.println(T.solution(10));
     }
 }
