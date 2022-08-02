@@ -1,44 +1,29 @@
-import java.util.*;
-
-class Job implements Comparable<Job> {
-    int startAt, duration;
-
-    public Job(int a, int b) {
-        this.startAt = a;
-        this.duration = b;
-    }
-
-    @Override
-    public int compareTo(Job o) {
-        if (this.startAt == o.startAt) return this.duration - o.duration;
-        else return this.startAt - o.startAt;
-    }
-}
+import java.util.Arrays;
 
 class Solution {
-    public int solution(int[][] jobs) {
-        int answer = 0, cur = 0;
-        List<Job> list = new ArrayList<>();
-        for (int[] e : jobs) list.add(new Job(e[0], e[1]));
-        Collections.sort(list);
-        Deque<Job> dq = new LinkedList<>(list);
-        while (!dq.isEmpty()) {
-            Job p = dq.peekFirst();
-            if (cur <= p.startAt) {
-                dq.pollFirst();
-                cur = p.startAt + p.duration;
-            } else {
-                List<Job> tmp = new ArrayList<>();
-                while (!dq.isEmpty() && dq.peekFirst().startAt < cur) {
-                    tmp.add(dq.pollFirst());
-                }
-                Collections.sort(tmp, (a, b) -> b.duration - a.duration);
-                for (Job j : tmp) dq.offerFirst(j);
-                p = dq.pollFirst();
-                cur += p.duration;
+    int[] unf;
+
+    private int find(int v) {
+        if (v == unf[v]) return unf[v];
+        else return unf[v] = find(unf[v]);
+    }
+
+    private void union(int a, int b) {
+        int fa = find(a);
+        int fb = find(b);
+        if(fa != fb) unf[fa] = fb;
+    }
+
+    public int solution(int n, int[][] links) {
+        unf = new int[n];
+        for (int i = 0; i < n; i++) unf[i] = i;
+        for (int i = 0; i < links.length; i++) {
+            for (int j = 0; j < links[i].length; j++) {
+                if (i == j) continue;
+                if (links[i][j] == 1) union(i, j);
             }
-            answer += cur - p.startAt;
         }
-        return answer / jobs.length;
+
+        return Arrays.stream(unf).map(m -> find(m)).distinct().toArray().length;
     }
 }
