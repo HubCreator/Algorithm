@@ -1,58 +1,57 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Point {
+    int y, x, val;
+
+    public Point(int y, int x, int val) {
+        this.y = y;
+        this.x = x;
+        this.val = val;
+    }
+}
 
 class Solution {
-    static HashMap<String, ArrayList<Integer>> map;
-    static int score;
-    static String[] strings, sInfoArr;
+    static int[][] pic;
+    static int[] dy;
+    static int[] dx;
 
-    static void dfs(int L) { // key를 이룰 수 있는 모든 경우의 수를 구함
-        if (L == 4) {
-            String str = String.join("", strings);
-            if (!map.containsKey(str)) map.put(str, new ArrayList<>());
-            map.get(str).add(score);
-        } else {
-            strings[L] = sInfoArr[L];
-            dfs(L + 1);
-            strings[L] = "-";
-            dfs(L + 1);
+    private int bfs(int m, int n, Point p) {
+        int sum = 0;
+        Queue<Point> queue = new LinkedList<>();
+        queue.offer(p);
+        pic[p.y][p.x] = 0;
+
+        while (!queue.isEmpty()) {
+            Point poll = queue.poll();
+            for (int i = 0; i < 4; i++) {
+                int ny = poll.y + dy[i];
+                int nx = poll.x + dx[i];
+                if (ny >= 0 && ny < m && nx >= 0 && nx < n && pic[ny][nx] == p.val) {
+                    pic[ny][nx] = 0;
+                    queue.offer(new Point(ny, nx, pic[ny][nx]));
+                }
+            }
+            sum++;
         }
+        return sum;
     }
 
-    static int binarySearch(ArrayList<Integer> list, int val) {
-        int left = 0, right = list.size() - 1;
+    public int[] solution(int m, int n, int[][] picture) {
+        int numberOfArea = 0, maxSizeOfOneArea = Integer.MIN_VALUE;
+        dx = new int[]{-1, 0, 1, 0};
+        dy = new int[]{0, 1, 0, -1};
+        pic = new int[picture.length][picture[0].length];
+        for (int i = 0; i < picture.length; i++) pic[i] = picture[i].clone();
 
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            if (list.get(mid) < val) left = mid + 1;
-            else right = mid - 1;
-        }
-        return left;
-    }
-
-    public static int[] solution(String[] info, String[] query) {
-        int idx = 0;
-        int[] answer = new int[query.length];
-        map = new HashMap<>();
-
-        for (String s : info) {
-            strings = new String[4];
-            sInfoArr = s.split(" ");
-            score = Integer.parseInt(sInfoArr[4]);
-            dfs(0);
-        }
-
-        for (String key : map.keySet()) Collections.sort(map.get(key)); // 점수들이 들어있는 value(ArrayList)에 대해 오름차순 정렬
-
-        for (String q : query) {
-            String[] strs = q.split(" and | ");
-            String key = new StringBuilder(strs[0]).append(strs[1]).append(strs[2]).append(strs[3]).toString();
-
-            if (!map.containsKey(key)) answer[idx++] = 0;
-            else {
-                ArrayList<Integer> list = map.get(key);
-                answer[idx++] = list.size() - binarySearch(list, Integer.parseInt(strs[4]));
+        for (int i = 0; i < pic.length; i++) {
+            for (int j = 0; j < pic[i].length; j++) {
+                if (pic[i][j] != 0) {
+                    numberOfArea++;
+                    maxSizeOfOneArea = Math.max(maxSizeOfOneArea, bfs(m, n, new Point(i, j, pic[i][j])));
+                }
             }
         }
-        return answer;
+        return new int[]{numberOfArea, maxSizeOfOneArea};
     }
 }
