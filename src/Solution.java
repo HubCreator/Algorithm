@@ -1,14 +1,15 @@
 class Solution {
-    public int[] solution(int[] prices) {
-        int[] answer = new int[prices.length];
+    public int solution(int n) {
+        int answer = 0;
+        int[] arr = new int[n + 1];
 
-        for (int i = 0; i < prices.length; i++) {
-            for (int j = i + 1; j < prices.length; j++) {
-                answer[i]++;
-                // 자신보다 작은 값이 없는 동안 반복
-                if (prices[i] > prices[j]) break;
+        for (int i = 2; i <= n; i++) {
+            if (arr[i] == 0) {
+                answer++;
+                for (int j = i; j <= n; j += i) arr[j] = 1;
             }
         }
+
         return answer;
     }
 }
