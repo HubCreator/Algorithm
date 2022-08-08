@@ -1,22 +1,16 @@
 class Solution {
+    public int solution(int n) {
+        if (n == 1) return 2;
+        else if (n == 2) return 1;
 
-    public int gcd (int a, int b) {
-        return a < b ? b % a : a % b;
-    }
+        int c = 0, a = 1, b = 2;
 
-    public int[] solution(int _n, int _m) {
-        int[] answer = new int[2];
-        int n = _n;
-        int m = _m;
-
-        while (n != 0 && m != 0) {
-            int v = gcd(n, m);
-            if (n < m) m = v;
-            else n = v;
+        for (int i = 0; i < n - 2; i++) {
+            c = (a + b) % 1000000007;
+            a = b;
+            b = c;
         }
-        answer[0] = Math.max(n, m);
-        answer[1] = _n * _m / answer[0];
 
-        return answer;
+        return c;
     }
 }
