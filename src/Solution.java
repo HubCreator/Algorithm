@@ -1,16 +1,28 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+
 class Solution {
-    public int solution(int n) {
-        if (n == 1) return 2;
-        else if (n == 2) return 1;
+    private final static int CACHE_HIT = 1;
+    private final static int CACHE_MISS = 5;
 
-        int c = 0, a = 1, b = 2;
-
-        for (int i = 0; i < n - 2; i++) {
-            c = (a + b) % 1000000007;
-            a = b;
-            b = c;
+    public int solution(int cacheSize, String[] cities) {
+        if (cacheSize == 0) return cities.length * CACHE_MISS;
+        int answer = 0;
+        Deque<String> deque = new LinkedList<>();
+        for (String tmp : cities) {
+            String city = tmp.toLowerCase();
+            if (deque.contains(city)) {
+                deque.remove(city);
+                deque.offerFirst(city);
+                answer += CACHE_HIT;
+            } else {
+                if (deque.size() == cacheSize) deque.pollLast();
+                deque.offerFirst(city);
+                answer += CACHE_MISS;
+            }
         }
 
-        return c;
+        return answer;
     }
 }
