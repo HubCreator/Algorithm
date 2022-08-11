@@ -1,15 +1,23 @@
-public class Solution {
-    public int solution(int n) {
-        int answer = 0;
+import java.util.Stack;
 
-        while (n > 0) {
-            if (n % 2 == 1) {
-                n--;
-                answer++;
-            }
-            n /= 2;
+class Solution {
+    public int[] solution(int n, String[] words) {
+        int who = 0, turn = 0, idx = 0;
+        Stack<String> stack = new Stack<>();
+
+        for (String word : words) {
+            if (idx % n == 0) turn++;
+            if (stack.isEmpty()) stack.push(word);
+            else if (!stack.contains(word)) {
+                String peek = stack.peek();
+                if (peek.charAt(peek.length() - 1) == word.charAt(0)) stack.push(word);
+                else break;
+            } else break;
+            who = (who + 1) % n;
+            idx++;
         }
 
-        return answer;
+        if (stack.size() == words.length) return new int[]{0, 0};
+        else return new int[]{who + 1, turn};
     }
 }
