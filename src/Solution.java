@@ -1,23 +1,21 @@
-import java.util.Stack;
 
 class Solution {
-    public int[] solution(int n, String[] words) {
-        int who = 0, turn = 0, idx = 0;
-        Stack<String> stack = new Stack<>();
+    public int solution(int[][] tri) {
+        int len = tri.length - 1;
+        int[][] dis = new int[tri.length][tri.length];
 
-        for (String word : words) {
-            if (idx % n == 0) turn++;
-            if (stack.isEmpty()) stack.push(word);
-            else if (!stack.contains(word)) {
-                String peek = stack.peek();
-                if (peek.charAt(peek.length() - 1) == word.charAt(0)) stack.push(word);
-                else break;
-            } else break;
-            who = (who + 1) % n;
-            idx++;
+        for (int col = 0; col < tri[len].length; col++) {
+            dis[len][col] = tri[len][col];
         }
 
-        if (stack.size() == words.length) return new int[]{0, 0};
-        else return new int[]{who + 1, turn};
+        int row = len - 1;
+        while (row >= 0) {
+            for (int col = 0; col < tri[row].length; col++) {
+                dis[row][col] = tri[row][col] + Math.max(dis[row + 1][col], dis[row + 1][col + 1]);
+            }
+            row--;
+        }
+
+        return dis[0][0];
     }
 }
