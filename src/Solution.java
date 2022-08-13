@@ -1,25 +1,17 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
-    public int solution(int[] times, long k) {
-        Long cur = -1L;
-        Map<Long, Integer> map = new HashMap<>();
-        for (long i = 0; i < times.length; i++) map.put(i, times[(int)i]);
+    private int getGCD(int a, int b) {
+        return a < b ? b % a : a % b;
+    }
 
-        while (k >= 0 && !map.isEmpty()) {
-            cur = (cur + 1) % times.length;
-            if (map.containsKey(cur)) {
-                map.put(cur, map.get(cur) - 1);
-                if (map.get(cur) == 0) map.remove(cur);
-            } else {
-                while (!map.containsKey(cur)) cur = (cur + 1) % times.length;
-                map.put(cur, map.get(cur) - 1);
-                if (map.get(cur) == 0) map.remove(cur);
-            }
-            k--;
+    public int[] solution(int _n, int _m) {
+        int n = _n, m = _m;
+
+        while (n != 0 && m != 0) {
+            int val = getGCD(n, m);
+            if (n < m) m = val;
+            else n = val;
         }
-
-        return k >= 0 ? -1 : (int)(cur + 1);
+        int max = Math.max(n, m);
+        return new int[]{max, _n * _m / max};
     }
 }
