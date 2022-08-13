@@ -1,21 +1,25 @@
+import java.util.HashMap;
+import java.util.Map;
 
 class Solution {
-    public int solution(int[][] tri) {
-        int len = tri.length - 1;
-        int[][] dis = new int[tri.length][tri.length];
+    public int solution(int[] times, long k) {
+        Long cur = -1L;
+        Map<Long, Integer> map = new HashMap<>();
+        for (long i = 0; i < times.length; i++) map.put(i, times[(int)i]);
 
-        for (int col = 0; col < tri[len].length; col++) {
-            dis[len][col] = tri[len][col];
-        }
-
-        int row = len - 1;
-        while (row >= 0) {
-            for (int col = 0; col < tri[row].length; col++) {
-                dis[row][col] = tri[row][col] + Math.max(dis[row + 1][col], dis[row + 1][col + 1]);
+        while (k >= 0 && !map.isEmpty()) {
+            cur = (cur + 1) % times.length;
+            if (map.containsKey(cur)) {
+                map.put(cur, map.get(cur) - 1);
+                if (map.get(cur) == 0) map.remove(cur);
+            } else {
+                while (!map.containsKey(cur)) cur = (cur + 1) % times.length;
+                map.put(cur, map.get(cur) - 1);
+                if (map.get(cur) == 0) map.remove(cur);
             }
-            row--;
+            k--;
         }
 
-        return dis[0][0];
+        return k >= 0 ? -1 : (int)(cur + 1);
     }
 }
