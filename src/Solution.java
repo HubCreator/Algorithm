@@ -29,17 +29,16 @@ class Solution {
                 map.put(p, tmpMin + 1);
                 max = Math.max(max, tmpMin + 1);
                 visited[p] = true;
-            } else {
-                for (int j = 0; j < list.get(p).size(); j++) {
-                    Integer t = list.get(p).get(j);
-                    if (!visited[t] && !queue.contains(t)) queue.offer(t);
-                }
+            }
+            for (int j = 0; j < list.get(p).size(); j++) {
+                Integer t = list.get(p).get(j);
+                if (!visited[t] && !queue.contains(t)) queue.offer(t);
             }
         }
     }
 
     public int solution(int n, int[][] edge) {
-        int answer = 0, asdf = Integer.MIN_VALUE;
+        int answer = 0, tmp = Integer.MIN_VALUE;
 
         for (int i = 0; i <= n; i++) list.add(new ArrayList<>());
         for (int[] e : edge) {
@@ -49,23 +48,9 @@ class Solution {
 
         bfs(n);
 
-
-
-        for (Integer x : map.values()) {
-            asdf = Math.max(asdf, x);
-        }
-
-        for (Integer x : map.values()) {
-            if(x == asdf) answer++;
-        }
-
+        for (Integer x : map.values()) tmp = Math.max(tmp, x);
+        for (Integer x : map.values()) if (x == tmp) answer++;
 
         return answer;
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[][] edge = {{3, 6}, {4, 3}, {3, 2}, {1, 3}, {1, 2}, {2, 4}, {5, 2}};
-        System.out.println(T.solution(6, edge));
     }
 }
