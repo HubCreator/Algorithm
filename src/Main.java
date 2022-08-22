@@ -1,39 +1,38 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
+// 조합수 메모이제이션
 public class Main {
-    static private Integer[] arr;
-    static private int m, answer = Integer.MAX_VALUE;
+    static int[][] ch;
+    static int sum = 0;
 
-    private void dfs(int L, int sum) {
-        if (sum > m || L >= answer) return;
-        if (sum == m) answer = Math.min(answer, L);
-        else {
-            for (Integer x : arr) dfs(L + 1, sum + x);
+    private void DFS(int n, int r) {
+        if (ch[n][r] > 0) {
+            sum += ch[n][r];
+            return;
         }
-    }
-
-    private int solution() {
-        dfs(0, 0);
-
-        return answer;
+        if (n == r){
+            ch[n][r] = 1;
+            sum += ch[n][r];
+        } else if (r == 1) {
+            ch[n][r] = n;
+            sum += ch[n][r];
+        } else {
+            DFS(n - 1, r - 1);
+            DFS(n - 1, r);
+        }
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        arr = new Integer[n];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < arr.length; i++) arr[i] = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(br.readLine());
-
-        Arrays.sort(arr, Collections.reverseOrder());
-
-        System.out.println(T.solution());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st.nextToken());
+        int r = Integer.parseInt(st.nextToken());
+        ch = new int[n + 1][n + 1];
+        T.DFS(n, r);
+        System.out.println(sum);
     }
 }
