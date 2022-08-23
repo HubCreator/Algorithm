@@ -1,38 +1,22 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Solution {
-    private int[] arr, pm, ch;
-    private int n, m;
+    public int[] solution(int n, int[] arr) {
+        List<Integer> answer = new ArrayList<>();
+        for (int i : arr) answer.add(i);
+        Collections.sort(answer, Collections.reverseOrder());
 
-    private void dfs(int L) {
-        if (L == m) {
-            for (int x : pm) System.out.print(arr[x] + " ");
-            System.out.println();
-        } else {
-            for (int i = 0; i < n; i++) {
-                if (ch[i] == 0) {
-                    ch[L] = 1;
-                    pm[L] = i;
-                    dfs(L + 1);
-                    ch[L] = 0;
-                }
-            }
-        }
-    }
+        for (int i : arr) System.out.print(answer.indexOf(i) + 1 + " ");
 
-    public void solution(int _n, int _m, int[] _arr) {
-        arr = _arr.clone();
-        n = _n;
-        m = _m;
-        ch = new int[n];
-        pm = new int[m];
-
-        dfs(0);
+        return answer.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        T.solution(3, 2, new int[]{3, 6, 9});
-
+        int n = 5;
+        int[] arr = {87, 92, 92, 100, 76};
+        for (int x : T.solution(n, arr)) System.out.print(x + " ");
     }
 }
