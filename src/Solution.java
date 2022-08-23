@@ -1,27 +1,24 @@
-import java.util.Stack;
+import java.util.Arrays;
 
 class Solution {
-    public String solution(String str) {
-        Stack<Character> stack = new Stack<>();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char t = str.charAt(i);
-            if (Character.isAlphabetic(t) | t == '(') stack.push(t);
-            else {
-                Character pop;
-                do {
-                    pop = stack.pop();
-                } while (pop != '(');
-            }
-        }
-        while (!stack.isEmpty()) sb.append(stack.pop());
+    public int solution(int n, int m, int[] arr) {
+        Arrays.sort(arr);
+        int lt = 0, rt = n - 1, mid;
 
-        return sb.reverse().toString();
+        while (lt <= rt) {
+            mid = (lt + rt) / 2;
+            if (arr[mid] == m) return mid + 1;
+            else if (arr[mid] < m) lt = mid + 1;
+            else rt = mid - 1;
+        }
+        return -1;
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        String tmp = "(A(BC)D)EF(G(H)(IJ)K)LM(N)";
-        System.out.println(T.solution(tmp));
+        int n = 8;
+        int m = 32;
+        int[] arr = {23, 87, 65, 12, 57, 32, 99, 81};
+        System.out.println(T.solution(n, m, arr));
     }
 }
