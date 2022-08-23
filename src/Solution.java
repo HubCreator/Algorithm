@@ -1,24 +1,47 @@
-import java.util.Arrays;
 
 class Solution {
-    public int solution(int n, int m, int[] arr) {
-        Arrays.sort(arr);
-        int lt = 0, rt = n - 1, mid;
+    int[][] board, ch;
+    int[] dy = {0, -1, 0, 1};
+    int[] dx = {1, 0, -1, 0};
+    int answer = 0;
 
-        while (lt <= rt) {
-            mid = (lt + rt) / 2;
-            if (arr[mid] == m) return mid + 1;
-            else if (arr[mid] < m) lt = mid + 1;
-            else rt = mid - 1;
+
+    private void dfs(int y, int x) {
+        if (y == board.length - 1 && x == board.length - 1) answer++;
+        else {
+            for (int i = 0; i < 4; i++) {
+                int ny = y + dy[i];
+                int nx = x + dx[i];
+                if (ny >= 0 && ny < board.length && nx >= 0 && nx < board.length && ch[ny][nx] == 0 && board[ny][nx] == 0) {
+                    ch[ny][nx] = 1;
+                    dfs(ny, nx);
+                    ch[ny][nx] = 0;
+                }
+            }
         }
-        return -1;
     }
+
+    public int solution(int[][] _board) {
+        board = _board;
+        ch = new int[board.length][board.length];
+        ch[0][0] = 1;
+        dfs(0, 0);
+
+        return answer;
+    }
+
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int n = 8;
-        int m = 32;
-        int[] arr = {23, 87, 65, 12, 57, 32, 99, 81};
-        System.out.println(T.solution(n, m, arr));
+        int[][] board = {
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 1, 1, 1, 1, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {1, 1, 0, 1, 0, 1, 1},
+                {1, 1, 0, 0, 0, 0, 1},
+                {1, 1, 0, 1, 1, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0}
+        };
+        System.out.println(T.solution(board));
     }
 }
