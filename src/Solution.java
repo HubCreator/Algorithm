@@ -1,33 +1,47 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Point {
+    int y, x;
+
+    public Point(int y, int x) {
+        this.y = y;
+        this.x = x;
+    }
+}
 
 class Solution {
-    int[][] board, ch;
+    int[][] board;
     int[] dy = {0, -1, 0, 1};
     int[] dx = {1, 0, -1, 0};
     int answer = 0;
 
-
-    private void dfs(int y, int x) {
-        if (y == board.length - 1 && x == board.length - 1) answer++;
-        else {
-            for (int i = 0; i < 4; i++) {
-                int ny = y + dy[i];
-                int nx = x + dx[i];
-                if (ny >= 0 && ny < board.length && nx >= 0 && nx < board.length && ch[ny][nx] == 0 && board[ny][nx] == 0) {
-                    ch[ny][nx] = 1;
-                    dfs(ny, nx);
-                    ch[ny][nx] = 0;
+    private int bfs(Point point) {
+        Queue<Point> queue = new LinkedList<>();
+        queue.offer(point);
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                Point poll = queue.poll();
+                if (poll.y == board.length - 1 && poll.x == board.length - 1) return answer;
+                for (int j = 0; j < 4; j++) {
+                    int ny = poll.y + dy[j];
+                    int nx = poll.x + dx[j];
+                    if (ny >= 0 && ny < board.length && nx >= 0 && nx < board.length && board[ny][nx] == 0) {
+                        board[ny][nx] = 1;
+                        queue.offer(new Point(ny, nx));
+                    }
                 }
             }
+            answer++;
         }
+        return answer;
     }
 
     public int solution(int[][] _board) {
         board = _board;
-        ch = new int[board.length][board.length];
-        ch[0][0] = 1;
-        dfs(0, 0);
-
-        return answer;
+        
+        return bfs(new Point(0, 0));
     }
 
 
