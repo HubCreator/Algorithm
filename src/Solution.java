@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 class Point {
@@ -14,48 +16,55 @@ class Solution {
     int[][] board;
     int[] dy = {0, -1, 0, 1};
     int[] dx = {1, 0, -1, 0};
-    int answer = 0;
 
-    private int bfs(Point point) {
-        Queue<Point> queue = new LinkedList<>();
-        queue.offer(point);
+    private int bfs(int n, int m, List<Point> list) {
+        Queue<Point> queue = new LinkedList<>(list);
+        int level = 0;
         while (!queue.isEmpty()) {
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
                 Point poll = queue.poll();
-                if (poll.y == board.length - 1 && poll.x == board.length - 1) return answer;
                 for (int j = 0; j < 4; j++) {
                     int ny = poll.y + dy[j];
                     int nx = poll.x + dx[j];
-                    if (ny >= 0 && ny < board.length && nx >= 0 && nx < board.length && board[ny][nx] == 0) {
+                    if (ny >= 0 && ny < n && nx >= 0 && nx < m && board[ny][nx] == 0) {
                         board[ny][nx] = 1;
                         queue.offer(new Point(ny, nx));
                     }
                 }
             }
-            answer++;
+            level++;
         }
-        return answer;
+
+        return level;
     }
 
-    public int solution(int[][] _board) {
+    public int solution(int n, int m, int[][] _board) {
+        List<Point> list = new ArrayList<>();
         board = _board;
-        
-        return bfs(new Point(0, 0));
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if(board[i][j] == 1) list.add(new Point(i, j));
+            }
+        }
+
+        int result = bfs(n, m, list);
+
+        return result;
     }
 
 
     public static void main(String[] args) {
         Solution T = new Solution();
+        int n = 4;
+        int m = 6;
         int[][] board = {
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 1, 1, 1, 1, 1, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {1, 1, 0, 1, 0, 1, 1},
-                {1, 1, 0, 0, 0, 0, 1},
-                {1, 1, 0, 1, 1, 0, 0},
-                {1, 0, 0, 0, 0, 0, 0}
+                {0, 0, -1, 0, 0, 0},
+                {0, 0, 1, 0, -1, 0},
+                {0, 0, -1, 0, 0, 0},
+                {0, 0, 0, 0, -1, 1}
         };
-        System.out.println(T.solution(board));
+
+        System.out.println(T.solution(n, m, board));
     }
 }
