@@ -1,53 +1,45 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.LinkedList;
+import java.util.Queue;
 
-class Schedule implements Comparable<Schedule> {
-    int start, end;
+class Person {
+    int id, priority;
 
-    public Schedule(int start, int end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    @Override
-    public int compareTo(Schedule o) {
-        if (this.end == o.end) return this.start - o.start;
-        return this.end - o.end;
+    public Person(int id, int priority) {
+        this.id = id;
+        this.priority = priority;
     }
 }
 
 public class Main {
-    private int solution(List<Schedule> list) {
-        int answer = 1;
-        Collections.sort(list);
-        int lt = 0, rt = 1;
-        while (lt <= rt && rt < list.size()) {
-            if (list.get(lt).end <= list.get(rt).start) {
-                answer++;
-                lt = rt;
-            }
-            rt++;
-        }
+    private int solution(int n, int m, int[] arr) {
+        Queue<Person> queue = new LinkedList<>();
+        int cnt = 0;
+        for (int i = 0; i < n; i++) queue.offer(new Person(i, arr[i]));
 
-        return answer;
+        while (!queue.isEmpty()) {
+            boolean flag = true;
+            Person poll = queue.poll();
+            for (Person x : queue) {
+                if (poll.priority < x.priority) {
+                    queue.offer(poll);
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                cnt++;
+                if (poll.id == m) return cnt;
+            }
+        }
+        return -1;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Main T = new Main();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        List<Schedule> list = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            list.add(new Schedule(start, end));
-        }
-        System.out.println(T.solution(list));
+        int n = 6;
+        int m = 3;
+        int[] arr = {70, 60, 90, 60, 60, 60};
+
+        System.out.println(T.solution(n, m, arr));
     }
 }
