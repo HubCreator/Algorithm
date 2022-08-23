@@ -1,38 +1,53 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
-// 조합수 메모이제이션
-public class Main {
-    static int[][] ch;
-    static int sum = 0;
+class Schedule implements Comparable<Schedule> {
+    int start, end;
 
-    private void DFS(int n, int r) {
-        if (ch[n][r] > 0) {
-            sum += ch[n][r];
-            return;
+    public Schedule(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    public int compareTo(Schedule o) {
+        if (this.end == o.end) return this.start - o.start;
+        return this.end - o.end;
+    }
+}
+
+public class Main {
+    private int solution(List<Schedule> list) {
+        int answer = 1;
+        Collections.sort(list);
+        int lt = 0, rt = 1;
+        while (lt <= rt && rt < list.size()) {
+            if (list.get(lt).end <= list.get(rt).start) {
+                answer++;
+                lt = rt;
+            }
+            rt++;
         }
-        if (n == r){
-            ch[n][r] = 1;
-            sum += ch[n][r];
-        } else if (r == 1) {
-            ch[n][r] = n;
-            sum += ch[n][r];
-        } else {
-            DFS(n - 1, r - 1);
-            DFS(n - 1, r);
-        }
+
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int n = Integer.parseInt(st.nextToken());
-        int r = Integer.parseInt(st.nextToken());
-        ch = new int[n + 1][n + 1];
-        T.DFS(n, r);
-        System.out.println(sum);
+        int n = Integer.parseInt(br.readLine());
+        List<Schedule> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
+            list.add(new Schedule(start, end));
+        }
+        System.out.println(T.solution(list));
     }
 }
