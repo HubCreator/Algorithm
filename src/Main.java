@@ -17,16 +17,15 @@ public class Main {
         for (int i = 0; i < n; i++) queue.offer(new Person(i, arr[i]));
 
         while (!queue.isEmpty()) {
-            boolean flag = true;
             Person poll = queue.poll();
             for (Person x : queue) {
                 if (poll.priority < x.priority) {
                     queue.offer(poll);
-                    flag = false;
+                    poll = null;
                     break;
                 }
             }
-            if (flag) {
+            if (poll != null) {
                 cnt++;
                 if (poll.id == m) return cnt;
             }
