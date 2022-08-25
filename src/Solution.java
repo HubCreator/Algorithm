@@ -1,28 +1,39 @@
-class Solution {
-    int one = 0, zero = 0;
 
-    // s : start, e : end, m : mid
-    void press(int[][] arr, int xs, int xe, int ys, int ye) {
-        int cnt = 0, max = (int) Math.pow(xe - xs, 2);
-        for (int i = xs; i < xe; i++) {
-            for (int j = ys; j < ye; j++) {
-                cnt += arr[i][j];
+class Solution {
+    public String solution(String new_id) {
+        // 1단계
+        String s = new_id.toLowerCase();
+
+        // 2단계
+        s = s.replaceAll("[^a-z0-9-_.]", "");
+
+        // 3단계
+        s = s.replaceAll("[.]{2,}", ".");
+
+        // 4단계
+        s = s.replaceAll("^[.]", "");
+
+        // 5단계
+        if (s.length() == 0) s = "a";
+
+        // 6단계
+        if (s.length() > 15) s = s.substring(0, 15);
+        s = s.replaceAll("[.]$", "");
+
+        // 7단계
+        if (s.length() <= 2) {
+            char t = s.charAt(s.length() - 1);
+            while (s.length() < 3) {
+                s = s + t;
             }
         }
-        if (cnt == 0) zero++;
-        else if (cnt == max) one++;
-        else {
-            int xm = (xs + xe) / 2;
-            int ym = (ys + ye) / 2;
-            press(arr, xs, xm, ys, ym);
-            press(arr, xm, xe, ys, ym);
-            press(arr, xs, xm, ym, ye);
-            press(arr, xm, xe, ym, ye);
-        }
+
+        return s;
     }
 
-    public int[] solution(int[][] arr) {
-        press(arr, 0, arr.length, 0, arr.length);
-        return new int[]{zero, one};
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        String str = "...!@BaT#*..y.abcdefghijklm";
+        System.out.println(T.solution(str));
     }
 }
