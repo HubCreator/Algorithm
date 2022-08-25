@@ -1,18 +1,14 @@
+import java.util.PriorityQueue;
 
 class Solution {
-    public int solution(int n, int[] lost, int[] reserve) {
-        int answer = n;
-        int[] arr = new int[n + 2];
-        for (int x : lost) arr[x] -= 1;
-        for (int x : reserve) arr[x] += 1;
-        for (int i = 1; i < arr.length - 1; i++) {
-            if (arr[i] == -1) {
-                // 좌 우를 찾아봐야함
-                if (arr[i - 1] == 1) arr[i - 1] = arr[i] = 0;
-                else if (arr[i + 1] == 1) arr[i + 1] = arr[i] = 0;
-                else answer--;
-            }
+    public int solution(int[] scoville, int K) {
+        int answer = 0;
+        PriorityQueue<Integer> pqueue = new PriorityQueue<>();
+        for (int x : scoville) pqueue.offer(x);
+        while (pqueue.size() >= 2 && pqueue.peek() < K) {
+            pqueue.offer(pqueue.poll() + pqueue.poll() * 2);
+            answer++;
         }
-        return answer;
+        return pqueue.peek() >= K ? answer : -1;
     }
 }
