@@ -1,15 +1,17 @@
-import java.util.Arrays;
 
 class Solution {
-    public int[] solution(int[] array, int[][] commands) {
-        int[] answer = new int[commands.length];
-        int idx = 0;
-
-        for (int[] command : commands) {
-            int s = command[0] - 1, e = command[1] - 1, k = command[2] - 1;
-            int[] arr = Arrays.copyOfRange(array, s, e + 1);
-            Arrays.sort(arr);
-            answer[idx++] = arr[k];
+    public int solution(int n, int[] lost, int[] reserve) {
+        int answer = n;
+        int[] arr = new int[n + 2];
+        for (int x : lost) arr[x] -= 1;
+        for (int x : reserve) arr[x] += 1;
+        for (int i = 1; i < arr.length - 1; i++) {
+            if (arr[i] == -1) {
+                // 좌 우를 찾아봐야함
+                if (arr[i - 1] == 1) arr[i - 1] = arr[i] = 0;
+                else if (arr[i + 1] == 1) arr[i + 1] = arr[i] = 0;
+                else answer--;
+            }
         }
         return answer;
     }
