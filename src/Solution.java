@@ -1,42 +1,42 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.ArrayList;
 
-class Job {
-    int progress, speed;
+class Stage implements Comparable<Stage> {
+    int id;
+    double fault;
 
-    public Job(int progress, int speed) {
-        this.progress = progress;
-        this.speed = speed;
+    public Stage(int id, float fault) {
+        this.id = id;
+        this.fault = fault;
+    }
+
+    @Override
+    public int compareTo(Stage o) {
+        if (o.fault == this.fault) return this.id - o.id;
+        else {
+            if (o.fault - this.fault > 0) return 1;
+            else if (o.fault - this.fault < 0) return -1;
+            else return 0;
+        }
     }
 }
 
 class Solution {
-    public int[] solution(int[] progresses, int[] speeds) {
-        Queue<Job> queue = new LinkedList<>();
-        List<Integer> answer = new ArrayList<>();
-        int cnt;
-        for (int i = 0; i < progresses.length; i++) {
-            queue.offer(new Job(progresses[i], speeds[i]));
-        }
-        while (!queue.isEmpty()) {
-            cnt = 0;
-            for (Job job : queue) job.progress += job.speed;
-            while (!queue.isEmpty() && queue.peek().progress >= 100) {
-                queue.poll();
-                cnt++;
+    public int[] solution(int N, int[] stages) {
+        List<Stage> answer = new ArrayList<>();
+        int curStage, unclear;
+
+        for (int i = 1; i <= N; i++) {
+            curStage = unclear = 0;
+            for (int x : stages) {
+                if (x >= i) curStage++;
+                if (x == i) unclear++;
             }
-            if (cnt > 0) answer.add(cnt);
+            boolean b = curStage == 0 ? answer.add(new Stage(i, 0)) :
+                    answer.add(new Stage(i, (float) unclear / curStage));
+
         }
 
-        return answer.stream().mapToInt(Integer::intValue).toArray();
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[] arr1 = {95, 90, 99, 99, 80, 99};
-        int[] arr2 = {1, 1, 1, 1, 1, 1};
-        for (int x : T.solution(arr1, arr2)) System.out.print(x + " ");
+        return answer.stream().sorted().mapToInt(m -> m.id).toArray();
     }
 }
