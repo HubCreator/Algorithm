@@ -1,39 +1,16 @@
+import java.util.Arrays;
 
 class Solution {
-    public String solution(String new_id) {
-        // 1단계
-        String s = new_id.toLowerCase();
+    public int[] solution(int[] array, int[][] commands) {
+        int[] answer = new int[commands.length];
+        int idx = 0;
 
-        // 2단계
-        s = s.replaceAll("[^a-z0-9-_.]", "");
-
-        // 3단계
-        s = s.replaceAll("[.]{2,}", ".");
-
-        // 4단계
-        s = s.replaceAll("^[.]", "");
-
-        // 5단계
-        if (s.length() == 0) s = "a";
-
-        // 6단계
-        if (s.length() > 15) s = s.substring(0, 15);
-        s = s.replaceAll("[.]$", "");
-
-        // 7단계
-        if (s.length() <= 2) {
-            char t = s.charAt(s.length() - 1);
-            while (s.length() < 3) {
-                s = s + t;
-            }
+        for (int[] command : commands) {
+            int s = command[0] - 1, e = command[1] - 1, k = command[2] - 1;
+            int[] arr = Arrays.copyOfRange(array, s, e + 1);
+            Arrays.sort(arr);
+            answer[idx++] = arr[k];
         }
-
-        return s;
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        String str = "...!@BaT#*..y.abcdefghijklm";
-        System.out.println(T.solution(str));
+        return answer;
     }
 }
