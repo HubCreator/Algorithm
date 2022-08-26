@@ -1,39 +1,32 @@
-import java.util.*;
-
-class User {
-    String uid, action;
-
-    public User(String uid, String action) {
-        this.uid = uid;
-        this.action = action;
-    }
-}
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Solution {
-    private static final String IN = "님이 들어왔습니다.";
-    private static final String OUT = "님이 나갔습니다.";
-
-    public String[] solution(String[] record) {
+    public String[] solution(String[] orders, int[] course) {
         List<String> answer = new ArrayList<>();
-        Map<String, String> map = new HashMap<>();
-        List<User> list = new LinkedList<>();
-        for (String s : record) {
-            String[] split = s.split(" ");
-            if (split[0].startsWith("L")) {
-                list.add(new User(split[1], split[0]));
-            } else if (split[0].startsWith("C")) {
-                map.put(split[1], split[2]);
-            } else {
-                map.put(split[1], split[2]);
-                list.add(new User(split[1], split[0]));
+        int idx = 0;
+        List<Integer> courseList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
+        for (int x : course) courseList.add(x);
+        Collections.addAll(list, orders);
+        Collections.sort(list, (a, b) -> a.length() - b.length());
+        while (idx < list.size()) {
+            String s = list.get(idx);
+            int cnt = 0;
+            if (courseList.contains(s.length())) {
+                for (int i = idx + 1; i < list.size(); i++) {
+                    if (list.get(i).contains(s)) cnt++;
+                }
             }
+            if (cnt > 0) answer.add(s);
+            idx++;
         }
-        for (User user : list) {
-            if (user.action.startsWith("E"))
-                answer.add(new StringBuilder(map.get(user.uid)).append(IN).toString());
-            else answer.add(new StringBuilder(map.get(user.uid)).append(OUT).toString());
+        for (String s : answer) {
+            System.out.println("s = " + s);
         }
 
-        return answer.toArray(new String[0]);
+
+        return null;
     }
 }
