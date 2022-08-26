@@ -1,40 +1,28 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class Food {
-    int id, time;
-
-    public Food(int id, int time) {
-        this.id = id;
-        this.time = time;
-    }
-
-    public void reduceTime() {
-        this.time--;
-    }
-
-    public boolean isOne() {
-        return this.time == 1;
-    }
-}
-
 class Solution {
-    public int solution(int[] times, long k) {
-        int idx = 0;
-        List<Food> list = new ArrayList<>();
-        for (int i = 0; i < times.length; i++) {
-            list.add(new Food(i + 1, times[i]));
-        }
-        while (k > 0L) {
-            if (list.get(idx).isOne())
-                list.remove(idx--);
-            else
-                list.get(idx).reduceTime();
-            idx++;
-            if (idx == list.size()) idx = 0;
-            k -= 1L;
-        }
+    int[] nums, ch;
+    int t, answer = 0;
 
-        return list.isEmpty() ? -1 : list.get(idx).id;
+    private void dfs(int L) {
+        if (L == nums.length) {
+            int sum = 0;
+            for (int i = 0; i < ch.length; i++) {
+                if(ch[i] == 1) sum -= nums[i];
+                else sum += nums[i];
+            }
+            if(sum == t) answer++;
+        } else {
+            ch[L] = 0;
+            dfs(L + 1);
+            ch[L] = 1;
+            dfs(L + 1);
+        }
+    }
+
+    public int solution(int[] numbers, int target) {
+        nums = numbers;
+        ch = new int[numbers.length];
+        t = target;
+        dfs(0);
+        return answer;
     }
 }
