@@ -1,28 +1,37 @@
-class Solution {
-    int[] nums, ch;
-    int t, answer = 0;
+import java.util.LinkedList;
+import java.util.Queue;
 
-    private void dfs(int L) {
-        if (L == nums.length) {
-            int sum = 0;
-            for (int i = 0; i < ch.length; i++) {
-                if(ch[i] == 1) sum -= nums[i];
-                else sum += nums[i];
-            }
-            if(sum == t) answer++;
-        } else {
-            ch[L] = 0;
-            dfs(L + 1);
-            ch[L] = 1;
-            dfs(L + 1);
-        }
+class Job {
+    int id, priority;
+
+    public Job(int id, int priority) {
+        this.id = id;
+        this.priority = priority;
     }
+}
 
-    public int solution(int[] numbers, int target) {
-        nums = numbers;
-        ch = new int[numbers.length];
-        t = target;
-        dfs(0);
-        return answer;
+class Solution {
+    public int solution(int[] priorities, int location) {
+        int answer = 0;
+        Queue<Job> queue = new LinkedList<>();
+        for (int i = 0; i < priorities.length; i++) {
+            queue.offer(new Job(i, priorities[i]));
+        }
+
+        while (!queue.isEmpty()) {
+            Job p = queue.poll();
+            for (Job job : queue) {
+                if (p.priority < job.priority) {
+                    queue.offer(p);
+                    p = null;
+                    break;
+                }
+            }
+            if (p != null) {
+                answer++;
+                if (p.id == location) return answer;
+            }
+        }
+        return -1;
     }
 }
