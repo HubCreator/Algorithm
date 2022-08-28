@@ -11,58 +11,74 @@ class User {
 }
 
 class Solution {
-    int idx = 0;
-    List<User> list = new ArrayList<>();
-    List<Boolean> answerTmp = new ArrayList<>();
-    String[][] places;
-    int[] ch, answer;
+    int board_size;
 
-    private boolean isValid(User u1, User u2) {
-        boolean answer = false;
-        int dist = Math.abs(u1.y - u2.y) + Math.abs(u1.x - u2.x);
-        if (dist > 2) return true;
-        else {
+    private boolean isValid(String[] place, User u1, User u2) {
+        boolean flag = false;
+        if (u1.y == u2.y || u1.x == u2.x) {
             for (int i = Math.min(u1.y, u2.y); i <= Math.max(u1.y, u2.y); i++) {
                 for (int j = Math.min(u1.x, u2.x); j <= Math.max(u1.x, u2.x); j++) {
-                    if (places[idx][i].charAt(j) == 'X') {
-                        answer = true;
-                        break;
+                    if (place[i].charAt(j) == 'X') {
+                        return true;
                     }
                 }
             }
-        }
-        return answer;
-    }
-
-    private void combi(int L, int s) {
-        if (L == 2) {
-            User u1 = list.get(ch[0]);
-            User u2 = list.get(ch[1]);
-            answerTmp.add(isValid(u1, u2));
         } else {
-            for (int i = s; i < list.size(); i++) {
-                ch[L] = i;
-                combi(L + 1, i + 1);
+            int cnt = 0;
+            for (int i = Math.min(u1.y, u2.y); i <= Math.max(u1.y, u2.y); i++) {
+                for (int j = Math.min(u1.x, u2.x); j <= Math.max(u1.x, u2.x); j++) {
+                    if (place[i].charAt(j) == 'X') cnt++;
+                }
             }
+            return cnt == 2;
         }
+        return flag;
     }
 
-    public int[] solution(String[][] _places) {
-        places = _places;
-        answer = new int[places.length];
+    public int[] solution(String[][] places) {
+        board_size = places.length;
+        int[] answer = new int[board_size];
+        int idx = 0;
+        List<User> list = new ArrayList<>();
+        boolean flag;
+
         for (String[] place : places) {
             list.clear();
-            answerTmp.clear();
+            flag = true;
             for (int i = 0; i < place.length; i++) {
                 for (int j = 0; j < place[i].length(); j++) {
                     if (place[i].charAt(j) == 'P') list.add(new User(i, j));
                 }
             }
-            ch = new int[2];
-            combi(0, 0);
-            answer[idx++] = answerTmp.contains(false) ? 0 : 1;
+            Loop1:
+            for (int i = 0; i < list.size() - 1; i++) {
+                for (int j = i + 1; j < list.size(); j++) {
+                    int dist = Math.abs(list.get(i).y - list.get(j).y) + Math.abs(list.get(i).x - list.get(j).x);
+                    if (dist < 2) {
+                        flag = false;
+                        break Loop1;
+                    } else if (dist == 2) {
+                        if (!isValid(place, list.get(i), list.get(j))) {
+                            flag = false;
+                            break Loop1;
+                        }
+                    }
+                }
+            }
+            if (flag) answer[idx] = 1;
+            idx++;
         }
-
         return answer;
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        String[][] arr = {{"POOOP", "OXXOX", "OPXPX", "OOXOX", "POXXP"},
+                {"POOPX", "OXPXP", "PXXXO", "OXXXO", "OOOPP"},
+                {"PXOPX", "OXOXP", "OXPOX", "OXXOP", "PXPOX"},
+                {"OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"},
+                {"PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"}
+        };
+        for (int x : T.solution(arr)) System.out.print(x + " ");
     }
 }
