@@ -1,32 +1,25 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
-    public String solution(String[] survey, int[] choices) {
-        StringBuilder answer = new StringBuilder();
-        String[] entry = {"RT", "CF", "JM", "AN"};
-        Map<Character, Integer> map = new HashMap<>();
-        for (String s : entry) {
-            map.put(s.charAt(0), 0);
-            map.put(s.charAt(1), 0);
+    public int solution(String skill, String[] skill_trees) {
+        int answer = skill_trees.length;
+        for (String tree : skill_trees) {
+            int idx = 0, tmp = -1;
+            for (int i = 0; i < skill.length(); i++) {
+                int e = tree.indexOf(skill.charAt(i));
+                if (e != -1) {
+                    if (tree.charAt(e) != skill.charAt(idx)) {
+                        answer--;
+                        break;
+                    }
+                    if (tmp < e) {
+                        tmp = e;
+                        idx++;
+                    } else {
+                        answer--;
+                        break;
+                    }
+                }
+            }
         }
-
-        for (int i = 0; i < choices.length; i++) {
-            int point = switch (choices[i]) {
-                case 1, 7 -> 3;
-                case 2, 6 -> 2;
-                case 3, 5 -> 1;
-                default -> 0;
-            };
-            Integer res = choices[i] < 4 ? map.put(survey[i].charAt(0), map.get(survey[i].charAt(0)) + point)
-                    : map.put(survey[i].charAt(1), map.get(survey[i].charAt(1)) + point);
-        }
-
-        for (String s : entry) {
-            if (map.get(s.charAt(0)) >= map.get(s.charAt(1))) answer.append(s.charAt(0));
-            else answer.append(s.charAt(1));
-        }
-
-        return answer.toString();
+        return answer;
     }
 }
