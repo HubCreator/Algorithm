@@ -1,19 +1,52 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Point {
+    int y, x;
+
+    public Point(int y, int x) {
+        this.y = y;
+        this.x = x;
+    }
+}
+
 class Solution {
-    private int dfs(int k, int[][] dungeons) {
-        int cnt = 0;
-        for (int[] dungeon : dungeons) {
-            int required = dungeon[0];
-            int using = dungeon[1];
-            if (k >= required) {
-                dungeon[0] = Integer.MAX_VALUE; // 해당 던전을 중복하여 돌지 않도록 체크
-                cnt = Math.max(cnt, dfs(k - using, dungeons) + 1);
-                dungeon[0] = required; // 해당 던전을 다시 돌 수 있도록 원복
+    public boolean solution(int[][] k, int[][] l) {
+        List<Point> key = new ArrayList<>();
+        List<List<Point>> entry = new ArrayList<>();
+        int keySize = k.length, lockSize = l.length, lockCnt = 0;
+
+        for (int i = 0; i < keySize; i++)
+            for (int j = 0; j < keySize; j++)
+                if (k[i][j] == 1) key.add(new Point(i, j));
+
+        for (int[] arr : l)
+            for (int x : arr)
+                if (x == 0) lockCnt++;
+
+        for (int m = 0; m < 4; m++) { // key 4 방향 회전
+            entry.add(new ArrayList<>());
+            for (Point p : key) {
+                int tmp = p.x;
+                p.x = p.y;
+                p.y = keySize - 1 - tmp;
+                entry.get(m).add(new Point(p.y, p.x));
             }
         }
-        return cnt;
-    }
 
-    public int solution(int k, int[][] dungeons) {
-        return dfs(k, dungeons); // 전역변수를 두지 않고, 매개변수로 넘기는 것도 나름 깔끔하네
+        for (int i = -lockSize + 1; i < lockSize; i++) {
+            for (int j = -lockSize + 1; j < lockSize; j++) {
+                for (List<Point> points : entry) {
+                    int cnt = 0;
+                    for (Point p : points) {
+                        int ny = p.y + i;
+                        int nx = p.x + j;
+                        if (ny >= 0 && ny < lockSize && nx >= 0 && nx < lockSize && (l[ny][nx] ^ 1) == 0) cnt++;
+                    }
+                    if (cnt == lockCnt) return true;
+                }
+            }
+        }
+        return false;
     }
 }
