@@ -34,14 +34,17 @@ class Solution {
             }
         }
 
-        for (int i = -lockSize + 1; i < lockSize; i++) {
-            for (int j = -lockSize + 1; j < lockSize; j++) {
-                for (List<Point> points : entry) {
+        for (int i = -lockSize; i < lockSize; i++) { // y 좌표 이동
+            for (int j = -lockSize; j < lockSize; j++) { // x 좌표 이동
+                for (List<Point> points : entry) { // 네 가지 방향의 key들
                     int cnt = 0;
                     for (Point p : points) {
                         int ny = p.y + i;
                         int nx = p.x + j;
-                        if (ny >= 0 && ny < lockSize && nx >= 0 && nx < lockSize && (l[ny][nx] ^ 1) == 0) cnt++;
+                        if (ny >= 0 && ny < lockSize && nx >= 0 && nx < lockSize) {
+                            if ((l[ny][nx] ^ 1) == 0) break;
+                            cnt++;
+                        }
                     }
                     if (cnt == lockCnt) return true;
                 }
