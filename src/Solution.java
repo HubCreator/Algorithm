@@ -1,8 +1,8 @@
 class Solution {
     public long solution(long n) {
-        if (Math.pow((int) Math.sqrt(n), 2) == n) {
-            return (long) Math.pow(Math.sqrt(n) + 1, 2);
-        }
-        return -1;
+        StringBuilder sb = new StringBuilder();
+        Long.toString(n).chars().sorted().forEach(c -> sb.append(Character.valueOf((char) c)));
+        System.out.println("sb = " + sb);
+        return Long.parseLong(sb.reverse().toString());
     }
 }
