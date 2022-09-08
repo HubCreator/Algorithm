@@ -1,44 +1,32 @@
 class Solution {
     private boolean isAllZero(int[][] board) {
-        boolean flag = true;
         for (int[] col : board) {
             for (int row : col) {
                 if (row == 1) return false;
             }
         }
-        return flag;
+        return true;
+    }
+
+    private int isBoardSizeOne(int[][] board) {
+        if (board.length == 1 && board[0].length == 1) {
+            return board[0][0] == 1 ? 1 : 0;
+        }
+        return -1;
     }
 
     public int solution(int[][] board) {
         if (isAllZero(board)) return 0;
+        int boardSizeOne = isBoardSizeOne(board);
+        if (boardSizeOne >= 0) return boardSizeOne;
         int answer = Integer.MIN_VALUE;
-        int maxSize = Math.min(board.length, board[0].length);
-        for (int i = 1; i <= maxSize; i++) { // 정사각형의 size
-            Loop1:
-            for (int j = 0; j <= board.length - i; j++) { // y 좌표
-                for (int k = 0; k <= board[j].length - i; k++) { // x 좌표
-                    int sum = 0;
-                    Loop2:
-                    for (int l = j; l < j + i; l++) { // 해당 좌표로 부터 정사각형 범위 내에 있는 값들
-                        for (int m = k; m < k + i; m++) {
-                            if (board[l][m] == 0) break Loop2;
-                            sum += board[l][m];
-                        }
-                    }
-                    if (Math.pow(i, 2) == sum) {
-                        answer = sum;
-                        break Loop1;
-                    }
-                }
+        for (int i = 1; i < board.length; i++) { // y 좌표
+            for (int j = 1; j < board[0].length; j++) { // x 좌표
+                if (board[i][j] == 0) continue;
+                board[i][j] = Math.min(Math.min(board[i][j - 1], board[i - 1][j]), board[i - 1][j - 1]) + 1;
+                answer = Math.max(answer, board[i][j]);
             }
         }
-        return answer;
-    }
-
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[][] arr = {{0, 0, 1, 1}, {1, 1, 1, 1}};
-        System.out.println(T.solution(arr));
+        return (int) Math.pow(answer, 2);
     }
 }
