@@ -4,8 +4,10 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        Set<Integer> set = new HashSet<>(List.of(1, 2));
-        System.out.println("set.add(1) = " + set.add(1));
-        System.out.println("set.add(3) = " + set.add(3));
+        String str = "a b      c";
+        String[] s = str.split(" ");
+        for (String s1 : s) {
+            System.out.println("s1 = " + s1);
+        }
     }
 }
