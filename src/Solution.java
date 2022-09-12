@@ -1,14 +1,10 @@
-import java.util.Arrays;
-
 class Solution {
-    public int solution(int[] A, int[] B) {
+    public int solution(int n) {
         int answer = 0;
-        Arrays.sort(A);
-        Arrays.sort(B);
-        for (int i = 0; i < A.length; i++) {
-            answer += A[i] * B[B.length - i - 1];
+        for (int i = 1; n - i * (i + 1) / 2 >= 0; i++) { // i = 자릿수
+            int sum = i * (i + 1) / 2;
+            if ((n - sum) % i == 0) answer++;
         }
-
         return answer;
     }
 }
