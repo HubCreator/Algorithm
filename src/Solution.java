@@ -11,7 +11,6 @@ class Solution {
                 mult *= arr[x];
                 if (x > maxElement) maxElement = x;
             }
-
             if (sum == target) {
                 cnt++;
                 for (int x : ch) System.out.print(x + " ");
@@ -21,7 +20,6 @@ class Solution {
                     maxEl = maxElement;
                 }
             }
-
         } else {
             for (int i = s; i < arr.length; i++) {
                 ch[L] = i;
@@ -36,7 +34,10 @@ class Solution {
         for (int i = 0; i <= s; i++) arr[i] = i;
         ch = new int[n];
         dfs(0, 0, s);
-
+        if (s % n == 0) {
+            cnt++;
+            maxEl = s / n;
+        }
         return new int[]{cnt, maxEl};
     }
 }
