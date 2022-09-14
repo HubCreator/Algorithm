@@ -1,14 +1,14 @@
+import java.util.Arrays;
+
 class Solution {
-    public int[] solution(int n, int s) {
-        if (n > s) return new int[]{-1};
-        int[] answer = new int[n];
-        int mid = s / n;
-        int sum = s - (mid * n);
-        System.out.println("sum = " + sum);
-        for (int i = 0; i < n; i++) {
-            if (i >= n - sum) answer[i] = mid + 1;
-            else answer[i] = mid;
-        }
-        return answer;
+    public String solution(int[] numbers) {
+        StringBuilder answer = new StringBuilder();
+        Arrays.stream(numbers).boxed().sorted((a, b) -> {
+            Integer s1 = Integer.parseInt(a.toString().concat(b.toString()));
+            Integer s2 = Integer.parseInt(b.toString().concat(a.toString()));
+            return s2.compareTo(s1);
+        }).forEach(answer::append);
+
+        return Double.parseDouble(answer.toString()) == 0 ? "0" : answer.toString();
     }
 }
