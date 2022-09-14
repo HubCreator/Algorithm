@@ -1,27 +1,17 @@
 class Solution {
-    public long solution(int n, int[] times) {
-        long lt = 0, rt = (long) 1e18;
-        long answer = 0;
-        while (lt <= rt) { // 범위 내에서 계속해서 찾아나감
-            long mid = (lt + rt) / 2; // mid = 총 소요 시간
-            long cnt = 0;             // cnt = 각 심사대에서 몇 명의 사람을 받을 수 있는가 (mid / time)
-            for (int time : times) {
-                cnt += mid / time;
-                if (cnt >= n) {
-                    rt = mid - 1;
-                    answer = mid;
-                    break;
-                }
-            }
-            if (cnt < n) lt = mid + 1;
+    public int solution(int n) {
+        int cnt1 = 0, cur = n + 1;
+        String s = Long.toBinaryString(n);
+        for (int i = 0; i < s.length(); i++)
+            if (s.charAt(i) == '1') cnt1++;
+        while (true) {
+            int cnt2 = 0;
+            String t = Long.toBinaryString(cur);
+            for (int i = 0; i < t.length(); i++)
+                if (t.charAt(i) == '1') cnt2++;
+            if (cnt1 == cnt2) break;
+            cur++;
         }
-        return answer;
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int n = 6;
-        int[] arr = {7, 10};
-        System.out.println(T.solution(n, arr));
+        return cur;
     }
 }
