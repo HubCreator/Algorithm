@@ -1,7 +1,11 @@
-class Solution {
-    public String solution(String phone_number) {
-        char[] ch = phone_number.toCharArray();
-        for (int i = 0; i < ch.length - 4; i++) ch[i] = '*';
-        return String.valueOf(ch);
+
+public class Solution {
+    public int solution(int n) {
+        int answer = 0;
+        while (n > 0) {
+            answer += n % 10;
+            n /= 10;
+        }
+        return answer;
     }
 }
