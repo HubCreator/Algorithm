@@ -1,17 +1,16 @@
 class Solution {
-    public int solution(int n) {
-        int cnt1 = 0, cur = n + 1;
-        String s = Long.toBinaryString(n);
-        for (int i = 0; i < s.length(); i++)
-            if (s.charAt(i) == '1') cnt1++;
-        while (true) {
-            int cnt2 = 0;
-            String t = Long.toBinaryString(cur);
-            for (int i = 0; i < t.length(); i++)
-                if (t.charAt(i) == '1') cnt2++;
-            if (cnt1 == cnt2) break;
-            cur++;
-        }
-        return cur;
+    long[] ch;
+
+    private long foo(int val) {
+        if (ch[val] > 0) return ch[val];
+        if (val == 1) return ch[val] = 1;
+        else if (val == 2) return ch[val] = 1;
+        else return ch[val] = (foo(val - 2) + foo(val - 1))  % 1234567;
+    }
+
+    public long solution(int n) {
+        ch = new long[n + 2];
+        foo(n + 1);
+        return ch[n + 1];
     }
 }
