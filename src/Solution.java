@@ -1,16 +1,12 @@
 class Solution {
-    long[] ch;
-
-    private long foo(int val) {
-        if (ch[val] > 0) return ch[val];
-        if (val == 1) return ch[val] = 1;
-        else if (val == 2) return ch[val] = 1;
-        else return ch[val] = (foo(val - 2) + foo(val - 1))  % 1234567;
-    }
-
-    public long solution(int n) {
-        ch = new long[n + 2];
-        foo(n + 1);
-        return ch[n + 1];
+    public String solution(String num) {
+        StringBuilder answer = new StringBuilder();
+        int cnt = 0;
+        for (int i = num.length() - 1; i >= 0; i--) {
+            if (cnt >= 4) answer.append('*');
+            else answer.append(num.charAt(i));
+            cnt++;
+        }
+        return answer.reverse().toString();
     }
 }
