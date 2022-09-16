@@ -1,51 +1,25 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-class Player implements Comparable<Player> {
-    int w, h;
-
-    public Player(int h, int w) {
-        this.h = h;
-        this.w = w;
-    }
-
-    @Override
-    public int compareTo(Player o) {
-        return o.h - this.h;
-    }
-}
-
 public class Solution {
-    public int solution(int[][] arr) {
-        int answer = arr.length;
-        List<Player> list = new ArrayList<>();
-        for (int[] p : arr) {
-            list.add(new Player(p[0], p[1]));
-        }
-        Collections.sort(list);
-        for (int i = 1; i < list.size(); i++) {
-            Player t = list.get(i);
-            for (int j = i - 1; j >= 0; j--) {
-                if (t.w < list.get(j).w) {
-                    answer--;
-                    break;
-                }
-            }
+    int[] ch;
 
+    private void dfs(int L, int n, int r) {
+        if (L == r) {
+            for (int x : ch) System.out.print(x + " ");
+            System.out.println();
+        } else {
+            for (int i = 1; i <= n; i++) {
+                ch[L] = i;
+                dfs(L + 1, n, r);
+            }
         }
-        return answer;
+    }
+
+    public void solution(int n, int r) {
+        ch = new int[r];
+        dfs(0, n, r);
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int[][] arr = {
-                {172, 67},
-                {183, 65},
-                {180, 70},
-                {170, 72},
-                {181, 60}
-        };
-        System.out.println(T.solution(arr));
+        T.solution(3, 2);
     }
 }
