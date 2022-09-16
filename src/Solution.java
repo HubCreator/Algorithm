@@ -1,52 +1,38 @@
 import java.util.LinkedList;
 import java.util.Queue;
 
-class Point {
-    int y, x, val;
-
-    public Point(int y, int x, int val) {
-        this.y = y;
-        this.x = x;
-        this.val = val;
-    }
-}
-
 class Solution {
-    int[] dy = {-1, 0, 1, 0};
-    int[] dx = {0, 1, 0, -1};
+    public int solution(int[] queue1, int[] queue2) {
+        long sum1 = 0, sum2 = 0, cnt = 0;
 
-    private int bfs(int y, int x, int[][] picture) {
-        Queue<Point> queue = new LinkedList<>();
-        int cnt = 1;
-        queue.offer(new Point(y, x, picture[y][x]));
-        picture[y][x] = 0;
-        while (!queue.isEmpty()) {
-            Point p = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int ny = p.y + dy[i];
-                int nx = p.x + dx[i];
-                if (ny >= 0 && ny < picture.length && nx >= 0 && nx < picture[0].length && picture[ny][nx] == p.val) {
-                    queue.offer(new Point(ny, nx, p.val));
-                    picture[ny][nx] = 0;
-                    cnt++;
-                }
-            }
+        Queue<Integer> q1 = new LinkedList<>();
+        Queue<Integer> q2 = new LinkedList<>();
+        for (int x : queue1) {
+            sum1 += x;
+            q1.offer(x);
         }
-        return cnt;
-    }
-
-    public int[] solution(int m, int n, int[][] picture) {
-        int numberOfArea = 0, maxSizeOfOneArea = Integer.MIN_VALUE;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (picture[i][j] > 0) {
-                    numberOfArea++;
-                    maxSizeOfOneArea = Math.max(maxSizeOfOneArea, bfs(i, j, picture));
-                }
-            }
+        for (int x : queue2) {
+            sum2 += x;
+            q2.offer(x);
         }
 
-        return new int[]{numberOfArea, maxSizeOfOneArea};
+        if (sum1 == sum2) return 0;
+        while (sum1 != sum2 && cnt < queue1.length * 2.6) {
+            Integer p;
+            if (sum1 > sum2) {
+                p = q1.poll();
+                q2.offer(p);
+                sum1 -= p;
+                sum2 += p;
+            } else {
+                p = q2.poll();
+                q1.offer(p);
+                sum1 += p;
+                sum2 -= p;
+            }
+            cnt++;
+        }
+
+        return cnt >= queue1.length * 2.6 ? -1 : (int) cnt;
     }
 }
