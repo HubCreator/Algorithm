@@ -1,52 +1,25 @@
-class Point {
-    int y, x;
+import java.util.*;
 
-    public Point(int y, int x) {
-        this.y = y;
-        this.x = x;
-    }
-}
+class Solution {
+    public int[] solution(String[] operations) {
+        Deque<Integer> deque = new ArrayDeque<>();
 
-public class Solution {
-    int answer = 0;
-    int[][] ch;
-    int[] dy = {-1, 0, 1, 0};
-    int[] dx = {0, 1, 0, -1};
+        for (String operation : operations) {
+            String[] s = operation.split(" ");
+            int t = Integer.parseInt(s[1]);
 
-    private void dfs(int y, int x, int[][] board) {
-        if (y == board.length - 1 && x == board.length - 1) {
-            answer++;
-            return;
-        }
-        for (int i = 0; i < 4; i++) {
-            int ny = y + dy[i];
-            int nx = x + dx[i];
-            if (ny >= 0 && ny < board.length && nx >= 0 && nx < board.length && board[ny][nx] == 0 && ch[ny][nx] == 0) {
-                ch[ny][nx] = 1;
-                dfs(ny, nx, board);
-                ch[ny][nx] = 0;
+            if (s[0].equals("I")) {
+                if (deque.isEmpty()) {
+                    deque.offerLast(t);
+                } else {
+                    if (t < deque.peekFirst()) deque.offerFirst(t);
+                    if (t > deque.peekLast()) deque.offerLast(t);
+                }
+            } else if(s[0].equals("D")) {
+                if (t < 0) deque.pollFirst();
+                else deque.pollLast();
             }
         }
-    }
-
-    public int solution(int[][] board) {
-        ch = new int[board.length][board.length];
-        dfs(0, 0, board);
-        return answer;
-    }
-
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[][] board = {
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 1, 1, 1, 1, 1, 0},
-                {0, 0, 0, 1, 0, 0, 0},
-                {1, 1, 0, 1, 0, 1, 1},
-                {1, 1, 0, 0, 0, 0, 1},
-                {1, 1, 0, 1, 1, 0, 0},
-                {1, 0, 0, 0, 0, 0, 0}
-        };
-        System.out.println(T.solution(board));
+        return deque.isEmpty() ? new int[]{0, 0} : new int[]{deque.peekLast(), deque.peekFirst()};
     }
 }
