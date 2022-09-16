@@ -1,43 +1,51 @@
-class Solution {
-    // 제한 시간 안에 얻을 수 있는 최대 점수 구하기
-    int[] ch;
-    int answer = Integer.MIN_VALUE;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    private void dfs(int L, int m, int[][] arr) {
-        if (L == arr.length) {
-            int time = 0, score = 0;
-            for (int i = 0; i < ch.length; i++) {
-                if (ch[i] == 1) {
-                    score += arr[i][0];
-                    time += arr[i][1];
-                }
-            }
-            if (time <= m) answer = Math.max(answer, score);
-        } else {
-            ch[L] = 1;
-            dfs(L + 1, m, arr);
-            ch[L] = 0;
-            dfs(L + 1, m, arr);
-        }
+class Player implements Comparable<Player> {
+    int w, h;
+
+    public Player(int h, int w) {
+        this.h = h;
+        this.w = w;
     }
 
-    public int solution(int m, int[][] arr) {
-        ch = new int[arr.length];
-        dfs(0, m, arr);
+    @Override
+    public int compareTo(Player o) {
+        return o.h - this.h;
+    }
+}
 
+public class Solution {
+    public int solution(int[][] arr) {
+        int answer = arr.length;
+        List<Player> list = new ArrayList<>();
+        for (int[] p : arr) {
+            list.add(new Player(p[0], p[1]));
+        }
+        Collections.sort(list);
+        for (int i = 1; i < list.size(); i++) {
+            Player t = list.get(i);
+            for (int j = i - 1; j >= 0; j--) {
+                if (t.w < list.get(j).w) {
+                    answer--;
+                    break;
+                }
+            }
+
+        }
         return answer;
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int m = 20;
         int[][] arr = {
-                {10, 5}, // 점수와 소요 시간
-                {25, 12},
-                {15, 8},
-                {6, 3},
-                {7, 4}
+                {172, 67},
+                {183, 65},
+                {180, 70},
+                {170, 72},
+                {181, 60}
         };
-        System.out.println(T.solution(m, arr));
+        System.out.println(T.solution(arr));
     }
 }
