@@ -1,32 +1,28 @@
 public class Solution {
-    int[] ch, pm;
+    int answer = Integer.MAX_VALUE;
 
-    private void dfs(int L, int[] arr) {
-        if (L == pm.length) {
-            for (int x : pm) System.out.print(arr[x] + " ");
-            System.out.println();
+    private void dfs(int L, int sum, int[] arr, int m) {
+        if (sum > m || L >= answer) return;
+        if (sum == m) {
+            answer = Math.min(answer, L);
         } else {
-            for (int i = 0; i < arr.length; i++) {
-                if (ch[i] == 0) {
-                    ch[i] = 1;
-                    pm[L] = i;
-                    dfs(L + 1, arr);
-                    ch[i] = 0;
-                }
+            for (int x : arr) {
+                dfs(L + 1, sum + x, arr, m);
             }
         }
     }
 
-    public void solution(int[] arr, int r) {
-        pm = new int[r];
-        ch = new int[arr.length];
-        dfs(0, arr);
+    public int solution(int[] arr, int m) {
+        dfs(0, 0, arr, m);
+
+        return answer;
     }
+
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int r = 2;
-        int[] arr = {3, 6, 9};
-        T.solution(arr, r);
+        int[] arr = {1, 2, 5};
+        int m = 15;
+        System.out.println(T.solution(arr, m));
     }
 }
