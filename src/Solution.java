@@ -1,25 +1,18 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
-    public int[] solution(String[] operations) {
-        Deque<Integer> deque = new ArrayDeque<>();
+    List<String> list = new ArrayList<>();
 
-        for (String operation : operations) {
-            String[] s = operation.split(" ");
-            int t = Integer.parseInt(s[1]);
+    void dfs(String str, int len) {
+        if (len > 5) return;
+        list.add(str);
+        for (int i = 0; i < 5; i++)
+            dfs(str + "AEIOU".charAt(i), len + 1);
+    }
 
-            if (s[0].equals("I")) {
-                if (deque.isEmpty()) {
-                    deque.offerLast(t);
-                } else {
-                    if (t < deque.peekFirst()) deque.offerFirst(t);
-                    if (t > deque.peekLast()) deque.offerLast(t);
-                }
-            } else if(s[0].equals("D")) {
-                if (t < 0) deque.pollFirst();
-                else deque.pollLast();
-            }
-        }
-        return deque.isEmpty() ? new int[]{0, 0} : new int[]{deque.peekLast(), deque.peekFirst()};
+    public int solution(String word) {
+        dfs("", 0);
+        return list.indexOf(word);
     }
 }
