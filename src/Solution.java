@@ -1,28 +1,14 @@
 class Solution {
-    int[] nums, ch;
-    int t, answer = 0;
+    public String solution(String s) {
+        StringBuilder answer = new StringBuilder();
+        char[] arr = s.toLowerCase().toCharArray();
+        boolean flag = true;
 
-    private void dfs(int L) {
-        if (L == nums.length) {
-            int sum = 0;
-            for (int i = 0; i < ch.length; i++) {
-                if (ch[i] == 1) sum -= nums[i];
-                else sum += nums[i];
-            }
-            if (sum == t) answer++;
-        } else {
-            ch[L] = 0;
-            dfs(L + 1);
-            ch[L] = 1;
-            dfs(L + 1);
+        for (char ch : arr) {
+            if (flag) answer.append(Character.toUpperCase(ch));
+            else answer.append(ch);
+            flag = Character.isSpaceChar(ch);
         }
-    }
-
-    public int solution(int[] numbers, int target) {
-        nums = numbers;
-        ch = new int[numbers.length];
-        t = target;
-        dfs(0);
-        return answer;
+        return answer.toString();
     }
 }
