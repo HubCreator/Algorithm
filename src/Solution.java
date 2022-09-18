@@ -1,14 +1,23 @@
-class Solution {
-    public String solution(String s) {
-        StringBuilder answer = new StringBuilder();
-        char[] arr = s.toLowerCase().toCharArray();
-        boolean flag = true;
+import java.util.*;
 
-        for (char ch : arr) {
-            if (flag) answer.append(Character.toUpperCase(ch));
-            else answer.append(ch);
-            flag = Character.isSpaceChar(ch);
+class Solution {
+    public int solution(int[] people, int limit) {
+        List<Integer> list = new ArrayList<>();
+        for (int p : people) list.add(p);
+        list.sort(Collections.reverseOrder());
+
+        ArrayDeque<Integer> deque = new ArrayDeque<>(50000); // 왜 초기값을 주어야 할까
+        for (Integer x : list) deque.offer(x);
+
+        int answer = 0;
+        while (!deque.isEmpty()) {
+            if (deque.getLast() * 2 > limit) return answer + deque.size();
+
+            Integer p = deque.pollFirst();
+            if(deque.isEmpty()) return answer + 1;
+            else if (p + deque.getLast() <= limit) deque.pollLast();
+            answer++;
         }
-        return answer.toString();
+        return answer;
     }
 }
