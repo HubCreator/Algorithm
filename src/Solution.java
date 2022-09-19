@@ -1,23 +1,23 @@
-import java.util.*;
+import java.util.Stack;
 
 class Solution {
-    public int solution(int[] people, int limit) {
-        List<Integer> list = new ArrayList<>();
-        for (int p : people) list.add(p);
-        list.sort(Collections.reverseOrder());
+    public int[] solution(int n, String[] words) {
+        int who = 0, turn = 0, idx = 0;
+        Stack<String> stack = new Stack<>();
 
-        ArrayDeque<Integer> deque = new ArrayDeque<>(50000); // 왜 초기값을 주어야 할까
-        for (Integer x : list) deque.offer(x);
-
-        int answer = 0;
-        while (!deque.isEmpty()) {
-            if (deque.getLast() * 2 > limit) return answer + deque.size();
-
-            Integer p = deque.pollFirst();
-            if(deque.isEmpty()) return answer + 1;
-            else if (p + deque.getLast() <= limit) deque.pollLast();
-            answer++;
+        for (String word : words) {
+            if (idx % n == 0) turn++;
+            if (stack.isEmpty()) stack.push(word);
+            else if (!stack.contains(word)) {
+                String peek = stack.peek();
+                if (peek.charAt(peek.length() - 1) == word.charAt(0)) stack.push(word);
+                else break;
+            } else break;
+            who = (who + 1) % n;
+            idx++;
         }
-        return answer;
+
+        if (stack.size() == words.length) return new int[]{0, 0};
+        else return new int[]{who + 1, turn};
     }
 }
