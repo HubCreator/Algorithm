@@ -1,12 +1,26 @@
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Main {
+
     public static void main(String[] args) {
-        int a = 10;
-        String s = Integer.toString(a, 2);
-        String s1 = Long.toString(a, 2);
-        System.out.println("s = " + s);
-        System.out.println("s1 = " + s1);
-        int x = Integer.parseInt(s, 3);
-        System.out.println("x = " + x);
+        Map<Integer, Integer> map = new LinkedHashMap<>();
+        map.put(1, 1);
+        map.put(2, 2);
+        map.put(3, 3);
+        map.put(4, 4);
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            System.out.println(e.getKey() + " / " + e.getValue());
+        }
+        map.put(4, -1);
+        System.out.println();
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            System.out.println(e.getKey() + " / " + e.getValue());
+        }
+        map.keySet().stream().sorted((a, b) -> b - a);
+        System.out.println();
+        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+            System.out.println(e.getKey() + " / " + e.getValue());
+        }
     }
 }
