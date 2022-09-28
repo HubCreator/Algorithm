@@ -1,40 +1,33 @@
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 class Solution {
 
-    /**
-     * 분 단위로 변환
-     *
-     * @param time
-     * @return min
-     */
     public int timeToInt(String time) {
-        String temp[] = time.split(":");
-        return Integer.parseInt(temp[0]) * 60 + Integer.parseInt(temp[1]);
+        String tmp[] = time.split(":");
+        return Integer.parseInt(tmp[0]) * 60 + Integer.parseInt(tmp[1]);
     }
 
     public int[] solution(int[] fees, String[] records) {
 
-        Map<String, Integer> map = new TreeMap<>();
+        Map<String, Integer> map = new LinkedHashMap<>(); // <차량 번호, 가격>
 
         for (String record : records) {
-            String tmp[] = record.split(" ");
-            int time = tmp[2].equals("IN") ? -1 : 1;
-            time *= timeToInt(tmp[0]);
-            map.put(tmp[1], map.getOrDefault(tmp[1], 0) + time);
+            String[] split = record.split(" ");
+            int time = timeToInt(split[0]);
+            time *= split[2].equals("IN") ? -1 : 1;
+            map.put(split[1], map.getOrDefault(split[1], 0) + time);
         }
 
-        int idx = 0;
-        int[] answer = new int[map.size()];
-
-        for (int time : map.values()) {
-            if (time < 1) time += timeToInt("23:59");
-            if (time <= fees[0])
-                answer[idx++] = fees[1];
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            if (e.getValue() < 1)
+                map.put(e.getKey(), e.getValue() + timeToInt("23:59"));
+            if (e.getValue() <= fees[0])
+                map.put(e.getKey(), fees[1]);
             else
-                answer[idx++] = fees[1] + (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
+                map.put(e.getKey(), fees[1] + (int) Math.ceil((double) (e.getValue() - fees[0]) / fees[2]) * fees[3]);
         }
-        return answer;
+
+        return map.keySet().stream().sorted().mapToInt(m -> map.get(m).intValue()).toArray();
     }
 }
