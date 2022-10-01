@@ -1,18 +1,22 @@
 class Solution {
-    public int gcd(int a, int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b);
+
+    public int gcd (int a, int b) {
+        return a < b ? b % a : a % b;
     }
 
-    public int lcm(int a, int b) {
-        return a * b / gcd(a, b);
-    }
+    public int[] solution(int _n, int _m) {
+        int[] answer = new int[2];
+        int n = _n;
+        int m = _m;
 
-    public int solution(int[] arr) {
-        int lcm = arr[0];
-        for (int i = 1; i < arr.length; i++) {
-            lcm = lcm(arr[i], lcm);
+        while (n != 0 && m != 0) {
+            int v = gcd(n, m);
+            if (n < m) m = v;
+            else n = v;
         }
-        return lcm;
+        answer[0] = Math.max(n, m);
+        answer[1] = _n * _m / answer[0];
+
+        return answer;
     }
 }
