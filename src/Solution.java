@@ -1,29 +1,17 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
-    int[] unf;
+    List<String> list = new ArrayList<>();
 
-    private int find(int v) {
-        if (v == unf[v]) return unf[v];
-        else return unf[v] = find(unf[v]);
+    void dfs(String str, int len) {
+        if (len > 5) return;
+        list.add(str);
+        for (int i = 0; i < 5; i++) dfs(str + "AEIOU".charAt(i), len + 1);
     }
 
-    private void union(int a, int b) {
-        int fa = find(a);
-        int fb = find(b);
-        if(fa != fb) unf[fa] = fb;
-    }
-
-    public int solution(int n, int[][] links) {
-        unf = new int[n];
-        for (int i = 0; i < n; i++) unf[i] = i;
-        for (int i = 0; i < links.length; i++) {
-            for (int j = 0; j < links[i].length; j++) {
-                if (i == j) continue;
-                if (links[i][j] == 1) union(i, j);
-            }
-        }
-
-        return Arrays.stream(unf).map(m -> find(m)).distinct().toArray().length;
+    public int solution(String word) {
+        dfs("", 0);
+        return list.indexOf(word);
     }
 }
