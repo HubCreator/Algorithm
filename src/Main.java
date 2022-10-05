@@ -1,26 +1,34 @@
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Map<Integer, Integer> map = new LinkedHashMap<>();
-        map.put(1, 1);
-        map.put(2, 2);
-        map.put(3, 3);
-        map.put(4, 4);
-        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
-            System.out.println(e.getKey() + " / " + e.getValue());
-        }
-        map.put(4, -1);
-        System.out.println();
-        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
-            System.out.println(e.getKey() + " / " + e.getValue());
-        }
-        map.keySet().stream().sorted((a, b) -> b - a);
-        System.out.println();
-        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
-            System.out.println(e.getKey() + " / " + e.getValue());
+    public static void main(String[] args)
+            throws ExecutionException, InterruptedException {
+
+        // singleThread로 돌려야 원하는 값을 얻을 수 있음
+        ExecutorService service = Executors.newSingleThreadExecutor();
+
+        Callable<String> hello = () -> {
+            Thread.sleep(2000L);
+            return "hello";
+        };
+
+        Callable<String> world = () -> {
+            Thread.sleep(3000L);
+            return "world";
+        };
+
+        Callable<String> leo = () -> {
+            Thread.sleep(1000L);
+            return "leo";
+        };
+
+        // invokeAll은 세 개의 Callable이 모두 끝날 때까지 기다림
+        List<Future<String>> futures = service.invokeAll(Arrays.asList(hello, world, leo));
+        for (Future<String> future : futures) {
+            System.out.println(future.get());
         }
     }
 }
