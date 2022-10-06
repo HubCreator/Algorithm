@@ -1,30 +1,19 @@
-import java.util.List;
-import java.util.Stack;
 
 class Solution {
-    List<Character> lt = List.of('(', '{', '[');
-    List<Character> rt = List.of(')', '}', ']');
-    Stack<Character> stack = new Stack<>();
+    public int[] solution(int n, long left, long right) {
+        int[] result = new int[(int) (right - left + 1)];
+        int ltY, ltX, rtY, rtX, idx = 0;
 
-    public boolean check(String s) {
-        stack.clear();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (stack.isEmpty() || lt.contains(c)) stack.push(c);
-            else {
-                if (rt.contains(c) && lt.indexOf(stack.peek()) == rt.indexOf(c)) stack.pop();
-                else break;
-            }
-        }
-        return stack.isEmpty();
-    }
+        ltY = (int) (left / (long) n);
+        ltX = (int) (left % (long) n);
+        rtY = (int) (right / (long) n);
+        rtX = (int) (right % (long) n);
 
-    public int solution(String s) {
-        int answer = 0;
-        for (int i = 0; i < s.length(); i++) {
-            answer += check(s) ? 1 : 0;
-            s = s.substring(1).concat(s.substring(0, 1));
+        for (int y = ltY; y <= rtY; y++) {
+            for (int x = ltX; y == ltY && x < n; x++) result[idx++] = Math.max(y + 1, x + 1);
+            for (int x = 0; y != ltY && y != rtY && x < n; x++) result[idx++] = Math.max(y + 1, x + 1);
+            for (int x = 0; y == rtY && x <= rtX; x++) result[idx++] = Math.max(y + 1, x + 1);
         }
-        return answer;
+        return result;
     }
 }
