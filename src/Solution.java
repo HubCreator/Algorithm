@@ -1,21 +1,28 @@
 
 class Solution {
-    public int[] solution(int n, long left, long right) {
-        int[] result = new int[(int) (right - left + 1)];
-        long ltY, ltX, rtY, rtX;
-        int idx = 0;
 
-        ltY = (left / (long) n);
-        ltX = (left % (long) n);
-        rtY = (right / (long) n);
-        rtX = (right % (long) n);
+    boolean isPrime(long v) {
+        if (v == 0 || v == 1) return false;
+        for (long i = 2; i < (long) Math.sqrt(v) + 1; i++)
+            if (v % i == 0) return false;
+        return true;
+    }
 
-        for (long y = ltY; y <= rtY; y++) {
-            for (long x = ltX; y == ltY && x < n; x++) result[idx++] = (int) Math.max(y + 1, x + 1);
-            for (long x = 0; y != ltY && y != rtY && x < n; x++) result[idx++] = (int) Math.max(y + 1, x + 1);
-            for (long x = 0; y == rtY && x <= rtX; x++) result[idx++] = (int) Math.max(y + 1, x + 1);
+    public int solution(int n, int k) {
+        int answer = 0;
+        String s = Long.toString(n, k);
+        StringBuilder sb = new StringBuilder();
+
+        if (s.charAt(s.length() - 1) != '0') s += '0';
+
+        for (int i = 0; i < s.length(); i++) {
+            char cur = s.charAt(i);
+            if (cur != '0') sb.append(cur);
+            else {
+                if (isPrime(Long.parseLong(sb.toString()))) answer++;
+                sb = new StringBuilder("0"); // 0 또는 1이 연달아 나오는 상황에서 sb가 초기화되어있지 않다면 런타임 에러 발생
+            }
         }
-
-        return result;
+        return answer;
     }
 }
