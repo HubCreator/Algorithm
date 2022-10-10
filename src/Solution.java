@@ -18,6 +18,7 @@ class Solution {
                     for (int k = 0; k < t.length(); k++)
                         if (poll.charAt(k) != t.charAt(k)) tmp++;
                     if (tmp == 1) queue.offer(t);
+
                 }
             }
             cnt++;
