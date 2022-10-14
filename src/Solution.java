@@ -1,16 +1,22 @@
 class Solution {
-    public String solution(int n, int t, int m, int p) {
-        StringBuilder answer = new StringBuilder();
-        StringBuilder sb = new StringBuilder();
-        int curNum = 1, curIdx = p - 1, cnt = 0;
-        sb.append(0);
-        while (cnt < t) {
-            for (int i = 0; i < m; i++)
-                sb.append(Long.toString(curNum++, n)); // n 진수로 바꿈
-            answer.append(sb.charAt(curIdx));
-            cnt++;
-            curIdx += m;
-        }
-        return answer.toString().toUpperCase();
+
+    int[][] board;
+    long[][] dis;
+
+    private void dfs(int x, int y) {
+        if (x <= 0 || y <= 0 || board[y][x] == -1) return;
+        dis[y][x] = (dis[y][x + 1] + dis[y + 1][x]) % 1000000007;
+        dfs(x, y - 1);
+        dfs(x - 1, y);
+    }
+
+    public int solution(int m, int n, int[][] puddles) {
+        board = new int[n + 1][m + 1];
+        dis = new long[n + 2][m + 2];
+        for (int[] puddle : puddles) board[puddle[1]][puddle[0]] = -1;
+
+        dis[n + 1][m] = 1;
+        dfs(m, n);
+        return (int) dis[1][1];
     }
 }
