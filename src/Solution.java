@@ -1,25 +1,111 @@
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+class Point {
+    int y, x;
+
+    public Point(int y, int x) {
+        this.y = y;
+        this.x = x;
+    }
+
+    public Point(Point point) {
+        this.y = point.getY();
+        this.x = point.getX();
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return y == point.y && x == point.x;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(y, x);
+    }
+}
+
+class Line {
+    Point a, b;
+
+    public Line(Point a, Point b) {
+        this.a = a;
+        this.b = b;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return (Objects.equals(a, line.a) && Objects.equals(b, line.b)) ||
+                (Objects.equals(a, line.b) && Objects.equals(b, line.a));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(a.getY() + a.getX() + b.getY() + b.getX());
+    }
+}
+
 class Solution {
+    private static final int MIN = -5;
+    private static final int MAX = 5;
 
-    int[][] board;
-    int[][] dis;
+    Set<Line> lines = new HashSet<>();
 
-    private int dfs(int row, int col) {
-        if (row >= board[0].length || col >= board.length || board[col][row] == -1) return 0;
-        if (dis[col][row] > 0) return dis[col][row];
-        return dis[col][row] = (dfs(row + 1, col) + dfs(row, col + 1)) % 1000000007;
+    private void moveY(int val, Point point, Point tmp) {
+        if (val >= MIN && val <= MAX) {
+            point.setY(val);
+            lines.add(new Line(tmp, new Point(point)));
+        }
     }
 
-    public int solution(int m, int n, int[][] puddles) {
-        board = new int[n + 1][m + 1];
-        dis = new int[n + 2][m + 2];
-        for (int[] puddle : puddles) board[puddle[1]][puddle[0]] = -1;
-
-        dis[n][m] = 1;
-        return dfs(1, 1);
+    private void moveX(int val, Point point, Point tmp) {
+        if (val >= MIN && val <= MAX) {
+            point.setX(val);
+            lines.add(new Line(tmp, new Point(point)));
+        }
     }
 
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        System.out.println(T.solution(4, 3, new int[][]{{2, 2}}));
+    private void move(Point point, char dir) {
+        Point tmp = new Point(point);
+        if (dir == 'U') {
+            moveY(point.getY() - 1, point, tmp);
+        } else if (dir == 'D') {
+            moveY(point.getY() + 1, point, tmp);
+        } else if (dir == 'L') {
+            moveX(point.getX() - 1, point, tmp);
+        } else if (dir == 'R') {
+            moveX(point.getX() + 1, point, tmp);
+        }
+    }
+
+    public int solution(String dirs) {
+        Point point = new Point(0, 0);
+        for (int i = 0; i < dirs.length(); i++) {
+            move(point, dirs.charAt(i));
+        }
+        return lines.size();
     }
 }
