@@ -1,34 +1,42 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.StringTokenizer;
 
 public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        String s = st.nextToken();
+        char t = st.nextToken().toCharArray()[0];
+        int[] result = new int[s.length()];
+        Arrays.fill(result, 1000);
 
-    public static void main(String[] args)
-            throws ExecutionException, InterruptedException {
+        int index = 1000;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == t) {
+                result[i] = 0;
+                index = i;
+            }
+            if (result[i] > Math.abs(index - i)) {
+                result[i] = Math.abs(index - i);
+            }
+        }
 
-        // singleThread로 돌려야 원하는 값을 얻을 수 있음
-        ExecutorService service = Executors.newSingleThreadExecutor();
+        index = 1000;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == t) {
+                result[i] = 0;
+                index = i;
+            }
+            if (result[i] > Math.abs(index - i)) {
+                result[i] = Math.abs(index - i);
+            }
+        }
 
-        Callable<String> hello = () -> {
-            Thread.sleep(2000L);
-            return "hello";
-        };
-
-        Callable<String> world = () -> {
-            Thread.sleep(3000L);
-            return "world";
-        };
-
-        Callable<String> leo = () -> {
-            Thread.sleep(1000L);
-            return "leo";
-        };
-
-        // invokeAll은 세 개의 Callable이 모두 끝날 때까지 기다림
-        List<Future<String>> futures = service.invokeAll(Arrays.asList(hello, world, leo));
-        for (Future<String> future : futures) {
-            System.out.println(future.get());
+        for (int i : result) {
+            System.out.print(i + " ");
         }
     }
 }
