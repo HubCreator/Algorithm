@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
 
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -21,5 +23,25 @@ public class JavaGrammarTest {
         assertThat(v1).isEqualTo(5);
         assertThat(v2).isEqualTo(5);
         assertThat(v3).isEqualTo(5);
+    }
+
+    @Test
+    void arrayDeepCopy() {
+        int[] arr = {1, 2, 3, 4, 5};
+        int[] ints1 = Arrays.copyOf(arr, 3);
+        ints1[0] = -1;
+        assertThat(ints1).containsExactly(-1, 2, 3); // 처음 세 개 deep copy
+        assertThat(arr[0]).isEqualTo(1);
+
+        int[] ints2 = Arrays.copyOfRange(arr, 1, 3);
+        assertThat(ints2).containsExactly(2, 3);
+
+        int[] result = new int[5];
+        System.arraycopy(arr, 0, result, 0, result.length);
+        assertThat(result).containsExactly(1, 2, 3, 4, 5);
+
+        result = new int[5];
+        System.arraycopy(arr, 0, result, 3, result.length - 3);
+        assertThat(result).containsExactly(0, 0, 0, 1, 2);
     }
 }

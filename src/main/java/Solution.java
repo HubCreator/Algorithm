@@ -23,6 +23,7 @@ class Solution {
     }
 
     public int[] solution(int[][] arr) {
+
         press(arr, 0, arr.length, 0, arr.length);
         return new int[]{zero, one};
     }
