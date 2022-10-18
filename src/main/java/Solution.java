@@ -1,30 +1,36 @@
 class Solution {
-    public static int one = 0;
-    public static int zero = 0;
 
-    public void press(int[][] arr, int xs, int xe, int ys, int ye) {
-        int cnt = 0, max = (int) Math.pow(xe - xs, 2);
-        for (int i = ys; i < ye; i++) {
-            for (int j = xs; j < xe; j++) {
-                cnt += arr[i][j];
+    public int[][] solution(int[][] m1, int[][] m2) {
+        int row = m1.length; // m1 행의 길이
+        int col = m2[0].length; // m2 열의 길이
+        int cnt = m2.length; // m2 행의 길이
+
+        int[][] res = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                for (int k = 0; k < cnt; k++) {
+                    res[i][j] += m1[i][k] * m2[k][j];
+                }
             }
         }
-
-        if (cnt == 0) zero++;
-        else if (cnt == max) one++;
-        else {
-            int xm = (xe + xs) / 2;
-            int ym = (ye + ys) / 2;
-            press(arr, xs, xm, ys, ym);
-            press(arr, xm, xe, ys, ym);
-            press(arr, xs, xm, ym, ye);
-            press(arr, xm, xe, ym, ye);
-        }
+        return res;
     }
 
-    public int[] solution(int[][] arr) {
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        int[][] m1 = {
+                {1, 2, 3},
+                {4, 5, 6}
+        };
+        int[][] m2 = {
+                {1, 2},
+                {3, 4},
+                {5, 6}
+        };
+        for (int[] ints : T.solution(m1, m2)) {
+            for (int x : ints) System.out.print(x + " ");
+            System.out.println();
+        };
 
-        press(arr, 0, arr.length, 0, arr.length);
-        return new int[]{zero, one};
     }
 }
