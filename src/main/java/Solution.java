@@ -38,13 +38,14 @@ class Solution {
 
     public Set<Point> isValid(List<LinkedList<Character>> board, int i, int j) {
         Character cur = board.get(i).get(j);
-        if (cur.equals('*')) return new HashSet<>();
+        if (cur.equals('*')) return null;
         Set<Point> result = new HashSet<>();
         result.add(new Point(j, i));
         if (board.get(i).get(j + 1) == cur) result.add(new Point(j + 1, i));
         if (board.get(i + 1).get(j) == cur) result.add(new Point(j, i + 1));
         if (board.get(i + 1).get(j + 1) == cur) result.add(new Point(j + 1, i + 1));
-        return result;
+        if (result.size() == 4) return result;
+        return null;
     }
 
     private void check(List<LinkedList<Character>> board, Set<Point> set) {
@@ -52,7 +53,7 @@ class Solution {
         for (int i = board.size() - 2; i >= 0; i--) {
             for (int j = board.get(i).size() - 2; j >= 0; j--) {
                 Set<Point> tmp = isValid(board, i, j);
-                if (tmp.size() == 4) {
+                if (tmp != null) {
                     set.addAll(tmp);
                 }
             }
