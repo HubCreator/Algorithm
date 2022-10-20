@@ -1,25 +1,22 @@
-import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.*;
 
 class Solution {
     public int[] solution(String[] operations) {
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        Deque<Integer> deque = new ArrayDeque<>();
+
         for (String op : operations) {
+            String[] s = op.split(" ");
+            int val = Integer.parseInt(s[1]);
             if (op.startsWith("I")) {
-                String[] split = op.split(" ");
-                minHeap.offer(Integer.parseInt(split[1]));
-                maxHeap.offer(Integer.parseInt(split[1]));
+                if (deque.isEmpty()) deque.offer(val);
+                else if (val <= deque.peekFirst()) deque.offerFirst(val);
+                else if (val >= deque.peekLast()) deque.offerLast(val);
             } else if (op.startsWith("D")) {
-                String[] split = op.split(" ");
-                if (split[1].startsWith("-")) {
-                    maxHeap.remove(minHeap.poll());
-                } else {
-                    minHeap.remove(maxHeap.poll());
-                }
+                if (val < 0) deque.pollFirst();
+                else if (val > 0) deque.pollLast();
             }
         }
-        if (minHeap.isEmpty() || maxHeap.isEmpty()) return new int[]{0, 0};
-        return new int[]{maxHeap.poll(), minHeap.poll()};
+        if (deque.isEmpty()) return new int[]{0, 0};
+        return new int[]{deque.peekLast(), deque.peekFirst()};
     }
 }
