@@ -1,22 +1,22 @@
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 class Solution {
-    public int[] solution(String[] operations) {
-        Deque<Integer> deque = new ArrayDeque<>();
+    public String solution(String number, int k) {
+        char[] result = new char[number.length() - k];
+        Deque<Character> stack = new ArrayDeque<>();
 
-        for (String op : operations) {
-            String[] s = op.split(" ");
-            int val = Integer.parseInt(s[1]);
-            if (op.startsWith("I")) {
-                if (deque.isEmpty()) deque.offer(val);
-                else if (val <= deque.peekFirst()) deque.offerFirst(val);
-                else if (val >= deque.peekLast()) deque.offerLast(val);
-            } else if (op.startsWith("D")) {
-                if (val < 0) deque.pollFirst();
-                else if (val > 0) deque.pollLast();
+        for (int i = 0; i < number.length(); i++) {
+            char c = number.charAt(i);
+            while (!stack.isEmpty() && stack.peek() < c && k-- > 0) {
+                stack.pop();
             }
+            stack.push(c);
         }
-        if (deque.isEmpty()) return new int[]{0, 0};
-        return new int[]{deque.peekLast(), deque.peekFirst()};
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = stack.pollLast();
+        }
+        return new String(result);
     }
 }
