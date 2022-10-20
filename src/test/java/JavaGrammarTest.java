@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 
-import java.util.Arrays;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -43,5 +43,24 @@ public class JavaGrammarTest {
         result = new int[5];
         System.arraycopy(arr, 0, result, 3, result.length - 3);
         assertThat(result).containsExactly(0, 0, 0, 1, 2);
+    }
+
+    @Test
+    void collectionNullTest() {
+        List<Integer> list1 = new ArrayList<>();
+        List<Integer> list2 = null;
+        List<Integer> list3 = Arrays.asList(1, 2, 3);
+
+        assertThat(list1.isEmpty()).isTrue();
+        assertThat(list2 == null).isTrue();
+    }
+
+    @Test
+    void setTest() {
+        Set<int[]> set = new HashSet<>();
+        set.add(new int[]{1, 2});
+        set.add(new int[]{1, 2});
+        set.add(new int[]{1, 2});
+        assertThat(set.size()).isEqualTo(3);
     }
 }
