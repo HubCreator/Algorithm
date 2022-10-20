@@ -1,31 +1,25 @@
+import java.util.Collections;
+import java.util.PriorityQueue;
+
 class Solution {
-    int answer = Integer.MIN_VALUE;
-
-    public int solution(int[][] board) {
-        int tmp = 0;
-        for (int[] ints : board) {
-            for (int x : ints) {
-                tmp += x;
+    public int[] solution(String[] operations) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        for (String op : operations) {
+            if (op.startsWith("I")) {
+                String[] split = op.split(" ");
+                minHeap.offer(Integer.parseInt(split[1]));
+                maxHeap.offer(Integer.parseInt(split[1]));
+            } else if (op.startsWith("D")) {
+                String[] split = op.split(" ");
+                if (split[1].startsWith("-")) {
+                    maxHeap.remove(minHeap.poll());
+                } else {
+                    minHeap.remove(maxHeap.poll());
+                }
             }
         }
-        if (tmp == (int) Math.pow(board.length, 2)) {
-            return tmp;
-        } else if (tmp == 0) {
-            return 0;
-        }
-
-        findMaxRect(board);
-        return (int) Math.pow(answer, 2);
-    }
-
-    private void findMaxRect(int[][] board) {
-
-        for (int i = 1; i < board.length; i++) {
-            for (int j = 1; j < board[i].length; j++) {
-                if (board[i][j] == 0) continue;
-                board[i][j] = Math.min(Math.min(board[i - 1][j], board[i][j - 1]), board[i - 1][j - 1]) + 1;
-                answer = Math.max(answer, board[i][j]);
-            }
-        }
+        if (minHeap.isEmpty() || maxHeap.isEmpty()) return new int[]{0, 0};
+        return new int[]{maxHeap.poll(), minHeap.poll()};
     }
 }
