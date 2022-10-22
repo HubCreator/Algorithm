@@ -1,29 +1,21 @@
-import java.util.*;
-
 class Solution {
-    Set<Integer> answer = new HashSet<>();
+    int solution(int[][] land) {
+        int answer = 0;
 
-    private void getSequenceSum(int[] elements, int i) {
-        List<Integer> list = new ArrayList<>();
-        for (int j = 0; j < elements.length * 2; j++) {
-            list.add(elements[j % elements.length]);
+        for (int i = 1; i < land.length; i++) {
+            int[] tmp = land[i - 1].clone();
+            for (int j = 0; j < 4; j++) {
+                int max = 0;
+                for (int k = 0; k < 4; k++) {
+                    if (k != j && max < tmp[k])
+                        max = tmp[k];
+                }
+                land[i][j] += max;
+                if (i == land.length - 1) {
+                    answer = Math.max(answer, land[i][j]);
+                }
+            }
         }
-        // 초기 윈도우값 설정
-        int win = 0, idx = 0;
-        for (int j = 0; j < i; j++) {
-            win += list.get(j);
-        }
-        for (int j = i; j < list.size(); j++) {
-            win += list.get(j);
-            answer.add(win);
-            win -= list.get(idx++);
-        }
-    }
-
-    public int solution(int[] elements) {
-        for (int i = 0; i < elements.length; i++) {
-            getSequenceSum(elements, i);
-        }
-        return answer.size();
+        return answer;
     }
 }
