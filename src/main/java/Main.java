@@ -1,42 +1,64 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
+
+    public static int cache[][] = new int[100][100];
+
+    // 0 : 못간다
+    // 1 : 간다
+    private static int jump(int[][] board, int y, int x) {
+        if (y >= board.length || x >= board.length) return 0; // 기저 사례 : 게임판 밖을 벗어난 경우
+        if (y == board.length - 1 && x == board.length - 1) return 1; // 기저 사례 : 목표 지점까지 도착한 경우
+
+        if (cache[y][x] != -1) return cache[y][x]; // 메모이제이션
+
+        int jumpSize = board[y][x];
+        return cache[y][x] = jump(board, y, x + jumpSize) + jump(board, y + jumpSize, x);
+    }
+
+    private static List<String> solution(List<int[][]> list) {
+        List<String> answer = new ArrayList<>();
+        for (int[][] board : list) {
+            initCache();
+            if (jump(board, 0, 0) == 1) answer.add("YES");
+            else answer.add("NO");
+        }
+        return answer;
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        String s = st.nextToken();
-        char t = st.nextToken().toCharArray()[0];
-        int[] result = new int[s.length()];
-        Arrays.fill(result, 1000);
-
-        int index = 1000;
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == t) {
-                result[i] = 0;
-                index = i;
+        int cnt = Integer.parseInt(br.readLine());
+        List<int[][]> list = new ArrayList<>();
+        for (int i = 0; i < cnt; i++) {
+            int boardLength = Integer.parseInt(br.readLine());
+            int[][] board = new int[boardLength][boardLength];
+            for (int j = 0; j < boardLength; j++) {
+                StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+                for (int k = 0; k < boardLength; k++) {
+                    board[j][k] = Integer.parseInt(st.nextToken());
+                }
             }
-            if (result[i] > Math.abs(index - i)) {
-                result[i] = Math.abs(index - i);
-            }
+            list.add(board);
         }
 
-        index = 1000;
-        for (int i = s.length() - 1; i >= 0; i--) {
-            if (s.charAt(i) == t) {
-                result[i] = 0;
-                index = i;
-            }
-            if (result[i] > Math.abs(index - i)) {
-                result[i] = Math.abs(index - i);
-            }
-        }
 
-        for (int i : result) {
-            System.out.print(i + " ");
+        for (String s : solution(list)) {
+            System.out.println(s);
+        }
+    }
+
+    private static void initCache() {
+        // cache 초기화
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 100; j++) {
+                cache[i][j] = -1;
+            }
         }
     }
 }
