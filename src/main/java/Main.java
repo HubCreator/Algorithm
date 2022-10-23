@@ -2,63 +2,60 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class Main {
+    public static List<String> answer = new ArrayList<>();
+    public static int[][] cache = new int[101][101];
 
-    public static int cache[][] = new int[100][100];
-
-    // 0 : 못간다
-    // 1 : 간다
-    private static int jump(int[][] board, int y, int x) {
-        if (y >= board.length || x >= board.length) return 0; // 기저 사례 : 게임판 밖을 벗어난 경우
-        if (y == board.length - 1 && x == board.length - 1) return 1; // 기저 사례 : 목표 지점까지 도착한 경우
-
-        if (cache[y][x] != -1) return cache[y][x]; // 메모이제이션
-
-        int jumpSize = board[y][x];
-        return cache[y][x] = jump(board, y, x + jumpSize) + jump(board, y + jumpSize, x);
+    private static int match(String W, String S, int w, int s) {
+        // 메모이제이션
+        if (cache[w][s] != -1) return 1;
+        // W[w]와 S[s]를 맞춰 나간다
+        while (s < S.length() && w < W.length() &&
+                (W.charAt(w) == '?' || W.charAt(w) == S.charAt(s))) {
+            ++w;
+            ++s;
+        }
+        // 더이상 대응할 수 없으면 왜 while문이 끝났는지 확인
+        // 2. 패턴 끝에 도달해 끝난 경우 : 문자열도 끝났어야 함
+        if (w == W.length()) return cache[w][s] = s == S.length() ? 1 : 0;
+        // 4. *를 만나서 끝난 경우 : *에 몇 글자를 대응해야 할지 재귀 호출하면서 확인
+        if (W.charAt(w) == '*') {
+            for (int skip = 0; skip + s < S.length(); skip++) {
+                if (match(W, S, w + 1, s + skip) == 1) {
+                    return cache[w][s] = 1;
+                }
+            }
+        }
+        // 3. 이외의 경우에는 모두 대응되지 않는다
+        return cache[w][s] = 0;
     }
 
-    private static List<String> solution(List<int[][]> list) {
-        List<String> answer = new ArrayList<>();
-        for (int[][] board : list) {
-            initCache();
-            if (jump(board, 0, 0) == 1) answer.add("YES");
-            else answer.add("NO");
+    private static void initCache() {
+        for (int[] ints : cache) {
+            Arrays.fill(ints, -1);
         }
-        return answer;
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int cnt = Integer.parseInt(br.readLine());
-        List<int[][]> list = new ArrayList<>();
-        for (int i = 0; i < cnt; i++) {
-            int boardLength = Integer.parseInt(br.readLine());
-            int[][] board = new int[boardLength][boardLength];
-            for (int j = 0; j < boardLength; j++) {
-                StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-                for (int k = 0; k < boardLength; k++) {
-                    board[j][k] = Integer.parseInt(st.nextToken());
+        int totalCnt = Integer.parseInt(br.readLine());
+        for (int i = 0; i < totalCnt; i++) {
+            String target = br.readLine();
+            int cnt = Integer.parseInt(br.readLine());
+            for (int j = 0; j < cnt; j++) {
+                initCache();
+                String S = br.readLine();
+                if (match(target, S, 0, 0) == 1) {
+                    answer.add(S);
                 }
             }
-            list.add(board);
         }
 
-
-        for (String s : solution(list)) {
+        for (String s : answer) {
             System.out.println(s);
-        }
-    }
-
-    private static void initCache() {
-        // cache 초기화
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
-                cache[i][j] = -1;
-            }
         }
     }
 }

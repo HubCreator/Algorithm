@@ -63,4 +63,12 @@ public class JavaGrammarTest {
         set.add(new int[]{1, 2});
         assertThat(set.size()).isEqualTo(3);
     }
+
+    @Test
+    void arrayReference() {
+        Integer[][] arr1 = {{1, 2}, {3, 4}};
+        int t = arr1[0][0];
+        t = -1;
+        assertThat(arr1[0][0]).isEqualTo(1);
+    }
 }
