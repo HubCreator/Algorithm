@@ -71,4 +71,13 @@ public class JavaGrammarTest {
         t = -1;
         assertThat(arr1[0][0]).isEqualTo(1);
     }
+
+    @Test
+    void test() {
+        String str = "asdf";
+        assertThat(str.charAt(3)).isEqualTo('f');
+        String substring = str.substring(4);
+        System.out.println("substring = " + substring);
+        assertThat(substring).isEqualTo("");
+    }
 }
