@@ -16,6 +16,7 @@ class Music implements Comparable<Music> {
 }
 
 class Genre implements Comparable<Genre> {
+    public static final int N = 2;
     final String genre;
     final List<Music> musics = new ArrayList<>();
 
@@ -29,11 +30,11 @@ class Genre implements Comparable<Genre> {
         return sum;
     }
 
-    public List<Integer> getTop2Music() {
+    public List<Integer> getTopNMusics() {
         List<Integer> result = new ArrayList<>();
         Collections.sort(musics);
         int idx = 0;
-        while (idx < musics.size() && result.size() < 2) {
+        while (idx < musics.size() && result.size() < N) {
             result.add(musics.get(idx++).id);
         }
         return result;
@@ -60,28 +61,43 @@ class Genre implements Comparable<Genre> {
 
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
-        List<Integer> result = new ArrayList<>();
-        List<Genre> list = new ArrayList<>();
-        Map<String, Genre> map = new HashMap<>();
+        Map<String, Genre> chart = new HashMap<>();
+
+        initChart(chart, plays, genres);
+
+        List<Genre> list = getSortedGenres(chart);
+        List<Integer> result = getSortMusics(list);
+
+        return getResult(result);
+    }
+
+    private void initChart(Map<String, Genre> chart, int[] plays, String[] genres) {
         for (int i = 0; i < genres.length; i++) {
             String genre = genres[i];
             int play = plays[i];
-            Genre gen = !map.containsKey(genre) ? new Genre(genre) : map.get(genre);
+            Genre gen = !chart.containsKey(genre) ? new Genre(genre) : chart.get(genre);
             gen.musics.add(new Music(i, play));
-            map.put(genre, gen);
+            chart.put(genre, gen);
         }
+    }
 
-
-        for (Map.Entry<String, Genre> e : map.entrySet()) {
-            list.add(e.getValue());
-        }
-
+    private List<Genre> getSortedGenres(Map<String, Genre> chart) {
+        List<Genre> list = new ArrayList<>(chart.values());
         Collections.sort(list);
+        return list;
+    }
+
+    private List<Integer> getSortMusics(List<Genre> list) {
+        List<Integer> result = new ArrayList<>();
         for (Genre genre : list) {
             List<Music> musics = genre.musics;
             Collections.sort(musics);
-            result.addAll(genre.getTop2Music());
+            result.addAll(genre.getTopNMusics());
         }
+        return result;
+    }
+
+    private int[] getResult(List<Integer> result) {
         int[] answer = new int[result.size()];
         for (int i = 0; i < answer.length; i++) {
             answer[i] = result.get(i);
