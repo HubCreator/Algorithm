@@ -1,107 +1,46 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
-class Music implements Comparable<Music> {
-    final Integer id;
-    final Integer play;
+class Route implements Comparable<Route> {
+    int start;
+    int end;
 
-    Music(Integer id, Integer play) {
-        this.id = id;
-        this.play = play;
+    public Route(int start, int end) {
+        this.start = start;
+        this.end = end;
     }
 
     @Override
-    public int compareTo(Music o) {
-        return o.play.compareTo(this.play);
-    }
-}
-
-class Genre implements Comparable<Genre> {
-    public static final int N = 2;
-    final String genre;
-    final List<Music> musics = new ArrayList<>();
-
-    Genre(String genre) {
-        this.genre = genre;
-    }
-
-    public Integer getTotalPlayCnt() {
-        int sum = 0;
-        for (Music music : musics) sum += music.play;
-        return sum;
-    }
-
-    public List<Integer> getTopNMusics() {
-        List<Integer> result = new ArrayList<>();
-        Collections.sort(musics);
-        int idx = 0;
-        while (idx < musics.size() && result.size() < N) {
-            result.add(musics.get(idx++).id);
-        }
-        return result;
-    }
-
-    @Override
-    public int compareTo(Genre o) {
-        return o.getTotalPlayCnt().compareTo(this.getTotalPlayCnt());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Genre genre1 = (Genre) o;
-        return Objects.equals(genre, genre1.genre);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(genre);
+    public int compareTo(Route o) {
+        if (start == o.start) return end - o.end;
+        return start - o.start;
     }
 }
 
 class Solution {
-    public int[] solution(String[] genres, int[] plays) {
-        Map<String, Genre> chart = new HashMap<>();
+    public int solution(int[][] routes) {
+        List<Route> list = new ArrayList<>();
+        Stack<Route> camPoint = new Stack<>();
 
-        initChart(chart, plays, genres);
-
-        List<Genre> list = getSortedGenres(chart);
-        List<Integer> result = getSortMusics(list);
-
-        return getResult(result);
-    }
-
-    private void initChart(Map<String, Genre> chart, int[] plays, String[] genres) {
-        for (int i = 0; i < genres.length; i++) {
-            String genre = genres[i];
-            int play = plays[i];
-            Genre gen = !chart.containsKey(genre) ? new Genre(genre) : chart.get(genre);
-            gen.musics.add(new Music(i, play));
-            chart.put(genre, gen);
+        for (int[] route : routes) {
+            list.add(new Route(route[0], route[1]));
         }
-    }
 
-    private List<Genre> getSortedGenres(Map<String, Genre> chart) {
-        List<Genre> list = new ArrayList<>(chart.values());
         Collections.sort(list);
-        return list;
-    }
 
-    private List<Integer> getSortMusics(List<Genre> list) {
-        List<Integer> result = new ArrayList<>();
-        for (Genre genre : list) {
-            List<Music> musics = genre.musics;
-            Collections.sort(musics);
-            result.addAll(genre.getTopNMusics());
+        for (Route route : list) {
+            // 이전 경로의 종료지점보다 현재 경로의 시작지점이 더 크면 camPoint에 추가 
+            if (camPoint.isEmpty() || camPoint.peek().end < route.start) {
+                camPoint.push(route);
+            }
+            // camPoint에 저장한 경로가 현재 경로를 정확히 감싸고 있는 camPoint.pop()
+            else if (route.start > camPoint.peek().start && route.end < camPoint.peek().end) {
+                camPoint.pop();
+                camPoint.push(route);
+            }
         }
-        return result;
-    }
-
-    private int[] getResult(List<Integer> result) {
-        int[] answer = new int[result.size()];
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = result.get(i);
-        }
-        return answer;
+        return camPoint.size();
     }
 }

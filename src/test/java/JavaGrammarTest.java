@@ -74,10 +74,37 @@ public class JavaGrammarTest {
 
     @Test
     void test() {
-        String str = "asdf";
-        assertThat(str.charAt(3)).isEqualTo('f');
-        String substring = str.substring(4);
-        System.out.println("substring = " + substring);
-        assertThat(substring).isEqualTo("");
+        Child child = new Child(1);
+        String h1 = child.hello();
+        int h2 = child.hello(1, 2, 3);
+        assertThat(h1).isEqualTo("1");
+        assertThat(h2).isEqualTo(6);
+    }
+
+    static class Paranet {
+        int a;
+
+        public Paranet(int a) {
+            this.a = a;
+        }
+    }
+
+    static class Child extends Paranet{
+
+        public Child(int a) {
+            super(a);
+        }
+
+        public String  hello() {
+            return "1";
+        }
+
+        public int hello(int a) {
+            return a;
+        }
+
+        public int hello(int a, int b, int c) {
+            return a + b + c;
+        }
     }
 }
