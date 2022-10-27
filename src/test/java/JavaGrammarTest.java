@@ -107,4 +107,11 @@ public class JavaGrammarTest {
             return a + b + c;
         }
     }
+
+    @Test
+    void integerCompare() {
+        assertThat(Integer.compare(1, 1)).isEqualTo(0);
+        assertThat(Integer.compare(1, 100)).isEqualTo(-1);
+        assertThat(Integer.compare(100, 1)).isEqualTo(1);
+    }
 }

@@ -1,46 +1,17 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
-
-class Route implements Comparable<Route> {
-    int start;
-    int end;
-
-    public Route(int start, int end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    @Override
-    public int compareTo(Route o) {
-        if (start == o.start) return end - o.end;
-        return start - o.start;
-    }
-}
+import java.util.Arrays;
 
 class Solution {
     public int solution(int[][] routes) {
-        List<Route> list = new ArrayList<>();
-        Stack<Route> camPoint = new Stack<>();
+        Arrays.sort(routes, (a, b) -> a[1] - b[1]); // 각 행을 정렬 (종료 지점 기준으로 오름차순 정렬)
 
-        for (int[] route : routes) {
-            list.add(new Route(route[0], route[1]));
-        }
-
-        Collections.sort(list);
-
-        for (Route route : list) {
-            // 이전 경로의 종료지점보다 현재 경로의 시작지점이 더 크면 camPoint에 추가 
-            if (camPoint.isEmpty() || camPoint.peek().end < route.start) {
-                camPoint.push(route);
-            }
-            // camPoint에 저장한 경로가 현재 경로를 정확히 감싸고 있는 camPoint.pop()
-            else if (route.start > camPoint.peek().start && route.end < camPoint.peek().end) {
-                camPoint.pop();
-                camPoint.push(route);
+        int ans = 0;
+        int camPoint = Integer.MIN_VALUE;
+        for (int[] ints : routes) {
+            if (camPoint < ints[0]) { // 시작지점이 더 크다면
+                ++ans;
+                camPoint = ints[1]; // 종료 지점을 저장
             }
         }
-        return camPoint.size();
+        return ans;
     }
 }
