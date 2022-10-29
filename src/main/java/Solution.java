@@ -1,33 +1,24 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class Solution {
     public int solution(int n, int[] stations, int w) {
         int answer = 0;
-        boolean[] arr = new boolean[n + 1];
         int len = 2 * w + 1;
+        List<Integer> list = new ArrayList<>();
 
-        // 초기화
+        int point = 1;
         for (int station : stations) {
-            for (int i = station - w; i <= station + w; i++) {
-                if (i > arr.length - 1) break;
-                arr[i] = true;
-            }
+            list.add((station - w) - point);
+            point = station + w + 1;
+        }
+        if (stations[stations.length - 1] + w < n) {
+            list.add(n - point + 1);
         }
 
-        int cnt = 0;
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i]) {
-                if (cnt > 0) {
-                    answer += (int) Math.ceil((double) (cnt) / (double) len);
-                    cnt = 0;
-                }
-                continue;
-            }
-            cnt++;
+        for (Integer x : list) {
+            answer += (int) Math.ceil((double) x / len);
         }
-
-        if (!arr[arr.length - 1] && cnt > 1) {
-            answer += (int) Math.ceil((double) (cnt - 1) / (double) len);
-        }
-
         return answer;
     }
 }
