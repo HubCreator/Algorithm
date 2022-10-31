@@ -1,43 +1,37 @@
-import java.util.Arrays;
-
 class Solution {
-    public int[] solution(int n) {
-        int[] answer = new int[(n * (n + 1)) / 2];
-        int[] levelStatus = new int[n];
-        int curIdx = 0, level = 0, cnt = n;
-        int flag = 0;
+    public int[] solution(int n, long left, long right) {
+        if (left == right) return new int[]{};
 
-        for (int i = 0; i < levelStatus.length; i++) levelStatus[i] = i + 1; // 각 레벨에 몇 개의 요소가 있는지 나타내는 상태값
+        int[] result = new int[(int) ((right - left) + 1)];
+        long ltY, ltX, rtY, rtX, tmp;
+        int idx = 0;
 
-        for (int i = 0; i < answer.length; i++) {
-            int num = i + 1;
+        ltY = (left / n);
+        ltX = (left % n);
+        rtY = (right / n);
+        rtX = (right % n);
 
-            answer[curIdx] = num;
-            cnt--;
-            if (cnt == 0) {
-                cnt = --n;
-                flag = (flag + 1) % 3;
+        for (long y = ltY; y <= rtY; y++) {
+            tmp = ltX;
+            while (y == ltY && tmp < n) {
+                result[idx++] = (int) Math.max(tmp++, y) + 1;
             }
-
-            if (flag == 0 && cnt > 0) {
-                curIdx += levelStatus[level++];
+            tmp = 0;
+            while (y != ltY && y != rtY && tmp < n) {
+                result[idx++] = (int) Math.max(tmp++, y) + 1;
             }
-            if (flag == 1 && cnt > 0) {
-                curIdx++;
-            }
-            if (flag == 2 && cnt > 0) {
-                curIdx -= levelStatus[level--];
+            tmp = 0;
+            while (y == rtY && tmp <= rtX) {
+                result[idx++] = (int) Math.max(tmp++, y) + 1;
             }
         }
-        return answer;
+        return result;
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int[] solution = T.solution(6);
-        for (int i = 0; i < solution.length; i++) {
-            System.out.print(solution[i] + " ");
-            if (Arrays.asList(0, 2, 5, 9, 14).contains(i)) System.out.println();
+        for (int x : T.solution(3, 2, 5)) {
+            System.out.print(x + " ");
         }
     }
 }
