@@ -13,6 +13,9 @@ public class CodingTest {
         assertThat(a << 2).isEqualTo(4);
         assertThat(a >> 1).isEqualTo(0);
         assertThat(a >> 2).isEqualTo(0);
+        assertThat(7 ^ 8).isEqualTo(15);
+        System.out.println(Integer.toBinaryString((7 ^ 8) >> 2));
+        System.out.println(Integer.toBinaryString((7 ^ 8) >>> 2));
     }
 
 }
