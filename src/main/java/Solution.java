@@ -1,47 +1,31 @@
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-class Solution {
-    Set<TreeSet<String>> answer = new HashSet<>();
+public class Solution {
+    private static final Set<Integer> set = new HashSet<>();
 
     public int solution(String[] user_id, String[] banned_id) {
-        int idx = 0;
-        List<List<String>> bannedList = new ArrayList<>();
-        for (String banId : banned_id) {
-            bannedList.add(new ArrayList<>());
-            bannedList.get(idx++).addAll(getBannedTarget(user_id, banId));
-        }
-
-        for (String s : bannedList.get(0)) {
-            TreeSet<String> tSet = new TreeSet<>();
-            tSet.add(s);
-            dfs(bannedList, tSet, 1);
-        }
-
-        return (int) answer.stream().filter((t) -> t.size() == bannedList.size()).count();
+        go(0, user_id, banned_id, 0);
+        return set.size();
     }
 
-    private void dfs(List<List<String>> bannedList, TreeSet<String> tSet, int L) {
-        // 기저 조건
-        if (L == bannedList.size()) {
-            answer.add(new TreeSet<>(tSet));
+    private static void go(int index, String[] user_id, String[] banned_id, int bit) {
+        if (index == banned_id.length) {
+            set.add(bit);
             return;
         }
-        for (String s : bannedList.get(L)) {
-            if (tSet.add(s)) {
-                dfs(bannedList, tSet, L + 1);
-                tSet.remove(s);
-            }
+        String reg = banned_id[index].replaceAll("[*]", ".");
+        for (int i = 0; i < user_id.length; ++i) {
+            // (자기 자신을 가리키거나 || 해당 regex의 대상이 아니라면) continue;
+            if ((((bit >> i) & 1) == 1) || !user_id[i].matches(reg)) continue;
+            go(index + 1, user_id, banned_id, (bit | 1 << i)); // regex의 대상이라면 해당 bit를 on, index++
         }
     }
 
-    private List<String> getBannedTarget(String[] user_id, String banId) {
-        List<String> result = new ArrayList<>();
-        banId = banId.replaceAll("[*]", ".");
-        for (String userId : user_id) {
-            if (userId.matches(banId)) {
-                result.add(userId);
-            }
-        }
-        return result;
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        String[] arr1 = {"frodo", "fradi", "crodo", "abc123", "frodoc"};
+        String[] arr2 = {"fr*d*", "*rodo", "******", "******"};
+        System.out.println(T.solution(arr1, arr2));
     }
 }
