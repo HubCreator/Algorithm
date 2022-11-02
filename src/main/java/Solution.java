@@ -14,9 +14,10 @@ public class Solution {
             set.add(bit);
             return;
         }
+        // 해당 인덱스의 제재 추출
         String reg = banned_id[index].replaceAll("[*]", ".");
         for (int i = 0; i < user_id.length; ++i) {
-            // (자기 자신을 가리키거나 || 해당 regex의 대상이 아니라면) continue;
+            // (해당 번째의 비트를 이미 확인했거나 || 해당 regex의 대상이 아니라면) continue;
             if ((((bit >> i) & 1) == 1) || !user_id[i].matches(reg)) continue;
             go(index + 1, user_id, banned_id, (bit | 1 << i)); // regex의 대상이라면 해당 bit를 on, index++
         }
