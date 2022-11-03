@@ -2,27 +2,24 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] gems) {
-        int[] answer = new int[]{1, Integer.MAX_VALUE};
+        int[] answer = new int[2];
         Set<String> entry = new HashSet<>(Arrays.asList(gems));
-        Queue<String> target = new LinkedList<>();
-        int lt = 0, rt = 0;
+        Map<String, Integer> map = new HashMap<>();
 
-        while (lt <= rt && rt < gems.length) {
-            target.add(gems[rt++]);
+        int lt = 0, length = Integer.MAX_VALUE;
+        for (int rt = 0; rt < gems.length; rt++) {
+            map.put(gems[rt], map.getOrDefault(gems[rt], 0) + 1);
 
-            boolean flag = false;
-            while (entry.equals(new HashSet<>(target))) { // lt를 갱신
-                target.poll();
+            while (map.get(gems[lt]) >= 2) {
+                map.put(gems[lt], map.get(gems[lt]) - 1);
                 lt++;
-                flag = true;
             }
-            if (flag && rt - lt < answer[1] - answer[0]) { // lt를 갱신했는데, answer보다 길이가 작다면
-                answer = new int[]{lt, rt}; // 다시 한 번 answer 갱신
-            }
-        }
 
-        if (answer[1] == Integer.MAX_VALUE) {
-            return new int[]{1, gems.length};
+            if (map.size() == entry.size() && length > (rt - lt)) {
+                length = rt - lt;
+                answer[0] = lt + 1;
+                answer[1] = rt + 1;
+            }
         }
         return answer;
     }
