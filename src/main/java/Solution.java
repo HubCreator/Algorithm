@@ -27,17 +27,6 @@ class Solution {
     }
 
     public int solution(int sticker[]) {
-        // 짝수개일 경우
-        if (sticker.length % 2 == 0) {
-            int even = 0, odd = 0;
-            for (int i = 0; i < sticker.length; i++) {
-                if (i % 2 == 0) even += sticker[i];
-                else odd += sticker[i];
-            }
-            return Math.max(even, odd);
-        }
-
-        // 홀수개일 경우
         int answer = Integer.MIN_VALUE;
         for (int i = 0; i < sticker.length; i++) {
             answer = Math.max(answer, dfs(sticker.clone(), i));
