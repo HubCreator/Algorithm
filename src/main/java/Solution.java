@@ -1,43 +1,51 @@
+import java.util.Arrays;
+
 class Solution {
-
-    private int dfs(int[] arr, int idx) {
-        int sum = arr[idx];
-        arr[idx] = -1; // 해당 인덱스는 -1 표시
-
-        // 양 옆의 인덱스도 -1 표시
-        if (idx == 0) {
-            arr[arr.length - 1] = -1;
-            arr[idx + 1] = -1;
-        } else if (idx == arr.length - 1) {
-            arr[idx - 1] = -1;
-            arr[0] = -1;
-        } else {
-            arr[idx - 1] = -1;
-            arr[idx + 1] = -1;
-        }
-
-        int tmp = Integer.MIN_VALUE;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] != -1) {
-                tmp = Math.max(tmp, dfs(arr.clone(), i));
-            }
-        }
-        if (tmp != Integer.MIN_VALUE) sum += tmp;
-        return sum;
-    }
+    int result = 0;
 
     public int solution(int sticker[]) {
-        int answer = Integer.MIN_VALUE;
-        for (int i = 0; i < sticker.length; i++) {
-            answer = Math.max(answer, dfs(sticker.clone(), i));
+        if (sticker.length == 1) {
+            return sticker[0];
+        }
+        int[] ch = new int[sticker.length];
+        Arrays.fill(ch, -1);
+        dfs(sticker, 0, ch.clone());
+        dfs(sticker, 1, ch.clone());
+
+        return result;
+    }
+
+    private void dfs(int[] arr, int idx, int[] ch) {
+        if (idx == arr.length) {
+            int total = 0;
+            for (int i = 0; i < ch.length; i++) {
+                if (ch[i] == 1) {
+                    total += arr[i];
+                }
+            }
+            result = Math.max(result, total);
+            return;
         }
 
-        return answer;
+        if (ch[idx] == 0) return;
+
+        if (idx == 0) {
+            ch[ch.length - 1] = 0;
+        } else if (idx == 1) {
+            ch[idx + 1] = 0;
+        }
+
+        ch[idx] = 1;
+        if (idx + 1 < arr.length) ch[idx + 1] = 0;
+
+        for (int i = idx + 1; i <= arr.length; i++) {
+            dfs(arr, i, ch.clone());
+        }
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        int[] arr = {1, 3, 2, 5, 4};
+        int[] arr = {14, 6, 5, 11, 3, 9, 2, 10};
         System.out.println(T.solution(arr));
     }
 }
