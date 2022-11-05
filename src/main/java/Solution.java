@@ -1,11 +1,13 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 class Music {
     String title;
     int duration;
-    List<String> originalNotes = new ArrayList<>();
-    List<String> playedNotes = new ArrayList<>();
+    List<String> originalNotes;
+    List<String> playedNotes;
 
     public Music(String musicinfo) {
         String[] split = musicinfo.split(",");
@@ -43,13 +45,26 @@ class Music {
     }
 
     public boolean hasNotes(String str) {
-        List<String> notes = getNotes(str);
-        for (String playedNote : playedNotes) {
-            if (!notes.isEmpty() && playedNote.equalsIgnoreCase(notes.get(0))) {
-                notes.remove(0);
+        Queue<String> myNotes = new LinkedList<>(getNotes(str));
+        List<Integer> indxList = new ArrayList<>();
+        for (int i = 0; i < playedNotes.size(); i++) {
+            if (playedNotes.get(i).equals(myNotes.peek())) {
+                indxList.add(i);
             }
-            if (notes.isEmpty()) return true;
         }
+
+        for (Integer idx : indxList) {
+            List<String> notes = new ArrayList<>();
+            int cnt = 0;
+            for (int i = idx; idx + myNotes.size() <= playedNotes.size() && cnt < myNotes.size(); i++) {
+                notes.add(playedNotes.get(i));
+                cnt++;
+            }
+            if (myNotes.equals(notes)) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
@@ -73,6 +88,6 @@ class Solution {
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        System.out.println(T.solution("ABC", new String[]{"12:00,12:14,HELLO,C#DEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
+        System.out.println(T.solution("ABCDEFG", new String[]{"12:00,12:14,HELLO,CDEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
     }
 }
