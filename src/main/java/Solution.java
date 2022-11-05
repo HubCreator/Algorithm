@@ -1,93 +1,41 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
-class Music {
-    String title;
-    int duration;
-    List<String> originalNotes;
-    List<String> playedNotes;
-
-    public Music(String musicinfo) {
-        String[] split = musicinfo.split(",");
-        this.duration = parseTime(split[1]) - parseTime(split[0]);
-        this.title = split[2];
-        this.originalNotes = getNotes(split[3]);
-        this.playedNotes = getPlayedNotes(originalNotes);
-    }
-
-    private int parseTime(String s) {
-        String[] split = s.split(":");
-        return Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
-    }
-
-    private List<String> getNotes(String str) {
-        str += " ";
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < str.length() - 1; i++) {
-            if (str.charAt(i + 1) == '#') {
-                list.add(String.valueOf(str.charAt(i)) + str.charAt(i + 1));
-                i++;
-                continue;
-            }
-            list.add(String.valueOf(str.charAt(i)));
-        }
-        return list;
-    }
-
-    public List<String> getPlayedNotes(List<String> originalNotes) {
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < duration; i++) {
-            result.add(originalNotes.get(i % originalNotes.size()));
-        }
-        return result;
-    }
-
-    public boolean hasNotes(String str) {
-        Queue<String> myNotes = new LinkedList<>(getNotes(str));
-        List<Integer> indxList = new ArrayList<>();
-        for (int i = 0; i < playedNotes.size(); i++) {
-            if (playedNotes.get(i).equals(myNotes.peek())) {
-                indxList.add(i);
-            }
-        }
-
-        for (Integer idx : indxList) {
-            List<String> notes = new ArrayList<>();
-            int cnt = 0;
-            for (int i = idx; idx + myNotes.size() <= playedNotes.size() && cnt < myNotes.size(); i++) {
-                notes.add(playedNotes.get(i));
-                cnt++;
-            }
-            if (myNotes.equals(notes)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
 class Solution {
     public String solution(String m, String[] musicinfos) {
-        Music answer = null;
-        List<Music> list = new ArrayList<>();
-        for (String musicinfo : musicinfos) {
-            list.add(new Music(musicinfo));
-        }
+        String answer = "(None)";
+        int durationTmp = 0;
+        String myNote = transform(m);
 
-        for (Music music : list) {
-            if (music.hasNotes(m) &&
-                    (answer == null || answer.duration < music.duration)) {
-                answer = music;
+        for (String musicinfo : musicinfos) {
+            String[] split = musicinfo.split(",");
+            int duration = getDuration(split[0], split[1]);
+            if (duration >= myNote.length()) {
+                String target = transform(split[3]);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < duration; i++) {
+                    sb.append(target.charAt(i % target.length()));
+                }
+                if (sb.toString().contains(myNote) && duration > durationTmp) {
+                    answer = split[2];
+                    durationTmp = duration;
+                }
             }
         }
-        return answer == null ? "(None)" : answer.title;
+        return answer;
     }
 
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        System.out.println(T.solution("ABCDEFG", new String[]{"12:00,12:14,HELLO,CDEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
+    private String transform(String m) {
+        return m.replaceAll("C#", "c")
+                .replaceAll("D#", "d")
+                .replaceAll("F#", "f")
+                .replaceAll("G#", "g")
+                .replaceAll("A#", "a");
+    }
+
+    private int getDuration(String t1, String t2) {
+        return parseTime(t2) - parseTime(t1);
+    }
+
+    private int parseTime(String time) {
+        String[] split = time.split(":");
+        return Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
     }
 }
