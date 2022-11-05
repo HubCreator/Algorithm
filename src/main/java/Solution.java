@@ -1,51 +1,65 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Music {
+    String title;
+    int duration;
+    List<String> notes = new ArrayList<>();
+
+
+    public Music(String musicinfo) {
+        String[] split = musicinfo.split(",");
+        this.duration = parseTime(split[1]) - parseTime(split[0]);
+        this.title = split[2];
+        split[3] += " ";
+        for (int i = 0; i < split[3].length() - 1; i++) {
+            if (split[3].charAt(i + 1) == '#') {
+                notes.add(String.valueOf(split[3].charAt(i)) + split[3].charAt(i + 1));
+                i++;
+            } else {
+                notes.add(String.valueOf(split[3].charAt(i)));
+            }
+        }
+    }
+
+    private int parseTime(String s) {
+        String[] split = s.split(":");
+        return Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
+    }
+
+    public String getNotes() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < duration; i++) {
+            sb.append(notes.get(i % notes.size()));
+        }
+        return sb.toString();
+    }
+}
 
 class Solution {
-    int result = 0;
-
-    public int solution(int sticker[]) {
-        if (sticker.length == 1) {
-            return sticker[0];
+    public String solution(String m, String[] musicinfos) {
+        List<Music> answer = new ArrayList<>();
+        List<Music> list = new ArrayList<>();
+        for (String musicinfo : musicinfos) {
+            list.add(new Music(musicinfo));
         }
-        int[] ch = new int[sticker.length];
-        Arrays.fill(ch, -1);
-        dfs(sticker, 0, ch.clone());
-        dfs(sticker, 1, ch.clone());
 
-        return result;
-    }
-
-    private void dfs(int[] arr, int idx, int[] ch) {
-        if (idx == arr.length) {
-            int total = 0;
-            for (int i = 0; i < ch.length; i++) {
-                if (ch[i] == 1) {
-                    total += arr[i];
-                }
+        for (Music music : list) {
+            if (music.getNotes().contains(m)) {
+                answer.add(music);
             }
-            result = Math.max(result, total);
-            return;
         }
 
-        if (ch[idx] == 0) return;
+        if (answer.size() == 0) return "(None)";
+        if (answer.size() == 1) return answer.get(0).title;
 
-        if (idx == 0) {
-            ch[ch.length - 1] = 0;
-        } else if (idx == 1) {
-            ch[idx + 1] = 0;
-        }
-
-        ch[idx] = 1;
-        if (idx + 1 < arr.length) ch[idx + 1] = 0;
-
-        for (int i = idx + 1; i <= arr.length; i++) {
-            dfs(arr, i, ch.clone());
-        }
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        int[] arr = {14, 6, 5, 11, 3, 9, 2, 10};
-        System.out.println(T.solution(arr));
+        Collections.sort(answer, (a, b) -> {
+            if (a.title.length() == b.title.length()) {
+                return a.duration - b.duration;
+            }
+            return a.title.length() - b.title.length();
+        });
+        return answer.get(0).title;
     }
 }
