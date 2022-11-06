@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodingTest {
@@ -26,5 +25,12 @@ public class CodingTest {
         Set<Integer> set2 = new HashSet<>(Arrays.asList(5, 5, 4, 4, 3, 3, 3, 2, 2, 1));
         assertThat(set1).isEqualTo(set2);
         assertThat(set1).isEqualTo(new HashSet<>(Arrays.asList(5, 5, 4, 3, 2, 1)));
+    }
+
+    @Test
+    void stringBufferTest() {
+        StringBuffer sb1 = new StringBuffer("asdf");
+        StringBuffer sb2 = new StringBuffer("asdf");
+        assertThat(sb1.equals(sb2)).isFalse();
     }
 }
