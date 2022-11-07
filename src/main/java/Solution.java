@@ -1,41 +1,27 @@
+import java.util.Collections;
+import java.util.PriorityQueue;
+
 class Solution {
-    public String solution(String m, String[] musicinfos) {
-        String answer = "(None)";
-        int durationTmp = 0;
-        String myNote = transform(m);
+    public int solution(int[] stones, int k) {
+        PriorityQueue<Integer> entry = new PriorityQueue<>();
 
-        for (String musicinfo : musicinfos) {
-            String[] split = musicinfo.split(",");
-            int duration = getDuration(split[0], split[1]);
-            if (duration >= myNote.length()) {
-                String target = transform(split[3]);
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < duration; i++) {
-                    sb.append(target.charAt(i % target.length()));
-                }
-                if (sb.toString().contains(myNote) && duration > durationTmp) {
-                    answer = split[2];
-                    durationTmp = duration;
-                }
-            }
+        // 초기 윈도우
+        PriorityQueue<Integer> window = new PriorityQueue<>(Collections.reverseOrder());
+        for (int i = 0; i < k - 1; i++) {
+            window.offer(stones[i]);
         }
-        return answer;
+        int lt = 0;
+        for (int rt = k - 1; rt < stones.length; rt++) {
+            window.offer(stones[rt]);
+            entry.offer(window.peek());
+            window.remove(stones[lt++]);
+        }
+        return entry.peek();
     }
 
-    private String transform(String m) {
-        return m.replaceAll("C#", "c")
-                .replaceAll("D#", "d")
-                .replaceAll("F#", "f")
-                .replaceAll("G#", "g")
-                .replaceAll("A#", "a");
-    }
-
-    private int getDuration(String t1, String t2) {
-        return parseTime(t2) - parseTime(t1);
-    }
-
-    private int parseTime(String time) {
-        String[] split = time.split(":");
-        return Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        int[] stones = {2, 4, 5, 3, 2, 1, 4, 2, 5, 1};
+        System.out.println(T.solution(stones, 3));
     }
 }
