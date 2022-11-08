@@ -15,8 +15,17 @@ public class CodingTest {
         assertThat(a >> 1).isEqualTo(0);
         assertThat(a >> 2).isEqualTo(0);
         assertThat(7 ^ 8).isEqualTo(15);
-        System.out.println(Integer.toBinaryString((7 ^ 8) >> 2));
-        System.out.println(Integer.toBinaryString((7 ^ 8) >>> 2));
+//        System.out.println(Integer.toBinaryString((7 ^ 8) >> 2));
+//        System.out.println(Integer.toBinaryString((7 ^ 8) >>> 2));
+
+        int tmp = (int) Math.pow(2, 3);
+        System.out.println(Integer.toBinaryString(tmp));
+        tmp ^= (int) Math.pow(2, 0);
+        System.out.println(Integer.toBinaryString(tmp));
+        int first = tmp & (-tmp);
+        System.out.println("first = " + first);
+
+
     }
 
     @Test
