@@ -1,42 +1,35 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-class Solution {
-    public static StringBuilder answer = new StringBuilder();
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder answer = new StringBuilder();
+        int T = Integer.parseInt(br.readLine());
+        StringTokenizer st;
 
-    public static void main(String args[]) {
-        Scanner sc = new Scanner(System.in);
-        long T = sc.nextLong();
+        for (int test_case = 1; test_case <= T; test_case++) {
+            answer.append("#").append(test_case).append(" ");
 
-        for (long test_case = 0; test_case < T; test_case++) {
-            solution(sc, test_case);
-        }
+            int length = Integer.parseInt(br.readLine());
+            int[] arr = new int[length];
+            long sum = 0;
+            int max = 0;
 
-        System.out.println(answer);
-    }
+            st = new StringTokenizer(br.readLine());
 
-    private static void solution(Scanner sc, long test_case) {
-        List<Long> list = new ArrayList<>();
-        long length, tmp, sum = 0;
-
-        answer.append("#").append(test_case + 1);
-        length = sc.nextLong();
-        tmp = sc.nextLong();
-
-        for (int i = 1; i <= length; i++) {
-            long target = i == length ?
-                    Long.MIN_VALUE :
-                    sc.nextLong();
-            if (tmp <= target) {
-                list.add(tmp);
-            } else if (!list.isEmpty()) {
-                for (Long x : list) sum += tmp - x;
-                list.clear();
+            for (int i = 0; i < length; i++) {
+                arr[i] = Integer.parseInt(st.nextToken());
             }
-            tmp = target;
+
+            for (int i = length - 1; i >= 0; i--) {
+                if (max < arr[i]) max = arr[i]; // max 갱신
+                else sum += max - arr[i]; // max가 아니면 차이만큼 sum에 더함
+            }
+            answer.append(sum).append("\n");
         }
-        answer.append(" ").append(sum).append("\n");
+        System.out.println(answer);
     }
 }
