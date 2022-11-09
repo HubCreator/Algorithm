@@ -1,23 +1,42 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 class Solution {
-    public static void main(String args[]) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        String str;
-        char tmp;
+    public static StringBuilder answer = new StringBuilder();
 
-        for (int test_case = 1; test_case <= T; test_case++) {
-            str = br.readLine();
-            tmp = 'a';
-            for (int i = 0; i < str.length(); i++) {
-                if (str.charAt(i) == tmp) tmp++;
-                else break;
-            }
-            sb.append("#").append(test_case).append(' ').append(tmp - 'a').append("\n");
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        long T = sc.nextLong();
+
+        for (long test_case = 0; test_case < T; test_case++) {
+            solution(sc, test_case);
         }
-        System.out.println(sb);
+
+        System.out.println(answer);
+    }
+
+    private static void solution(Scanner sc, long test_case) {
+        List<Long> list = new ArrayList<>();
+        long length, tmp, sum = 0;
+
+        answer.append("#").append(test_case + 1);
+        length = sc.nextLong();
+        tmp = sc.nextLong();
+
+        for (int i = 1; i <= length; i++) {
+            long target = i == length ?
+                    Long.MIN_VALUE :
+                    sc.nextLong();
+            if (tmp <= target) {
+                list.add(tmp);
+            } else if (!list.isEmpty()) {
+                for (Long x : list) sum += tmp - x;
+                list.clear();
+            }
+            tmp = target;
+        }
+        answer.append(" ").append(sum).append("\n");
     }
 }
