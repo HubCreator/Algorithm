@@ -26,6 +26,11 @@ public class CodingTest {
         System.out.println("first = " + first);
 
 
+        int asdf = 0;
+        asdf ^= (int) Math.pow(2, 3);
+        System.out.println("Integer.toBinaryString(asdf) = " + Integer.toBinaryString(asdf));
+        
+
     }
 
     @Test
