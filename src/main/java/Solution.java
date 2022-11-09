@@ -5,23 +5,19 @@ class Solution {
     public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
-        int[] answer = new int[T];
+        StringBuilder sb = new StringBuilder();
+        String str;
+        char tmp;
 
         for (int test_case = 1; test_case <= T; test_case++) {
-            String str = br.readLine();
-            char tmp = 'a';
+            str = br.readLine();
+            tmp = 'a';
             for (int i = 0; i < str.length(); i++) {
-                if (str.charAt(i) == tmp) {
-                    tmp++;
-                    continue;
-                }
-                break;
+                if (str.charAt(i) == tmp) tmp++;
+                else break;
             }
-            answer[test_case - 1] = tmp - 'a';
+            sb.append("#").append(test_case).append(' ').append(tmp - 'a').append("\n");
         }
-
-        for (int i = 0; i < T; i++) {
-            System.out.println("#" + (i + 1) + " " + answer[i]);
-        }
+        System.out.println(sb);
     }
 }
