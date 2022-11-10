@@ -41,7 +41,7 @@ public class Solution {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (!board[i][j].equals("?")) {
+                if (!board[i][j].equals("?") || !board[i][j].equals("!")) {
                     if (!bfs(board, i, j)) return false;
                 }
             }
@@ -65,10 +65,11 @@ public class Solution {
         queue.add(new Point(row, col, board[row][col]));
         while (!queue.isEmpty()) {
             Point poll = queue.poll();
+            board[poll.y][poll.x] = "!";
             for (int i = 0; i < 4; i++) {
                 int ny = poll.y + dy[i];
                 int nx = poll.x + dx[i];
-                if (ny >= 0 && ny < row && nx >= 0 && nx < col) {
+                if (ny >= 0 && ny < board.length && nx >= 0 && nx < board[0].length && !board[ny][nx].equals("!")) {
                     if (!board[ny][nx].equals(poll.mark)) {
                         board[ny][nx] = poll.mark.equals("#") ? "." : "#";
                         queue.add(new Point(ny, nx, board[ny][nx]));
