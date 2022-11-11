@@ -47,4 +47,12 @@ public class CodingTest {
         StringBuffer sb2 = new StringBuffer("asdf");
         assertThat(sb1.equals(sb2)).isFalse();
     }
+
+    @Test
+    void charToIntTest() {
+        assertThat('9' - '0').isEqualTo(9);
+        assertThat('8' - '0').isEqualTo(8);
+        assertThat('7' - '0').isEqualTo(7);
+        assertThat('6' - '0').isEqualTo(6);
+    }
 }
