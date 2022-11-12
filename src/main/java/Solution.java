@@ -1,38 +1,35 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Solution {
-
     static StringTokenizer st;
     static StringBuilder answer = new StringBuilder();
-    static List<Integer> list;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
-
         for (int test_case = 1; test_case <= T; test_case++) {
-            answer.append("#").append(Integer.parseInt(br.readLine())).append(" ");
-            st = new StringTokenizer(br.readLine());
-            init();
-            int length = st.countTokens();
+            int test = Integer.parseInt(br.readLine());
+            int max = Integer.MIN_VALUE;
+            int arr[] = new int[101];
 
-            for (int i = 0; i < length; i++) {
-                int t = Integer.parseInt(st.nextToken());
-                list.set(t, list.get(t) + 1);
+            answer.append("#").append(test).append(" ");
+            st = new StringTokenizer(br.readLine());
+
+            while (st.hasMoreTokens()) {
+                arr[Integer.parseInt(st.nextToken())]++;
             }
-            Integer max = Collections.max(list);
-            answer.append(list.lastIndexOf(max)).append("\n");
+            for (int data : arr) {
+                max = Math.max(max, data);
+            }
+            for (int i = arr.length - 1; i >= 0; i--) {
+                if (arr[i] == max) {
+                    answer.append(i).append("\n");
+                    break;
+                }
+            }
         }
         System.out.println(answer);
-    }
-
-    private static void init() {
-        list = new ArrayList<>(101);
-        for (int i = 0; i < 101; i++) {
-            list.add(0);
-        }
     }
 }
