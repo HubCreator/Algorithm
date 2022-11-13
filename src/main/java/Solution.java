@@ -1,53 +1,30 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.text.DecimalFormat;
 
 public class Solution {
     static StringBuilder answer = new StringBuilder();
-    static StringTokenizer st;
-    static int[] arr = new int[100];
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        for (int test_case = 1; test_case <= 10; test_case++) {
-            answer.append("#").append(test_case).append(" ");
-
-            int dumCnt = Integer.parseInt(br.readLine());
-            st = new StringTokenizer(br.readLine());
-            int len = st.countTokens();
-            for (int i = 0; i < len; i++) {
-                arr[i] = Integer.parseInt(st.nextToken());
+        int T = Integer.parseInt(br.readLine());
+        for (int i = 1; i <= T; i++) {
+            answer.append('#').append(i).append(' ');
+            StringBuilder s = new StringBuilder(br.readLine());
+            long square = s.length() - 1;
+            while (s.charAt(s.length() - 1) == '0') {
+                s.setLength(s.length() - 1);
             }
-            for (int i = 0; i < dumCnt; i++) {
-                arr[minIdx()]++;
-                arr[maxIdx()]--;
+            double num = Double.parseDouble(s.toString());
+            DecimalFormat df = new DecimalFormat("0.0");
+            double result = Double.parseDouble(df.format(num / (long) Math.pow(10, (long) Math.log10(num))));
+            if (String.valueOf(result).charAt(0) != String.valueOf(num).charAt(0)) {
+                square++;
+                result /= 10d;
             }
-            answer.append(arr[maxIdx()] - arr[minIdx()]).append("\n");
+            answer.append(result).append("*10^").append(square).append("\n");
         }
         System.out.println(answer);
-    }
-
-    private static int maxIdx() {
-        int maxIdx = 0;
-        int maxValue = Integer.MIN_VALUE;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] > maxValue) {
-                maxValue = arr[i];
-                maxIdx = i;
-            }
-        }
-        return maxIdx;
-    }
-
-    private static int minIdx() {
-        int minIdx = 0;
-        int minValue = Integer.MAX_VALUE;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] < minValue) {
-                minValue = arr[i];
-                minIdx = i;
-            }
-        }
-        return minIdx;
     }
 }
