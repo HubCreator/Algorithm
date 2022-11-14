@@ -8,17 +8,39 @@ class Solution {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
         for (int test_case = 1; test_case <= T; test_case++) {
-            char[] ch = br.readLine().toCharArray();
-            int n = Integer.parseInt(ch[0] + "" + ch[1]);
-            if (ch[2] - '0' >= 5) n += 1;
-            int length = ch.length - 1;
-
-            String resultNum = n + "";
-            if (resultNum.length() > 2) length++;
-
-            String result = resultNum.charAt(0) + "." + resultNum.charAt(1) + "*10^" + length;
-            answer.append("#" + test_case + " " + result + "\n");
+            answer.append("#" + test_case + " ");
+            String enc = br.readLine();
+            StringBuilder transformed = new StringBuilder();
+            transform(enc, transformed);
+            String binaryString = transformed.toString();
+            int i;
+            for (i = 0; i < binaryString.length() - 8; i += 8) {
+                answer.append((char) Integer.parseInt(binaryString.substring(i, i + 8), 2));
+            }
+            answer.append(".\n");
         }
         System.out.println(answer);
+    }
+
+    private static void transform(String enc, StringBuilder result) {
+        char[] chars = enc.toCharArray();
+        for (char ch : chars) {
+            if (Character.isUpperCase(ch)) {
+                String s = Integer.toBinaryString((int) ch - 65);
+                result.append(String.format("%06d", Integer.parseInt(s)));
+            } else if (Character.isLowerCase(ch)) {
+                String s = Integer.toBinaryString((int) ch - 71);
+                result.append(String.format("%06d", Integer.parseInt(s)));
+            } else if (Character.isDigit(ch)) {
+                String s = Integer.toBinaryString(Integer.parseInt(String.valueOf(ch)) + 52);
+                result.append(String.format("%06d", Integer.parseInt(s)));
+            } else if (ch == '+') {
+                String s = Integer.toBinaryString(62);
+                result.append(String.format("%06d", Integer.parseInt(s)));
+            } else if (ch == '/') {
+                String s = Integer.toBinaryString(63);
+                result.append(String.format("%06d", Integer.parseInt(s)));
+            }
+        }
     }
 }

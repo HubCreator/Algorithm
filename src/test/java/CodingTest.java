@@ -29,7 +29,7 @@ public class CodingTest {
         int asdf = 0;
         asdf ^= (int) Math.pow(2, 3);
         System.out.println("Integer.toBinaryString(asdf) = " + Integer.toBinaryString(asdf));
-        
+
 
     }
 
@@ -54,5 +54,15 @@ public class CodingTest {
         assertThat('8' - '0').isEqualTo(8);
         assertThat('7' - '0').isEqualTo(7);
         assertThat('6' - '0').isEqualTo(6);
+    }
+
+    @Test
+    void transformTest() {
+        assertThat((int) 'A' - 65).isEqualTo(0);
+        assertThat((int) 'Z' - 65).isEqualTo(25);
+        assertThat((int) 'a' - 71).isEqualTo(26);
+        assertThat((int) 'z' - 71).isEqualTo(51);
+        System.out.println((int)'+');
+        System.out.println((int)'/');
     }
 }
