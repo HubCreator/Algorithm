@@ -65,4 +65,10 @@ public class CodingTest {
         System.out.println((int)'+');
         System.out.println((int)'/');
     }
+
+    @Test
+    void containTest() {
+        List<int[]> list = Arrays.asList(new int[]{1, 2}, new int[]{3, 4});
+        assertThat(list.contains(new int[]{1, 2})).isTrue();
+    }
 }
