@@ -1,29 +1,27 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
+import java.text.MessageFormat;
 
-public class Solution {
-    static StringBuilder answer = new StringBuilder();
+class Solution {
+    static StringBuffer answer = new StringBuffer();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
-        for (int i = 1; i <= T; i++) {
-            answer.append('#').append(i).append(' ');
-            StringBuilder s = new StringBuilder(br.readLine());
-            long square = s.length() - 1;
-            while (s.charAt(s.length() - 1) == '0') {
-                s.setLength(s.length() - 1);
-            }
-            double num = Double.parseDouble(s.toString());
-            DecimalFormat df = new DecimalFormat("0.0");
-            double result = Double.parseDouble(df.format(num / (long) Math.pow(10, (long) Math.log10(num))));
-            if (String.valueOf(result).charAt(0) != String.valueOf(num).charAt(0)) {
-                square++;
-                result /= 10d;
-            }
-            answer.append(result).append("*10^").append(square).append("\n");
+
+        for (int test_case = 1; test_case <= T; test_case++) {
+            answer.append("#").append(test_case).append(" ");
+            char[] ch = br.readLine().toCharArray();
+            int length = ch.length - 1;
+            int n = Integer.parseInt(ch[0] + "" + ch[1]);
+
+            if (ch[2] - '0' >= 5) n += 1;
+            String resultNum = String.valueOf(n);
+            if (resultNum.length() > 2) length = ch.length;
+
+            String result = MessageFormat.format("{0}.{1}*10^{2}", resultNum.charAt(0), resultNum.charAt(1), length);
+            answer.append(result).append("\n");
         }
         System.out.println(answer);
     }
