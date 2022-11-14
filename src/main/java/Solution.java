@@ -1,31 +1,32 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
 
-class Solution {
+public class Solution {
     static StringBuilder answer = new StringBuilder();
-    static List<Character> entry = Arrays.asList('3', '6', '9');
+    static StringBuilder buf;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            String s = i + "";
-            int cnt = 0;
-            for (int j = 0; j < s.length(); j++) {
-                if (entry.contains(s.charAt(j))) cnt++;
-            }
-            if (cnt == 0) {
-                answer.append(i + " ");
-                continue;
-            }
-            while (cnt > 0) {
-                answer.append('-');
-                cnt--;
-            }
-            answer.append(" ");
+        int T = Integer.parseInt(br.readLine());
+        for (int i = 1; i <= T; i++) {
+            answer.append(calculator(i) + " ");
         }
         System.out.println(answer);
+    }
+
+    public static String calculator(int n) {
+        int cnt = 0;
+        int num = n;
+        buf = new StringBuilder();
+        while (num > 0) {
+            int t = num % 10;
+            num /= 10;
+            if (t > 0 && t % 3 == 0) {
+                cnt++;
+                buf.append('-');
+            }
+        }
+        return (cnt == 0) ? (n + "") : buf.toString();
     }
 }
