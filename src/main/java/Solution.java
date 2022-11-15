@@ -14,12 +14,12 @@ class Point implements Comparable<Point> {
 
     @Override
     public int compareTo(Point o) {
-        return this.value - o.value;
+        return Integer.compare(value, o.value);
     }
 }
 
 public class Solution {
-    static int N, result;
+    static int N;
     static int[][] map;
     static boolean[][] visited;
     static int dy[] = {0, 0, -1, 1};
@@ -30,7 +30,6 @@ public class Solution {
     private static void initialize(BufferedReader br) throws IOException {
         visited = new boolean[N][N];
         visited[0][0] = true;
-        result = Integer.MAX_VALUE;
         for (int i = 0; i < N; i++) {
             String s = br.readLine();
             for (int j = 0; j < N; j++) {
@@ -39,15 +38,14 @@ public class Solution {
         }
     }
 
-    private static void bfs() {
+    private static int bfs() {
         pq = new PriorityQueue();
         pq.offer(new Point(0, 0, 0));
 
         while (!pq.isEmpty()) {
             Point p = pq.poll();
             if (p.y == N - 1 && p.x == N - 1) { // 목적지에 도달했을 때 return
-                result = Math.min(result, p.value);
-                return;
+                return p.value;
             }
             for (int i = 0; i < 4; i++) {
                 int ny = p.y + dy[i];
@@ -58,6 +56,7 @@ public class Solution {
                 }
             }
         }
+        return -1;
     }
 
     public static void main(String[] args) throws IOException {
@@ -67,8 +66,7 @@ public class Solution {
             N = Integer.parseInt(br.readLine());
             map = new int[N][N];
             initialize(br);
-            bfs();
-            answer.append("#" + test_case + " " + result + "\n");
+            answer.append("#" + test_case + " " + bfs() + "\n");
         }
         System.out.println(answer);
     }
