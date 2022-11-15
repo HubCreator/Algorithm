@@ -1,127 +1,65 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class GStack<T> {
-    List<T> list = new ArrayList<>();
+class Main {
+    static StringTokenizer st;
+    static StringBuilder answer = new StringBuilder();
+    static List<Integer> result = new ArrayList<>();
+    static int[][] arr;
+    static int T;
+    static final int[] dy = {0, 0, -1, 1};
+    static final int[] dx = {1, -1, 0, 0};
 
-    public void push(T item) {
-        list.add(item);
+    private static void initialize(BufferedReader br) throws IOException {
+        for (int i = 0; i < T; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < T; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
     }
 
-    public T pop() {
-        if (list.size() == 0) return null;
-        return list.remove(list.size() - 1);
+    private static void mainLogic() {
+        for (int i = 0; i < T; i++) {
+            for (int j = 0; j < T; j++) {
+                if (arr[i][j] == 1) bfs(i, j);
+            }
+        }
     }
 
-    public T peek() {
-        return list.get(list.size() - 1);
-    }
-
-    public boolean isEmpty() {
-        return list.isEmpty();
-    }
-}
-
-
-public class Main {
-    static GStack<String> stringStack = new GStack<>();
-    static GStack<Double> doubleGStack = new GStack<>();
-
-    public static void main(String[] args) {
-        String exp = "2.0*3.0-((4.0+5.0)*2.0)-4.0=";
-        String postfix = getPostfix(exp);
-        double evaluation = getEvaluation(postfix);
-        System.out.println("postfix = " + postfix);
-        System.out.println("evaluation = " + evaluation);
-    }
-
-    private static double getEvaluation(String exp) {
-        List<Character> operations = Arrays.asList('+', '-', '*', '/');
-
-        for (int i = 0; i < exp.length(); i++) {
-            char c = exp.charAt(i);
-            if (!operations.contains(c)) {
-                int cnt = 0;
-                StringBuilder buffer = new StringBuilder();
-                while (cnt < 3) {
-                    buffer.append(exp.charAt(i + cnt));
-                    cnt++;
+    private static void bfs(int i, int j) {
+        Queue<int[]> queue = new LinkedList<>();
+        int cnt = 0;
+        queue.offer(new int[]{i, j});
+        arr[i][j] = 0;
+        while (!queue.isEmpty()) {
+            int[] p = queue.poll();
+            cnt++;
+            for (int dir = 0; dir < 4; dir++) {
+                int ny = p[0] + dy[dir];
+                int nx = p[1] + dx[dir];
+                if (ny >= 0 && ny < T && nx >= 0 && nx < T && arr[ny][nx] == 1) {
+                    queue.offer(new int[]{ny, nx});
+                    arr[ny][nx] = 0; // 여기서 체크를 해야만 함
                 }
-                doubleGStack.push(Double.parseDouble(buffer.toString()));
-                i += 2;
-                continue;
-            }
-
-            switch (c) {
-                case '+':
-                    doubleGStack.push(doubleGStack.pop() + doubleGStack.pop());
-                    break;
-                case '-':
-                    double a = doubleGStack.pop();
-                    double b = doubleGStack.pop();
-                    doubleGStack.push(b - a);
-                    break;
-                case '*':
-                    doubleGStack.push(doubleGStack.pop() * doubleGStack.pop());
-                    break;
-                case '/':
-                    doubleGStack.push(doubleGStack.pop() / doubleGStack.pop());
-                    break;
             }
         }
-        return doubleGStack.pop();
+        result.add(cnt);
     }
 
-    private static String getPostfix(String exp) {
-        StringBuilder answer = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(exp, "+-*/()=", true);
-        while (st.hasMoreTokens()) {
-            String s = st.nextToken();
-            if (s.equals("=")) break;
-            int priority = getPriority(s);
-
-            switch (s) {
-                case "+":
-                case "-":
-                case "*":
-                case "/":
-                    while (!stringStack.isEmpty() && getPriority(stringStack.peek()) >= priority) {
-                        answer.append(stringStack.pop());
-                    }
-                    stringStack.push(s);
-                    break;
-                case "(":
-                    stringStack.push(s);
-                    break;
-                case ")":
-                    while (!stringStack.isEmpty() && !stringStack.peek().equals("(")) {
-                        answer.append(stringStack.pop());
-                    }
-                    stringStack.pop();  // '(' 제거
-                    break;
-                default:  // operand
-                    answer.append(s);
-                    doubleGStack.push(Double.parseDouble(s));
-            }
-        }
-        while (!stringStack.isEmpty()) {
-            answer.append(stringStack.pop());
-        }
-        return answer.toString();
+    private static void printResult() {
+        Collections.sort(result);
+        answer.append(result.size() + "\n");
+        for (Integer x : result) answer.append(x + " ");
+        System.out.println(answer);
     }
 
-    public static int getPriority(String s) {
-        switch (s) {
-            case "*":
-            case "/":
-                return 2;
-            case "+":
-            case "-":
-                return 1;
-            default:
-                return 0;
-        }
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        T = Integer.parseInt(br.readLine());
+        arr = new int[T][T];
+        initialize(br);
+        mainLogic();
+        printResult();
     }
 }
