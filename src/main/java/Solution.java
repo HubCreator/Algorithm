@@ -1,62 +1,46 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Solution {
-    static final int BOARD_SIZE = 9;
     static StringBuilder answer = new StringBuilder();
     static StringTokenizer st;
-    static int T;
-    static int[][] board;
-    static Set<Integer> setRow, setCol, set;
+    static int T, length, min, max, sum;
+    static int[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
         for (int test_case = 1; test_case <= T; test_case++) {
             initialize(br);
-            answer.append("#" + test_case + " " + mainLogic() + "\n");
+            answer.append("#" + test_case + " " + solution() + "\n");
         }
         System.out.println(answer);
     }
 
-    private static int mainLogic() {
-        // 행과 열 판단
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            setRow = new HashSet<>();
-            setCol = new HashSet<>();
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                setRow.add(board[i][j]);
-                setCol.add(board[j][i]);
-            }
-            if (setRow.size() != BOARD_SIZE || setCol.size() != BOARD_SIZE) return 0;
+    private static int solution() {
+        for (int x : arr) {
+            if (x != min && x != max) sum += x;
         }
-        // 3X3 영역 판단
-        for (int i = 0; i <= BOARD_SIZE - 3; i += 3) {
-            for (int j = 0; j <= BOARD_SIZE - 3; j += 3) {
-                set = new HashSet<>();
-                for (int k = i; k < i + 3; k++) {
-                    for (int l = j; l < j + 3; l++) {
-                        set.add(board[k][l]);
-                    }
-                }
-                if (set.size() != BOARD_SIZE) return 0;
-            }
-        }
-
-        return 1;
+        return Math.round(sum / (float) (length - 2));
     }
 
     private static void initialize(BufferedReader br) throws IOException {
-        board = new int[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                board[i][j] = Integer.parseInt(st.nextToken());
-            }
+        st = new StringTokenizer(br.readLine());
+        length = st.countTokens();
+        arr = new int[length];
+        sum = 0;
+        for (int i = 0; i < length; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        // 최대 최소값 구하기
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
+        for (int x : arr) {
+            min = Math.min(min, x);
+            max = Math.max(max, x);
         }
     }
 }
