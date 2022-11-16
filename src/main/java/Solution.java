@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Solution {
     static StringBuilder answer = new StringBuilder();
@@ -17,19 +16,10 @@ public class Solution {
     }
 
     private static int solution(BufferedReader br) throws IOException {
-        String str = br.readLine().trim();
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < str.length() - 1; i++) {
-            sb.append(str.charAt(i));
-            if (isValid(str, sb)) {
-                return sb.length();
-            }
+        String str = br.readLine();
+        for (int i = 0; i < str.length() / 2; i++) {
+            if (str.charAt(i) != str.charAt(str.length() - 1 - i)) return 0;
         }
-        return -1;
-    }
-
-    private static boolean isValid(String str, StringBuilder sb) {
-        return new StringTokenizer(str, sb.toString()).countTokens() == 0;
+        return 1;
     }
 }
