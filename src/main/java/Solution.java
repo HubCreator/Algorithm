@@ -1,17 +1,21 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Solution {
+    static final int BOARD_SIZE = 9;
     static StringBuilder answer = new StringBuilder();
     static StringTokenizer st;
-    static int N, M;
+    static int T;
     static int[][] board;
+    static Set<Integer> setRow, setCol, set;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
+        T = Integer.parseInt(br.readLine());
         for (int test_case = 1; test_case <= T; test_case++) {
             initialize(br);
             answer.append("#" + test_case + " " + mainLogic() + "\n");
@@ -20,29 +24,37 @@ public class Solution {
     }
 
     private static int mainLogic() {
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i <= N - M; i++) {
-            for (int j = 0; j <= N - M; j++) {
-                int sum = 0;
-                for (int k = i; k < i + M; k++) {
-                    for (int l = j; l < j + M; l++) {
-                        sum += board[k][l];
+        // 행과 열 판단
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            setRow = new HashSet<>();
+            setCol = new HashSet<>();
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                setRow.add(board[i][j]);
+                setCol.add(board[j][i]);
+            }
+            if (setRow.size() != BOARD_SIZE || setCol.size() != BOARD_SIZE) return 0;
+        }
+        // 3X3 영역 판단
+        for (int i = 0; i <= BOARD_SIZE - 3; i += 3) {
+            for (int j = 0; j <= BOARD_SIZE - 3; j += 3) {
+                set = new HashSet<>();
+                for (int k = i; k < i + 3; k++) {
+                    for (int l = j; l < j + 3; l++) {
+                        set.add(board[k][l]);
                     }
                 }
-                max = Math.max(max, sum);
+                if (set.size() != BOARD_SIZE) return 0;
             }
         }
-        return max;
+
+        return 1;
     }
 
     private static void initialize(BufferedReader br) throws IOException {
-        st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        board = new int[N][N];
-        for (int i = 0; i < N; i++) {
+        board = new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 board[i][j] = Integer.parseInt(st.nextToken());
             }
         }
