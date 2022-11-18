@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CodingTest {
 
@@ -69,6 +70,17 @@ public class CodingTest {
     @Test
     void containTest() {
         List<int[]> list = Arrays.asList(new int[]{1, 2}, new int[]{3, 4});
-        assertThat(list.contains(new int[]{1, 2})).isTrue();
+        assertThat(list.contains(new int[]{1, 2})).isFalse();
+    }
+
+    @Test
+    void immutableListTest() {
+        List<Integer> immutable = List.of(3, 1, 2);
+        assertThatThrownBy(() -> Collections.sort(immutable))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        List<Integer> mutable = Arrays.asList(3, 1, 2);
+        Collections.sort(mutable);
+        assertThat(mutable).containsExactly(1, 2, 3);
     }
 }
