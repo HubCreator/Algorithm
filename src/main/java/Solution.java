@@ -41,23 +41,16 @@ public class Solution {
             // 슬라이딩 윈도우
             for (int j = N - 1; j < BOARD_SIZE; j++) {
                 sbRow.append(board[i][j]);
-                if (isPalindrome(sbRow.toString())) result++;
+                if (sbRow.toString().equals(sbRow.reverse().toString())) result++;
+                sbRow.reverse();
                 sbRow.deleteCharAt(0);
 
                 sbCol.append(board[j][i]);
-                if (isPalindrome(sbCol.toString())) result++;
+                if (sbCol.toString().equals(sbCol.reverse().toString())) result++;
+                sbCol.reverse();
                 sbCol.deleteCharAt(0);
             }
         }
         return result;
-    }
-
-    private static boolean isPalindrome(String str) {
-        for (int i = 0; i < str.length() / 2; i++) {
-            if (str.charAt(i) != str.charAt(str.length() - 1 - i)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

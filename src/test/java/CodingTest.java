@@ -83,4 +83,11 @@ public class CodingTest {
         Collections.sort(mutable);
         assertThat(mutable).containsExactly(1, 2, 3);
     }
+
+    @Test
+    void stringbuilderTest() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("abcd");
+        assertThat(sb.reverse().toString()).isEqualTo("dcba");
+    }
 }
