@@ -1,48 +1,55 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Solution {
-    static final int BOARD_SIZE = 100;
-    static StringBuilder answer = new StringBuilder();
-    static StringTokenizer st;
-    static int N;
-    static int[][] board;
+class Solution {
+    static String numbers;
+    static int len;
+    static int[] pm;
+    static boolean[] check;
+    static Set<Integer> answer = new HashSet<>();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        for (int test_case = 1; test_case <= 10; test_case++) {
-            N = Integer.parseInt(br.readLine());
-            initialize(br);
-            answer.append("#" + N + " " + solution() + "\n");
+    public int solution(String _numbers) {
+        numbers = _numbers;
+        check = new boolean[numbers.length()];
+
+        for (int i = 1; i <= numbers.length(); i++) {
+            len = i;
+            pm = new int[i];
+            check = new boolean[numbers.length()];
+            dfs(0);
         }
-        System.out.println(answer);
+
+        return answer.size();
     }
 
-    private static void initialize(BufferedReader br) throws IOException {
-        board = new int[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                board[i][j] = Integer.parseInt(st.nextToken());
+    private void dfs(int L) {
+        if (L == len) {
+            StringBuilder sb = new StringBuilder();
+            for (int x : pm) sb.append(numbers.charAt(x));
+            int t = Integer.parseInt(sb.toString());
+            if (isPrime(t)) answer.add(t);
+            return;
+        }
+        for (int i = 0; i < numbers.length(); i++) {
+            if (!check[i]) {
+                check[i] = true;
+                pm[L] = i;
+                dfs(L + 1);
+                check[i] = false;
             }
         }
     }
 
-    private static int solution() {
-        int max = 0, diagonalASum = 0, diagonalBSum = 0;
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            int j, rowSum = 0, colSum = 0;
-            for (j = 0; j < BOARD_SIZE; j++) {
-                rowSum += board[i][j];
-                colSum += board[j][i];
-            }
-            if (i == j) diagonalASum += board[i][j];
-            if (BOARD_SIZE - i == j - 1) diagonalBSum += board[j - 1][i];
-            max = Math.max(max, Math.max(rowSum, colSum));
+    private boolean isPrime(int value) {
+        if (value <= 1) return false;
+        for (int i = 2; i < value; i++) {
+            if (value % i == 0) return false;
         }
-        max = Math.max(max, Math.max(diagonalASum, diagonalBSum));
-        return max;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Solution T = new Solution();
+        System.out.println(T.solution("17"));
     }
 }
