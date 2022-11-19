@@ -1,4 +1,3 @@
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -6,7 +5,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class CodingTest {
+public class MyTest {
 
     @Test
     void bitTest() {
@@ -89,5 +88,14 @@ public class CodingTest {
         StringBuilder sb = new StringBuilder();
         sb.append("abcd");
         assertThat(sb.reverse().toString()).isEqualTo("dcba");
+    }
+
+    @Test
+    void stackTest() {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+        stack.push(1);
+        stack.push(2);
+
     }
 }
