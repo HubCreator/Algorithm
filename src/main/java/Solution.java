@@ -1,32 +1,58 @@
-import java.util.Queue;
-import java.util.LinkedList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Solution {
-    public int solution(int bridge_length, int weight, int[] truck_weights) {
-        int answer = 1, curIdx = 1;
-        Queue<Integer> bridge = new LinkedList<>();
-        bridge.offer(truck_weights[0]);
+public class Solution {
+    static StringBuilder answer = new StringBuilder();
+    static StringTokenizer st;
+    static int N, K, count = 0;
+    static int[] arr, pm;
+    static boolean[] check;
+    static boolean[][] cache;
 
-        int sum = truck_weights[0];
-        do {
-            if (bridge.size() >= bridge_length) {
-                sum -= bridge.poll();
+    private static void dfs(int L) {
+        if (L == pm.length) {
+            int sum = 0;
+            for (int x : pm) sum += arr[x];
+            if (sum == K) count++;
+            return;
+        }
+        for (int i = 0; i < N; i++) {
+            if (!check[i]) {
+                check[i] = true;
+                pm[L] = i;
+                dfs(L + 1);
+                check[i] = false;
             }
-
-            if (curIdx < truck_weights.length && sum + truck_weights[curIdx] <= weight) {
-                sum += truck_weights[curIdx];
-                bridge.offer(truck_weights[curIdx++]);
-            } else {
-                bridge.offer(0);
-            }
-            answer++;
-        } while (sum != 0);
-
-        return answer;
+        }
     }
 
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        System.out.println(T.solution(2, 10, new int[]{7, 4, 5, 6}));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        for (int test_case = 1; test_case <= T; test_case++) {
+            initialize(br);
+            for (int i = 1; i <= N; i++) {
+                pm = new int[i];
+                check = new boolean[N];
+                dfs(0);
+            }
+            answer.append("#" + test_case + " " + count / 2 + "\n");
+        }
+        System.out.println(answer);
+    }
+
+    private static void initialize(BufferedReader br) throws IOException {
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        cache = new boolean[N][N];
+        arr = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
     }
 }
