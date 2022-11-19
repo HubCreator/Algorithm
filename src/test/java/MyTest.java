@@ -96,6 +96,11 @@ public class MyTest {
         stack.push(0);
         stack.push(1);
         stack.push(2);
+    }
 
+    @Test
+    void test() {
+        String s = "asdf";
+        System.out.println(s.substring(3));
     }
 }
