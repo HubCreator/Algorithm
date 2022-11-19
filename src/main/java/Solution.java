@@ -21,23 +21,24 @@ public class Solution {
     }
 
     private static String solution(String s1, String s2) {
-
         if (s1.equals(s2)) return "yes";
-        if (s1.indexOf(s2) == 0) {
-            int idx = 0;
-            StringBuilder sb = new StringBuilder(s1);
-            while (sb.length() % s2.length() != 0) {
-                sb.append(s1.charAt(idx++));
-            }
-            if (sb.lastIndexOf(s2) == sb.length() - s2.length()) return "yes";
-        } else if (s2.indexOf(s1) == 0) {
-            int idx = 0;
-            StringBuilder sb = new StringBuilder(s2);
-            while (sb.length() % s1.length() != 0) {
-                sb.append(s2.charAt(idx++));
-            }
-            if (sb.lastIndexOf(s1) == sb.length() - s1.length()) return "yes";
+        int idx = 0;
+        while (s1.length() < s2.length() && s2.length() % s1.length() != 0) {
+            s2 += s2.charAt(idx++);
         }
+        while (s1.length() > s2.length() && s1.length() % s2.length() != 0) {
+            s1 += s1.charAt(idx++);
+        }
+
+        int offsetA = 0, offsetB = 0;
+        while (s1.indexOf(s2, offsetA) == offsetA) {
+            offsetA += s2.length();
+        }
+        while (s2.indexOf(s1, offsetB) == offsetB) {
+            offsetB += s1.length();
+        }
+        if (offsetA == s1.length() || offsetB == s2.length()) return "yes";
+
         return "no";
     }
 }

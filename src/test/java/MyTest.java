@@ -100,7 +100,7 @@ public class MyTest {
 
     @Test
     void test() {
-        String s = "asdf";
-        System.out.println(s.substring(3));
+        String s = "abcabc";
+        System.out.println(s.indexOf("abc", 3));
     }
 }
