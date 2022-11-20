@@ -39,16 +39,28 @@ class Main {
     private static void transformMessage(String message) {
         int idx = 0;
         tokens = new ArrayList<>();
-        StringBuilder sb = new StringBuilder(message);
-        while (idx <= sb.length() - 2) {
-            if (sb.charAt(idx) == sb.charAt(idx + 1)) {
-                char tmp = 'X';
-                if (sb.charAt(idx) == 'X') tmp = 'Q';
-                sb.insert(idx + 1, tmp);
-                sb.append(tmp);
+        StringBuilder buffer = new StringBuilder();
+        while (idx < message.length()) {
+            if (buffer.length() == 2) {
+                if (buffer.charAt(0) == buffer.charAt(1)) {
+                    char ch = buffer.charAt(0) == 'X' ? 'Q' : 'X';
+                    tokens.add(String.valueOf(buffer.charAt(0)) + ch);
+                    buffer.deleteCharAt(0);
+                } else {
+                    tokens.add(buffer.toString());
+                    buffer = new StringBuilder();
+                }
+                continue;
+            } else {
+                buffer.append(message.charAt(idx));
             }
-            tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
-            idx += 2;
+            idx++;
+        }
+        if (buffer.length() == 2) {
+            tokens.add(buffer.toString());
+        }
+        else if (buffer.length() == 1) {
+            tokens.add(buffer.toString() + 'X');
         }
     }
 
