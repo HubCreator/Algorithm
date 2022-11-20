@@ -1,37 +1,22 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Solution {
     static StringBuilder answer = new StringBuilder();
+    static StringTokenizer st;
+    static int N, D;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
         for (int test_case = 1; test_case <= T; test_case++) {
-            String str = br.readLine();
-            answer.append("#" + test_case + " " + solution(str) + "\n");
+            st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
+            D = Integer.parseInt(st.nextToken());
+            answer.append("#" + test_case + " " + (int) Math.ceil(N / ((float) (1 + (D * 2)))) + "\n");
         }
         System.out.println(answer);
-    }
-
-    private static int solution(String str) {
-        char[] chars = str.toCharArray();
-        Stack<Character> stack = new Stack<>();
-        int result = 0;
-
-        boolean flag = false;
-        for (char ch : chars) {
-            if (flag) {
-                if (ch == ')' || ch == '|') result++;
-                flag = false;
-            } else if (ch == '(') flag = true;
-            else if (ch == ')' && (stack.peek() == '|' || stack.peek() == '(')) {
-                result++;
-            }
-            stack.push(ch);
-        }
-        return result;
     }
 }
