@@ -52,7 +52,6 @@ class Solution {
             tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
             idx += 2;
         }
-        tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
     }
 
     private static void makeBoard(String key) {

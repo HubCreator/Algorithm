@@ -40,7 +40,7 @@ class Main {
         int idx = 0;
         tokens = new ArrayList<>();
         StringBuilder sb = new StringBuilder(message);
-        while (idx < sb.length() - 2) {
+        while (idx <= sb.length() - 2) {
             if (sb.charAt(idx) == sb.charAt(idx + 1)) {
                 char tmp = 'X';
                 if (sb.charAt(idx) == 'X') tmp = 'Q';
@@ -50,14 +50,13 @@ class Main {
             tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
             idx += 2;
         }
-        tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
     }
 
     private static void makeBoard(String key) {
         StringBuilder sb = new StringBuilder(key);
-        for (int i = 'A'; i <= 'Z'; i++) sb.append((char) i);
+        for (char i = 'A'; i <= 'Z'; i++) sb.append(i);
 
-        map = new HashMap();
+        map = new HashMap<>();
         char[] chars = sb.toString().toCharArray();
         int idx = 0;
 
