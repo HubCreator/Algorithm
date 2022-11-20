@@ -2,64 +2,72 @@ import java.io.*;
 import java.util.*;
 
 class Main {
-    static StringTokenizer st;
-    static StringBuilder answer = new StringBuilder();
-    static List<Integer> result = new ArrayList<>();
-    static int[][] arr;
-    static int T;
-    static final int[] dy = {0, 0, -1, 1};
-    static final int[] dx = {1, -1, 0, 0};
+    static final int SIZE = 5;
+    static char board[][] = new char[SIZE][SIZE];
+    static Map<Character, int[]> map;
+    static List<String> tokens;
 
-    private static void initialize(BufferedReader br) throws IOException {
-        for (int i = 0; i < T; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < T; j++) {
-                arr[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
-    }
-
-    private static void mainLogic() {
-        for (int i = 0; i < T; i++) {
-            for (int j = 0; j < T; j++) {
-                if (arr[i][j] == 1) bfs(i, j);
-            }
-        }
-    }
-
-    private static void bfs(int i, int j) {
-        Queue<int[]> queue = new LinkedList<>();
-        int cnt = 0;
-        queue.offer(new int[]{i, j});
-        arr[i][j] = 0;
-        while (!queue.isEmpty()) {
-            int[] p = queue.poll();
-            cnt++;
-            for (int dir = 0; dir < 4; dir++) {
-                int ny = p[0] + dy[dir];
-                int nx = p[1] + dx[dir];
-                if (ny >= 0 && ny < T && nx >= 0 && nx < T && arr[ny][nx] == 1) {
-                    queue.offer(new int[]{ny, nx});
-                    arr[ny][nx] = 0; // 여기서 체크를 해야만 함
-                }
-            }
-        }
-        result.add(cnt);
-    }
-
-    private static void printResult() {
-        Collections.sort(result);
-        answer.append(result.size() + "\n");
-        for (Integer x : result) answer.append(x + " ");
-        System.out.println(answer);
-    }
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        T = Integer.parseInt(br.readLine());
-        arr = new int[T][T];
-        initialize(br);
-        mainLogic();
-        printResult();
+        String message = br.readLine();
+        String key = br.readLine();
+        makeBoard(key);
+        transformMessage(message);
+        System.out.println(encode());
+    }
+
+    private static String encode() {
+        StringBuilder result = new StringBuilder();
+
+        for (String token : tokens) {
+            int[] firstCoord = map.get(token.charAt(0));
+            int[] lastCoord = map.get(token.charAt(1));
+            if (firstCoord[0] == lastCoord[0]) { // 같은 행
+                result.append(board[firstCoord[0]][(firstCoord[1] + 1) % SIZE]);
+                result.append(board[lastCoord[0]][(lastCoord[1] + 1) % SIZE]);
+            } else if (firstCoord[1] == lastCoord[1]) { // 같은 열
+                result.append(board[(firstCoord[0] + 1) % SIZE][firstCoord[1]]);
+                result.append(board[(lastCoord[0] + 1) % SIZE][lastCoord[1]]);
+            } else {
+                result.append(board[firstCoord[0]][lastCoord[1]]);
+                result.append(board[lastCoord[0]][firstCoord[1]]);
+            }
+        }
+        return result.toString();
+    }
+
+    private static void transformMessage(String message) {
+        int idx = 0;
+        tokens = new ArrayList<>();
+        StringBuilder sb = new StringBuilder(message);
+        while (idx < sb.length() - 2) {
+            if (sb.charAt(idx) == sb.charAt(idx + 1)) {
+                char tmp = 'X';
+                if (sb.charAt(idx) == 'X') tmp = 'Q';
+                sb.insert(idx + 1, tmp);
+                sb.append(tmp);
+            }
+            tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
+            idx += 2;
+        }
+        tokens.add(String.valueOf(sb.charAt(idx)) + sb.charAt(idx + 1));
+    }
+
+    private static void makeBoard(String key) {
+        StringBuilder sb = new StringBuilder(key);
+        for (int i = 'A'; i <= 'Z'; i++) sb.append((char) i);
+
+        map = new HashMap();
+        char[] chars = sb.toString().toCharArray();
+        int idx = 0;
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                while (map.containsKey(chars[idx]) || chars[idx] == 'J') idx++;
+                map.put(chars[idx], new int[]{i, j});
+                board[i][j] = chars[idx];
+                idx++;
+            }
+        }
     }
 }
