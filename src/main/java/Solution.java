@@ -1,53 +1,43 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.StringJoiner;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Solution {
-    static final int SIZE = 8;
+class Solution {
+    public static Set<Integer> cached = new HashSet<>();
 
-    static StringBuilder answer = new StringBuilder();
-    static StringTokenizer st;
-    static Deque<Integer> deque;
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        for (int i = 1; i <= 10; i++) {
-            int n = Integer.parseInt(br.readLine());
-            initialize(br);
-            answer.append("#" + n + " " + solution() + "\n");
-        }
-        System.out.println(answer);
+    public int solution(String begin, String target, String[] words) {
+        List<Integer> entry = getEntry(words, begin);
+        return bfs(words, entry, target);
     }
 
-    private static String solution() {
-        StringJoiner stringJoiner = new StringJoiner(" ", "", "");
-
-        while (!deque.isEmpty() && deque.peekFirst() > 0) {
-            for (int i = 1; i <= 5; i++) {
-                if (deque.peekFirst() - i <= 0) {
-                    deque.pollFirst();
-                    deque.offerFirst(0);
-                    break;
+    private int bfs(String[] words, List<Integer> entry, String target) {
+        Queue<List<Integer>> queue = new ArrayDeque<>();
+        queue.add(entry);
+        int level = 0;
+        while (!queue.isEmpty()) {
+            int length = queue.size();
+            for (int i = 0; i < length; i++) {
+                List<Integer> poll = queue.poll();
+                for (Integer index : poll) {
+                    if (words[index].equals(target)) return level + 1;
+                    queue.offer(getEntry(words, words[index]));
                 }
-                deque.offerLast(deque.pollFirst() - i);
             }
+            level++;
         }
-        deque.pollFirst();
-        deque.offerLast(0);
-
-        for (Integer x : deque) stringJoiner.add(x + "");
-        return stringJoiner.toString();
+        return 0;
     }
 
-    private static void initialize(BufferedReader br) throws IOException {
-        deque = new ArrayDeque<>(SIZE);
-        st = new StringTokenizer(br.readLine());
-        for (int j = 0; j < SIZE; j++) {
-            deque.offerLast(Integer.parseInt(st.nextToken()));
+    private List<Integer> getEntry(String[] words, String target) {
+        List<Integer> indexList = new ArrayList<>();
+
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            int cnt = 0;
+            for (int j = 0; j < word.length(); j++) {
+                if (word.charAt(j) == target.charAt(j)) cnt++;
+            }
+            if (cnt == 2 && !cached.contains(i)) indexList.add(i);
         }
+        cached.addAll(indexList);
+        return indexList;
     }
 }
