@@ -1,69 +1,46 @@
 import java.util.*;
 
 class Solution {
-    Map<String, Integer> map;
-    Set<String> entry;
+    public String solution(int n, int k, String[] cmd) {
+        StringBuilder answer = new StringBuilder();
+        List<Integer> list = new ArrayList<>();
+        Stack<int[]> stack = new Stack<>();
 
-    public String[] solution(String[] orders, int[] course) {
-        List<String> answer = new ArrayList<>();
-        makeEntry(orders, course);
-        for (Map.Entry<String, Integer> e : map.entrySet()) {
-            if (e.getValue() >= 2) {
-                answer.add(e.getKey());
+        for (int i = 0; i < n; i++) {
+            list.add(i);
+        }
+
+        for (String s : cmd) {
+            StringTokenizer st = new StringTokenizer(s);
+            String command = st.nextToken();
+            if (command.equals("D")) {
+                k += Integer.parseInt(st.nextToken());
+            } else if (command.equals("U")) {
+                k -= Integer.parseInt(st.nextToken());
+            } else if (command.equals("C")) {
+                stack.push(new int[]{k, list.get(k)});
+                list.remove(k);
+                if (k == list.size()) k--;
+            } else if (command.equals("Z")) {
+                int[] pop = stack.pop();
+                list.add(pop[0], pop[1]);
+                if (k >= pop[0]) k++;
             }
         }
-        for (Map.Entry<String, Integer> e : map.entrySet()) {
-            if (e.getValue() >= 2) {
-                System.out.println(e.getKey() + " / " + e.getValue());
-            }
-        }
-        Collections.sort(answer);
 
-        return answer.toArray(new String[0]);
+        for (int i = 0; i < n; i++) {
+            if (list.contains(i)) answer.append('O');
+            else answer.append('X');
+        }
+
+        return answer.toString();
     }
-
-
-    private void makeEntry(String[] orders, int[] course) {
-        entry = new TreeSet<>();
-        map = new HashMap<>();
-        int tmp = 0;
-        for (String order : orders) {
-            for (int i = 0; i < (1 << order.length()); i++) {
-                char[] buffer = new char[order.length()];
-                int idx = 0;
-                for (int j = 0; j < order.length(); j++) {
-                    if ((i & (1 << j)) != 0 && idx < order.length()) {
-                        buffer[idx++] = order.charAt(j);
-                    }
-                }
-                String trim = new String(buffer).trim();
-                for (int j = course.length - 1; j > 0; j--) {
-                    if (trim.length() == course[j]) {
-                        Set<String> keySet = map.keySet();
-                        boolean flag = true;
-                        for (String s : keySet) {
-                            if (!s.equals(trim) && s.contains(trim)) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) {
-                            map.put(trim, map.getOrDefault(trim, 0) + 1);
-                            entry.add(trim);
-                        }
-                    }
-                }
-            }
-            tmp++;
-        }
-
-    }
-
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        for (String s : T.solution(new String[]{"ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"}, new int[]{2, 3, 4})) {
-//            System.out.println("s = " + s);
-        }
+        int n = 8;
+        int k = 2;
+        String[] arr = new String[]{"D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"};
+        System.out.println(T.solution(n, k, arr));
     }
 }

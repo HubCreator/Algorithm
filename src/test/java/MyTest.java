@@ -103,4 +103,19 @@ public class MyTest {
         String s = "abcabc";
         System.out.println(s.indexOf("abc", 3));
     }
+
+    @Test
+    void deepCopy() {
+        List<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(2);
+        List<Integer> list2 = new ArrayList<>(list1);
+        List<Integer> list3 = list1;
+
+        list1.add(3);
+        System.out.println("list1 = " + list1);
+        System.out.println("list2 = " + list2);
+        System.out.println("list3 = " + list3);
+
+    }
 }
