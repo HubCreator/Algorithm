@@ -1,59 +1,69 @@
 import java.util.*;
 
 class Solution {
-    Map<Integer, List<Character>> map;
-    List<Character> elements;
-    Set<String> entry, answer;
+    Map<String, Integer> map;
+    Set<String> entry;
 
     public String[] solution(String[] orders, int[] course) {
-        String[] answer = {};
-        initialize(orders);
-        makeEntry(course);
+        List<String> answer = new ArrayList<>();
+        makeEntry(orders, course);
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            if (e.getValue() >= 2) {
+                answer.add(e.getKey());
+            }
+        }
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            if (e.getValue() >= 2) {
+                System.out.println(e.getKey() + " / " + e.getValue());
+            }
+        }
+        Collections.sort(answer);
 
-
-        return new String[]{};
+        return answer.toArray(new String[0]);
     }
 
 
-    private void makeEntry(int[] course) {
+    private void makeEntry(String[] orders, int[] course) {
         entry = new TreeSet<>();
-        for (int len : course) {
-            for (int i = 0; i < (1 << elements.size()); i++) {
-                char[] buffer = new char[len];
+        map = new HashMap<>();
+        int tmp = 0;
+        for (String order : orders) {
+            for (int i = 0; i < (1 << order.length()); i++) {
+                char[] buffer = new char[order.length()];
                 int idx = 0;
-                for (int j = 0; j < elements.size(); j++) {
-                    if ((i & (1 << j)) != 0 && idx < len) {
-                        buffer[idx++] = elements.get(j);
+                for (int j = 0; j < order.length(); j++) {
+                    if ((i & (1 << j)) != 0 && idx < order.length()) {
+                        buffer[idx++] = order.charAt(j);
                     }
                 }
-                if (idx == len) {
-                    Arrays.sort(buffer);
-                    entry.add(new String(buffer));
+                String trim = new String(buffer).trim();
+                for (int j = course.length - 1; j > 0; j--) {
+                    if (trim.length() == course[j]) {
+                        Set<String> keySet = map.keySet();
+                        boolean flag = true;
+                        for (String s : keySet) {
+                            if (!s.equals(trim) && s.contains(trim)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            map.put(trim, map.getOrDefault(trim, 0) + 1);
+                            entry.add(trim);
+                        }
+                    }
                 }
             }
+            tmp++;
         }
+
     }
 
-    private void initialize(String[] orders) {
-        map = new HashMap<>();
-        elements = new ArrayList<>();
-        for (int i = 0; i < orders.length; i++) {
-            String order = orders[i];
-            List<Character> tmp = new ArrayList<>();
-            for (int j = 0; j < order.length(); j++) {
-                tmp.add(order.charAt(j));
-                if (elements.isEmpty() || !elements.contains(order.charAt(j))) {
-                    elements.add(order.charAt(j));
-                }
-            }
-            map.put(i, tmp);
-        }
-    }
 
     public static void main(String[] args) {
         Solution T = new Solution();
         for (String s : T.solution(new String[]{"ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"}, new int[]{2, 3, 4})) {
-            System.out.println("s = " + s);
+//            System.out.println("s = " + s);
         }
     }
 }
