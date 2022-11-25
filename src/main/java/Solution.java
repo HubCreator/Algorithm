@@ -1,82 +1,59 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Solution {
-    int answer = 0;
-    char[] operators = new char[]{'*', '+', '-'};
-    int[] pm = new int[operators.length];
-    boolean[] ch = new boolean[operators.length];
-    List<String> entry = new ArrayList<>();
+    Map<Integer, List<Character>> map;
+    List<Character> elements;
+    Set<String> entry, answer;
 
-    public long solution(String expression) {
-        long answer = 0L;
-        dfs(0); // operation들의 조합 가져오기
-        String target = expression;
+    public String[] solution(String[] orders, int[] course) {
+        String[] answer = {};
+        initialize(orders);
+        makeEntry(course);
 
-        for (String e : entry) {
-            List<String> chunk = split(target);
-            for (int i = 0; i < e.length(); i++) {
-                char operation = e.charAt(i);
-                for (int j = 0; j < chunk.size(); j++) {
-                    if (chunk.get(j).equals(operation + "")) {
-                        evaluate(chunk, j, operation);
-                        j--;
+
+        return new String[]{};
+    }
+
+
+    private void makeEntry(int[] course) {
+        entry = new TreeSet<>();
+        for (int len : course) {
+            for (int i = 0; i < (1 << elements.size()); i++) {
+                char[] buffer = new char[len];
+                int idx = 0;
+                for (int j = 0; j < elements.size(); j++) {
+                    if ((i & (1 << j)) != 0 && idx < len) {
+                        buffer[idx++] = elements.get(j);
                     }
                 }
-            }
-            answer = Math.max(answer, Math.abs(Long.parseLong(chunk.get(0))));
-        }
-
-
-        return answer;
-    }
-
-    private void evaluate(List<String> chunk, int idx, char operation) {
-        long result = 0L;
-        if (operation == '*') {
-            result = Long.parseLong(chunk.get(idx - 1)) * Long.parseLong(chunk.get(idx + 1));
-        } else if (operation == '+') {
-            result = Long.parseLong(chunk.get(idx - 1)) + Long.parseLong(chunk.get(idx + 1));
-        } else if (operation == '-') {
-            result = Long.parseLong(chunk.get(idx - 1)) - Long.parseLong(chunk.get(idx + 1));
-        }
-        chunk.set(idx, result + "");
-
-        chunk.remove(idx - 1);
-        chunk.remove(idx);
-    }
-
-    private List<String> split(String expression) {
-        StringTokenizer st = new StringTokenizer(expression, "*+-", true);
-        List<String> strings = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            strings.add(st.nextToken());
-        }
-        return strings;
-    }
-
-    private void dfs(int L) {
-        if (L == operators.length) {
-            StringBuilder result = new StringBuilder();
-            for (int x : pm) {
-                result.append(operators[x]);
-            }
-            entry.add(result.toString());
-        } else {
-            for (int i = 0; i < ch.length; i++) {
-                if (!ch[i]) {
-                    ch[i] = true;
-                    pm[L] = i;
-                    dfs(L + 1);
-                    ch[i] = false;
+                if (idx == len) {
+                    Arrays.sort(buffer);
+                    entry.add(new String(buffer));
                 }
             }
+        }
+    }
+
+    private void initialize(String[] orders) {
+        map = new HashMap<>();
+        elements = new ArrayList<>();
+        for (int i = 0; i < orders.length; i++) {
+            String order = orders[i];
+            List<Character> tmp = new ArrayList<>();
+            for (int j = 0; j < order.length(); j++) {
+                tmp.add(order.charAt(j));
+                if (elements.isEmpty() || !elements.contains(order.charAt(j))) {
+                    elements.add(order.charAt(j));
+                }
+            }
+            map.put(i, tmp);
         }
     }
 
     public static void main(String[] args) {
         Solution T = new Solution();
-        System.out.println(T.solution("100-200*300-500+20"));
+        for (String s : T.solution(new String[]{"ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"}, new int[]{2, 3, 4})) {
+            System.out.println("s = " + s);
+        }
     }
 }
