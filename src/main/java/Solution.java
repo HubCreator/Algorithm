@@ -3,9 +3,7 @@ class Solution {
         StringBuilder answer = new StringBuilder();
         StringBuilder buffer = new StringBuilder();
         for (int i = 1; i < food.length; i++) {
-            for (int j = 0; j < food[i] / 2; j++) {
-                buffer.append(i);
-            }
+            buffer.append(String.valueOf(i).repeat(Math.max(0, food[i] / 2)));
         }
         answer.append(buffer);
         answer.append(0);
