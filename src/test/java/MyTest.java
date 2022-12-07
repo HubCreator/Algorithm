@@ -2,8 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 public class MyTest {
 
@@ -116,6 +115,13 @@ public class MyTest {
         System.out.println("list1 = " + list1);
         System.out.println("list2 = " + list2);
         System.out.println("list3 = " + list3);
+    }
+
+    @Test
+    void doubleToIntTest() {
+        double d = 1.3456d;
+        int i = (int) d;
+        System.out.println("i = " + i);
 
     }
 }
