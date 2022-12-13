@@ -122,6 +122,5 @@ public class MyTest {
         double d = 1.3456d;
         int i = (int) d;
         System.out.println("i = " + i);
-
     }
 }
