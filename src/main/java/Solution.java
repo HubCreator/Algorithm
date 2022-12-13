@@ -1,26 +1,25 @@
+
 class Solution {
-    public int solution(String s) {
-        for (int window = s.length(); window >= 1; window--) { // 윈도우의 크기
-            for (int index = 0; index <= s.length() - window; index++) { // 슬라이딩
-                String substring = s.substring(index, index + window);
-                if (isPalindrome(substring)) {
-                    return substring.length();
+    public int solution(String input) {
+        for (int window = input.length(); window >= 2; window--) { // 윈도우의 크기
+            for (int index = 0; index <= input.length() - window; index++) { // 슬라이딩
+                if (isPalindrome(input, index, window)) {
+                    return window;
                 }
             }
         }
-        return 0;
+        return 1;
     }
 
-    private boolean isPalindrome(String str) {
-        String str1 = str.substring(0, str.length() / 2);
-        String str2 = str.length() == 2 ?
-                new StringBuilder(str.substring(str.length() / 2)).reverse().toString() :
-                new StringBuilder(str.substring(str.length() / 2 + 1)).reverse().toString();
-        return str1.equals(str2);
-    }
-
-    public static void main(String[] args) {
-        Solution T = new Solution();
-        System.out.println(T.solution("ecdabbcadc"));
+    private boolean isPalindrome(String str, int start, int window) {
+        if (window == 2) {
+            return str.charAt(start) == str.charAt(start + 1);
+        }
+        for (int i = start; i < start + window / 2; i++) {
+            if (str.charAt(i) != str.charAt(start + (start + window - 1) - i)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
