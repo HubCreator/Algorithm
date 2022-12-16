@@ -1,5 +1,9 @@
+import org.assertj.core.error.ShouldBeEqualIgnoringNewLineDifferences;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
@@ -122,5 +126,12 @@ public class MyTest {
         double d = 1.3456d;
         int i = (int) d;
         System.out.println("i = " + i);
+    }
+
+    @Test
+    void decimalTest() {
+        BigDecimal decimal = BigDecimal.valueOf(1);
+        BigDecimal divide = decimal.divide(BigDecimal.valueOf(0.5), 3, RoundingMode.HALF_DOWN);
+        System.out.println(divide);
     }
 }
