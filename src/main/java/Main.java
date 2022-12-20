@@ -2,45 +2,38 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Queue;
 
 public class Main {
-
-    public static final String DELIMITER = " ";
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
-
-        int N = Integer.parseInt(br.readLine());
-        for (int i = 0; i < N; i++) {
-            validate(stack,br);
-        }
-    }
-
-    private static void validate(ArrayDeque<Integer> stack, BufferedReader br) throws IOException {
         String input = br.readLine();
-        if (input.startsWith("push")) {
-            stack.offer(Integer.parseInt(input.split(DELIMITER)[1]));
-        }
-        if (input.startsWith("pop")) {
-            if (stack.isEmpty()) {
-                System.out.println(-1);
-                return;
+        String[] split = input.split(" ");
+        int N = Integer.parseInt(split[0]);
+        int K = Integer.parseInt(split[1]);
+
+        int[] arr = Arrays.stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        Queue<Integer> queue = new ArrayDeque<>(N);
+        int lt = 0, cnt = 0, answer = Integer.MIN_VALUE;
+
+        for (int rt = 0; rt < N; rt++) {
+            if (queue.contains(arr[rt])) {
+                cnt++;
             }
-            System.out.println(stack.pollLast());
-        }
-        if (input.startsWith("size")) {
-            System.out.println(stack.size());
-        }
-        if (input.startsWith("empty")) {
-            System.out.println(stack.isEmpty() ? 1 : 0);
-        }
-        if (input.startsWith("top")) {
-            if (stack.isEmpty()) {
-                System.out.println(-1);
-                return;
+            while (cnt == K) {
+                if (arr[lt] == arr[lt + 1]) {
+                    cnt--;
+                    break;
+                }
+                lt++;
             }
-            System.out.println(stack.peekLast());
+            queue.offer(arr[rt]);
+            answer = Math.max(answer, rt - lt + 1);
         }
+        System.out.println(answer);
     }
 }
