@@ -1,13 +1,33 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class Solution {
+    public int solution(int number, int limit, int power) {
+        return getDivisorCountList(number).stream()
+                .mapToInt(m -> {
+                    if (m > limit) {
+                        return power;
+                    }
+                    return m;
+                })
+                .sum();
+    }
 
-    private static final int RADIX = 3;
-
-    public int solution(int n) {
-        StringBuilder sb = new StringBuilder();
-        while (n != 0) {
-            sb.append(n % RADIX);
-            n /= RADIX;
+    private List<Integer> getDivisorCountList(int number) {
+        List<Integer> result = new ArrayList<>(number);
+        for (int index = 1; index <= number; index++) {
+            result.add(getDivisorCount(index));
         }
-        return Integer.parseInt(sb.toString(), 3);
+        return result;
+    }
+
+    private int getDivisorCount(int index) {
+        int count = 0;
+        for (int i = 1; i <= index; i++) {
+            if (index % i == 0) {
+                count++;
+            }
+        }
+        return count;
     }
 }
