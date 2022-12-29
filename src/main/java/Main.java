@@ -1,37 +1,35 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input = br.readLine();
-        String[] split = input.split(" ");
-        int N = Integer.parseInt(split[0]);
-        int K = Integer.parseInt(split[1]);
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        int N = Integer.parseInt(st1.nextToken());
+        int K = Integer.parseInt(st1.nextToken());
 
-        int[] arr = Arrays.stream(br.readLine().split(" "))
-                .mapToInt(Integer::parseInt)
-                .toArray();
+        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        int[] arr = new int[N];
+        for (int index = 0; index < N; index++) {
+            arr[index] = Integer.parseInt(st2.nextToken());
+        }
 
-        Queue<Integer> queue = new ArrayDeque<>(N);
-        int lt = 0, cnt = 0, answer = Integer.MIN_VALUE;
+        Map<Integer, Integer> map = new HashMap<>();
+        int rt, lt = 0, answer = Integer.MIN_VALUE;
 
-        for (int rt = 0; rt < N; rt++) {
-            if (queue.contains(arr[rt])) {
-                cnt++;
-            }
-            while (cnt == K) {
-                if (arr[lt] == arr[lt + 1]) {
-                    cnt--;
-                    break;
+        for (rt = 0; rt < N; rt++) {
+            map.put(arr[rt], map.getOrDefault(arr[rt], 0) + 1);
+            if (map.get(arr[rt]) > K) {
+                while (arr[lt] != arr[rt]) {
+                    lt++;
                 }
                 lt++;
+                map.put(arr[rt], map.get(arr[rt]) - 1);
             }
-            queue.offer(arr[rt]);
             answer = Math.max(answer, rt - lt + 1);
         }
         System.out.println(answer);
