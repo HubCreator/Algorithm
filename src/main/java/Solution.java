@@ -3,14 +3,16 @@ import java.util.List;
 
 class Solution {
     public int solution(int number, int limit, int power) {
-        return getDivisorCountList(number).stream()
-                .mapToInt(m -> {
-                    if (m > limit) {
-                        return power;
-                    }
-                    return m;
-                })
-                .sum();
+        List<Integer> divisorCountList = getDivisorCountList(number);
+        int result = 0;
+        for (Integer target : divisorCountList) {
+            if (target > limit) {
+                result += power;
+            } else {
+                result += target;
+            }
+        }
+        return result;
     }
 
     private List<Integer> getDivisorCountList(int number) {
