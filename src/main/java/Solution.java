@@ -5,12 +5,8 @@ class Solution {
     public int solution(int number, int limit, int power) {
         List<Integer> divisorCountList = getDivisorCountList(number);
         int result = 0;
-        for (Integer target : divisorCountList) {
-            if (target > limit) {
-                result += power;
-            } else {
-                result += target;
-            }
+        for (Integer divisor : divisorCountList) {
+            result += divisor > limit ? power : divisor;
         }
         return result;
     }
@@ -23,11 +19,13 @@ class Solution {
         return result;
     }
 
-    private int getDivisorCount(int index) {
+    private int getDivisorCount(int number) {
         int count = 0;
-        for (int i = 1; i <= index; i++) {
-            if (index % i == 0) {
+        for (int i = 1; i * i <= number; i++) {
+            if (i * i == number) {
                 count++;
+            } else if (number % i == 0) {
+                count += 2;
             }
         }
         return count;
