@@ -1,29 +1,36 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[n + 1];
-        int result = 0;
-
-        for (int i = 2; i <= n; i++) {
-            if (arr[i] == 0) {
-                result++;
-                for (int j = i * 2; j <= n; j += i) {
-                    arr[j] = 1;
-                }
-            }
+        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(st1.nextToken());
+        int k = Integer.parseInt(st1.nextToken());
+        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st2.nextToken());
         }
 
-        for (int i = 2; i < arr.length; i++) {
-            if (arr[i] == 0) {
-                System.out.println(i);
-            }
-        }
+        System.out.println(solution(arr, k));
+    }
 
-        System.out.println(result);
+    private static int solution(int[] arr, int k) {
+        int answer = 0, cnt = 0, lt = 0;
+        for (int rt = 0; rt < arr.length; rt++) {
+            if (arr[rt] == 0) {
+                cnt++;
+            }
+            while (cnt > k) {
+                if (arr[lt] == 0) cnt--;
+                lt++;
+            }
+            answer = Math.max(answer, rt - lt + 1);
+        }
+        return answer;
     }
 }
