@@ -18,7 +18,6 @@ public class Main {
             }
         }
 
-
         for (int i = 2; i < arr.length; i++) {
             if (arr[i] == 0) {
                 System.out.println(i);

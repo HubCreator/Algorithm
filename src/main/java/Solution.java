@@ -1,24 +1,27 @@
-class Solution {
+import java.util.HashSet;
 
-    public int[] solution(int[] numbers) {
-        int[] answer = new int[numbers.length];
-        answer[numbers.length - 1] = -1;
-        for (int i = numbers.length - 2; i >= 0; i--) {
-            for (int j = i + 1; j < numbers.length; j++) {
-                if (numbers[i] < numbers[j]) {
-                    answer[i] = numbers[j];
-                    break;
-                } else {
-                    if (answer[j] == -1) {
-                        answer[i] = -1;
-                        break;
-                    } else if (numbers[i] < answer[j]) {
-                        answer[i] = answer[j];
-                        break;
-                    }
-                }
+class Solution {
+    public int solution(int x, int y, int n) {
+
+        int cnt = 0;
+        HashSet<Integer> curr = new HashSet<>(), next = null;
+        curr.add(x);
+
+        while (!curr.isEmpty()) {
+            if (curr.contains(y))
+                return cnt;
+            next = new HashSet<>();
+            for (int val : curr) {
+                int res1 = val + n;
+                int res2 = val * 2;
+                int res3 = val * 3;
+                if (res1 <= y) next.add(res1);
+                if (res2 <= y) next.add(res2);
+                if (res3 <= y) next.add(res3);
             }
+            curr = next;
+            cnt++;
         }
-        return answer;
+        return -1;
     }
 }
