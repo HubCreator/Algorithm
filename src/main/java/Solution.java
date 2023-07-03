@@ -1,17 +1,15 @@
 import java.util.Arrays;
 
-// 시간 복잡도 : O(nlogN) (내부적으로 Dual-Pivot Quicksort 사용)
+// 시간 복잡도 : O(nlogN)
 // 공간 복잡도 : O(1)
 class Solution {
-    public String solution(String[] participant, String[] completion) {
-        Arrays.sort(participant);
-        Arrays.sort(completion);
-
-        for (int i = 0; i < completion.length; i++) {
-            if (!participant[i].equals(completion[i])) {
-                return participant[i];
+    public boolean solution(String[] phone_book) {
+        Arrays.sort(phone_book);
+        for (int i = 0; i < phone_book.length - 1; i++) {
+            if (phone_book[i + 1].startsWith(phone_book[i])) {
+                return false;
             }
         }
-        return participant[participant.length - 1];
+        return true;
     }
 }
