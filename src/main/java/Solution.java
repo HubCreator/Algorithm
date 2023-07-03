@@ -1,27 +1,22 @@
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
+// 시간 복잡도 : O(n)
+// 공간 복잡도 : O(n)
 class Solution {
-    public int solution(int x, int y, int n) {
-
-        int cnt = 0;
-        HashSet<Integer> curr = new HashSet<>(), next = null;
-        curr.add(x);
-
-        while (!curr.isEmpty()) {
-            if (curr.contains(y))
-                return cnt;
-            next = new HashSet<>();
-            for (int val : curr) {
-                int res1 = val + n;
-                int res2 = val * 2;
-                int res3 = val * 3;
-                if (res1 <= y) next.add(res1);
-                if (res2 <= y) next.add(res2);
-                if (res3 <= y) next.add(res3);
-            }
-            curr = next;
-            cnt++;
+    public String solution(String[] participant, String[] completion) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String p : participant) {
+            map.put(p, map.getOrDefault(p, 0) + 1);
         }
-        return -1;
+        for (String c : completion) {
+            map.put(c, map.get(c) + 1);
+        }
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() % 2 != 0) {
+                return entry.getKey();
+            }
+        }
+        return "";
     }
 }
