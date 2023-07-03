@@ -1,22 +1,17 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
-// 시간 복잡도 : O(n)
-// 공간 복잡도 : O(n)
+// 시간 복잡도 : O(nlogN) (내부적으로 Dual-Pivot Quicksort 사용)
+// 공간 복잡도 : O(1)
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        Map<String, Integer> map = new HashMap<>();
-        for (String p : participant) {
-            map.put(p, map.getOrDefault(p, 0) + 1);
-        }
-        for (String c : completion) {
-            map.put(c, map.get(c) + 1);
-        }
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (entry.getValue() % 2 != 0) {
-                return entry.getKey();
+        Arrays.sort(participant);
+        Arrays.sort(completion);
+
+        for (int i = 0; i < completion.length; i++) {
+            if (!participant[i].equals(completion[i])) {
+                return participant[i];
             }
         }
-        return "";
+        return participant[participant.length - 1];
     }
 }
