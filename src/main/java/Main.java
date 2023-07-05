@@ -1,36 +1,74 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        int n = Integer.parseInt(st1.nextToken());
-        int k = Integer.parseInt(st1.nextToken());
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
-        }
+    private static int sorted[];
 
-        System.out.println(solution(arr, k));
+    public static void main(String[] args) {
+        Main T = new Main();
+        int[] arr = new int[]{15, 4, 3, 2, 1};
+        sorted = new int[arr.length];
+
+        T.insertion(arr);
+
+        for (int i : arr) {
+            System.out.print(i + " ");
+        }
     }
 
-    private static int solution(int[] arr, int k) {
-        int answer = 0, cnt = 0, lt = 0;
-        for (int rt = 0; rt < arr.length; rt++) {
-            if (arr[rt] == 0) {
-                cnt++;
+    void bubble(int[] arr) {
+        for (int i = 0; i < arr.length - 1; i++)
+            for (int j = 0; j < arr.length - 1 - i; j++)
+                if (arr[j] > arr[j + 1])
+                    swap(arr, j, j + 1);
+    }
+
+    void selection(int[] arr) {
+        for (int i = 0; i < arr.length - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[j] < arr[min]) {
+                    min = j;
+                }
             }
-            while (cnt > k) {
-                if (arr[lt] == 0) cnt--;
-                lt++;
-            }
-            answer = Math.max(answer, rt - lt + 1);
+            swap(arr, min, i);
         }
-        return answer;
+    }
+
+    void insertion(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    public void mergeSort(int[] arr, int lt, int rt) {
+        if (lt < rt) {
+            int mid = (rt - lt) / 2 + 1;
+            mergeSort(arr, lt, mid);
+            mergeSort(arr, mid + 1, rt);
+            merge(arr, lt, mid, rt);
+        }
+    }
+
+    private void merge(int[] arr, int lt, int mid, int rt) {
+        int i = lt, j = mid + 1, k = lt, l;
+
+        while (i <= mid && j <= rt) {
+            if (arr[i] <= arr[j]) {
+                sorted[k++] = arr[i++];
+            } else {
+                sorted[k++] = arr[j++];
+            }
+        }
+    }
+
+    private void swap(int[] arr, int a, int b) {
+        int tmp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = tmp;
     }
 }
