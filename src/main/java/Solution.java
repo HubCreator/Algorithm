@@ -7,7 +7,7 @@ class Solution {
                 sum += sequence[i];
             }
             int lt = 0;
-            for (int rt = winSize - 1; rt < sequence.length; rt++, lt++) {
+            for (int rt = winSize - 1; sum <= k && rt < sequence.length; rt++, lt++) {
                 sum += sequence[rt];
                 if (sum == k) return new int[]{lt, rt};
                 sum -= sequence[lt];
