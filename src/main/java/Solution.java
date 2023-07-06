@@ -1,24 +1,24 @@
 class Solution {
 
     public int[] solution(int[] sequence, int k) {
-        for (int winSize = 1; winSize < sequence.length; winSize++) {
-            int sum = 0;
-            for (int i = 0; i < winSize - 1; i++) { // 초기 윈도우값 생성
-                sum += sequence[i];
-            }
-            int lt = 0;
-            for (int rt = winSize - 1; sum <= k && rt < sequence.length; rt++, lt++) {
-                sum += sequence[rt];
-                if (sum == k) return new int[]{lt, rt};
-                sum -= sequence[lt];
+        int left = 0, right = -1, sum = 0;
+        int length = 1000001, sLeft = 0, sRight = 0;
+
+        while (right < sequence.length) {
+            if (sum < k) {
+                if (++right < sequence.length)
+                    sum += sequence[right];
+            } else if (sum > k) {
+                sum -= sequence[left++];
+            } else {
+                if (right - left < length) {
+                    length = right - left;
+                    sLeft = left;
+                    sRight = right;
+                }
+                sum -= sequence[left++];
             }
         }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        final Solution T = new Solution();
-        final int[] solution = T.solution(new int[]{1, 2, 3, 4, 5}, 7);
-        System.out.println("[" + solution[0] + ", " + solution[1] + "]");
+        return new int[]{sLeft, sRight};
     }
 }
