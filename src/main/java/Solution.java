@@ -1,32 +1,24 @@
-import java.util.HashSet;
-import java.util.Set;
-
 class Solution {
 
-    public int solution(int[] elements) {
-        int[] arr = new int[elements.length * 2];
-        for (int i = 0; i < elements.length * 2; i++) {
-            arr[i] = elements[i % elements.length];
-        }
-
-        Set<Integer> answer = new HashSet<>();
-        for (int winSize = 0; winSize < elements.length; winSize++) {
+    public int[] solution(int[] sequence, int k) {
+        for (int winSize = 1; winSize < sequence.length; winSize++) {
             int sum = 0;
-            for (int i = 0; i < winSize; i++) { // 초기 윈도우값 생성
-                sum += arr[i];
+            for (int i = 0; i < winSize - 1; i++) { // 초기 윈도우값 생성
+                sum += sequence[i];
             }
-            for (int i = winSize; i < arr.length; i++) { // 슬라이딩
-                sum += arr[i];
-                answer.add(sum);
-                sum -= arr[i - winSize];
+            int lt = 0;
+            for (int rt = winSize - 1; rt < sequence.length; rt++, lt++) {
+                sum += sequence[rt];
+                if (sum == k) return new int[]{lt, rt};
+                sum -= sequence[lt];
             }
         }
-        return answer.size();
+        return null;
     }
 
     public static void main(String[] args) {
-        Solution T = new Solution();
-        int answer = T.solution(new int[]{7, 9, 1, 1, 4});
-        System.out.println(answer);
+        final Solution T = new Solution();
+        final int[] solution = T.solution(new int[]{1, 2, 3, 4, 5}, 7);
+        System.out.println("[" + solution[0] + ", " + solution[1] + "]");
     }
 }
