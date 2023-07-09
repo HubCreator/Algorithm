@@ -1,74 +1,50 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Main {
 
-    private static int sorted[];
+    private static final int digitCount = 10, charCount = 26;
 
-    public static void main(String[] args) {
-        Main T = new Main();
-        int[] arr = new int[]{15, 4, 3, 2, 1};
-        sorted = new int[arr.length];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
 
-        T.insertion(arr);
+        int[] digitArr = new int[input.length()];
+        int[] charArr = new int[input.length()];
 
-        for (int i : arr) {
-            System.out.print(i + " ");
+        if (input.charAt(0) == 'c') {
+            charArr[0] = charCount;
+        } else {
+            digitArr[0] = digitCount;
         }
-    }
 
-    void bubble(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++)
-            for (int j = 0; j < arr.length - 1 - i; j++)
-                if (arr[j] > arr[j + 1])
-                    swap(arr, j, j + 1);
-    }
-
-    void selection(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            int min = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[j] < arr[min]) {
-                    min = j;
+        for (int i = 1; i < input.length(); i++) {
+            if (input.charAt(i) == 'c') {
+                if (charArr[i - 1] != 0) {
+                    charArr[i] = charCount - 1;
+                } else {
+                    charArr[i] = charCount;
+                }
+            } else {
+                if (digitArr[i - 1] != 0) {
+                    digitArr[i] = digitCount - 1;
+                } else {
+                    digitArr[i] = digitCount;
                 }
             }
-            swap(arr, min, i);
         }
-    }
 
-    void insertion(int[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            int key = arr[i];
-            int j = i - 1;
-            while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
-                j--;
+        int answer = 1;
+        for (int i = 0; i < input.length(); i++) {
+            if (charArr[i] != 0) {
+                answer *= charArr[i];
             }
-            arr[j + 1] = key;
-        }
-    }
-
-    public void mergeSort(int[] arr, int lt, int rt) {
-        if (lt < rt) {
-            int mid = (rt - lt) / 2 + 1;
-            mergeSort(arr, lt, mid);
-            mergeSort(arr, mid + 1, rt);
-            merge(arr, lt, mid, rt);
-        }
-    }
-
-    private void merge(int[] arr, int lt, int mid, int rt) {
-        int i = lt, j = mid + 1, k = lt, l;
-
-        while (i <= mid && j <= rt) {
-            if (arr[i] <= arr[j]) {
-                sorted[k++] = arr[i++];
-            } else {
-                sorted[k++] = arr[j++];
+            if (digitArr[i] != 0) {
+                answer *= digitArr[i];
             }
         }
-    }
 
-    private void swap(int[] arr, int a, int b) {
-        int tmp = arr[a];
-        arr[a] = arr[b];
-        arr[b] = tmp;
+        System.out.println(answer);
     }
 }
