@@ -1,24 +1,16 @@
+import java.util.Arrays;
+
+// 시간 복잡도 : O(n)
+// 공간 복잡도 : O(n)
 class Solution {
 
-    public int[] solution(int[] sequence, int k) {
-        int left = 0, right = -1, sum = 0;
-        int length = 1000001, sLeft = 0, sRight = 0;
+    public long solution(int[] sequence) {
+        long[] arr = new long[sequence.length + 1];
 
-        while (right < sequence.length) {
-            if (sum < k) {
-                if (++right < sequence.length)
-                    sum += sequence[right];
-            } else if (sum > k) {
-                sum -= sequence[left++];
-            } else {
-                if (right - left < length) {
-                    length = right - left;
-                    sLeft = left;
-                    sRight = right;
-                }
-                sum -= sequence[left++];
-            }
+        for (int i = 0; i < sequence.length; i++) {
+            arr[i + 1] = arr[i] + sequence[i] * (long) Math.pow(-1, i);
         }
-        return new int[]{sLeft, sRight};
+
+        return Arrays.stream(arr).max().getAsLong() - Arrays.stream(arr).min().getAsLong();
     }
 }
