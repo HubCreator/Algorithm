@@ -10,20 +10,25 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        int[] price = new int[3];
-        for (int i = 0; i < price.length; i++) {
-            price[i] = Integer.parseInt(st.nextToken());
+        int[] nums = new int[5];
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-        int x = Integer.parseInt(st.nextToken());
-        int y = Integer.parseInt(st.nextToken());
 
-        int answer = (price[0] * x) + (price[1] * y);
-        if (x < y) {
-            answer = Math.min(answer, (price[2] * 2 * x) + (price[1] * (y - x)));
-        } else if (x > y) {
-            answer = Math.min(answer, (price[2] * 2 * y) + (price[0] * (x - y)));
+        int answer = 0;
+        if (nums[0] + nums[1] <= nums[2] * 2) {
+            answer = (nums[0] * nums[3]) + (nums[1] * nums[4]);
+        } else {
+            int min = Math.min(nums[3], nums[4]);
+            int max = Math.max(nums[3], nums[4]);
+            int tmp = min * 2 * nums[2];
+            if (nums[3] < nums[4]) {
+                answer = tmp + (max - min) * nums[1];
+            } else {
+                answer = tmp + (max - min) * nums[0];
+            }
+            answer = Math.min(answer, nums[2] * 2 * max);
         }
-        answer = Math.min(answer, (price[2] * 2) * Math.max(x, y));
         System.out.println(answer);
     }
 }
