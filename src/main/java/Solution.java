@@ -1,21 +1,35 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 class Solution {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        boolean[] arr = new boolean[n];
-        int count = 0;
-        for (int i = 2; i < n; i++) {
-            if (!arr[i]) {
-                count++;
-                for (int j = i; j < n; j += i) {
-                    arr[j] = true;
-                }
+        int[] arr = new int[n];
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        for (int i = 0; i < n; i++) {
+            String reversed = new StringBuilder(st.nextToken()).reverse().toString();
+            arr[i] = Integer.parseInt(reversed);
+        }
+        for (int x : arr) {
+            if (isPrime(x)) {
+                System.out.print(x + " ");
             }
         }
-        System.out.println(count);
+    }
+
+    private static boolean isPrime(int x) {
+        if (x < 2) {
+            return false;
+        }
+        for (int i = 2; i < x; i++) {
+            if (x % i == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
