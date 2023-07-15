@@ -1,44 +1,36 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 // 시간 복잡도 : O(n)
 // 공간 복잡도 : O(n)
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String S = br.readLine();
-        String T = br.readLine();
-
-        System.out.println(solution(S, T));
+        String input = br.readLine();
+        System.out.println(solution(input));
     }
 
-    private static int solution(String s, String t) {
-        int result = 0, lt = 0;
-        Map<Character, Integer> target = new HashMap<>();
-        for (int i = 0; i < t.length(); i++) {
-            target.put(t.charAt(i), target.getOrDefault(t.charAt(i), 0) + 1);
-        }
-
-        // 초기 윈도우 설정
-        Map<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < t.length() - 1; i++) {
-            map.put(s.charAt(i), map.getOrDefault(s.charAt(i), 0) + 1);
-        }
-
-        for (int i = t.length() - 1; i < s.length(); i++, lt++) {
-            map.put(s.charAt(i), map.getOrDefault(s.charAt(i), 0) + 1);
-            if (map.equals(target)) {
-                result++;
+    private static String solution(String input) {
+        Deque<Character> stack = new ArrayDeque<>();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    stack.pop();
+                }
+                stack.pop();
+                continue;
             }
-            if (map.get(s.charAt(lt)) == 1) {
-                map.remove(s.charAt(lt));
-            } else {
-                map.put(s.charAt(lt), map.get(s.charAt(lt)) - 1);
-            }
+            stack.push(c);
         }
-        return result;
+        int length = stack.size();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            result.append(stack.pollLast());
+        }
+        return result.toString();
     }
 }
