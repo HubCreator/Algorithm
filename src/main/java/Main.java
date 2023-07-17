@@ -1,32 +1,29 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main T = new Main();
-        // arr에서 2개를 더해서 합이 target이 되는 인덱스의 배열을 반환하라.
-        int[] arr = new int[]{1, 2, 3, 4, 6};
-        int target = 6;
-
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < arr.length; i++) {
-            map.put(arr[i], i);
-        }
-
-        int[] answer = T.solution(arr, map, target);
-        System.out.println(answer[0] + " " + answer[1] + " " + answer[2]);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readLine();
+        System.out.println(T.solution(input));
     }
 
-    private int[] solution(int[] arr, Map<Integer, Integer> map, int target) {
-        for (int i = 0; i < arr.length; i++) {
-            int remain1 = target - arr[i];
-            for (int j = i + 1; j < arr.length; j++) {
-                int remain2 = remain1 - arr[j];
-                if (remain1 != arr[i] && remain2 != arr[j] && map.containsKey(remain2) ) {
-                    return new int[]{i, j, map.get(remain2)};
-                }
+    private int solution(String input) {
+        int answer = 0;
+        Deque<Character> stack = new ArrayDeque<>();
+        for (int i = 0; i < input.length(); i++) {
+            char target = input.charAt(i);
+            if (target == ')') {
+                stack.pop();
+                answer += stack.size();
+            } else {
+                stack.push(target);
             }
         }
-        return null;
+        return answer;
     }
 }
