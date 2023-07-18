@@ -7,19 +7,15 @@ public class Main {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        T.solution(n);
+
+        System.out.println(T.factorial(n));
     }
 
-    private void solution(int n) {
-        dfs(n);
-    }
-
-    private void dfs(int n) {
-        if (n == 0) {
-            return;
+    private int factorial(int n) {
+        if (n == 1) { // 기저 조건
+            return 1;
         } else {
-            dfs(n / 2);
-            System.out.print(n % 2);
+            return n * factorial(n - 1); // 값을 누적시킴
         }
     }
 }
