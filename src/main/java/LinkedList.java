@@ -8,11 +8,12 @@ public class LinkedList {
         list.add(new Node(2));
         list.add(new Node(3));
 
-        list.reverse(list);
+//        list.reverse1(list);
+        list.reverse2(list);
         print(list);
     }
 
-    private void reverse(LinkedList list) {
+    private void reverse1(LinkedList list) {
         Node prev = null;
         Node curr = list.head;
         Node next = null;
@@ -24,6 +25,23 @@ public class LinkedList {
         }
         this.tail = head;
         this.head = prev;
+    }
+
+    private void reverse2(LinkedList list) {
+        Node head = list.head;
+        this.head = recursiveReverse(head);
+        this.tail = head;
+    }
+
+    private Node recursiveReverse(Node node) {
+        if (node == null || node.next == null) {
+            return node;
+        }
+        Node newHead = recursiveReverse(node.next);
+        node.next.next = node;
+        node.next = null;
+
+        return newHead;
     }
 
     private static void print(LinkedList list) {
