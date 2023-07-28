@@ -1,45 +1,36 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-// 시간 복잡도: O(n)
-// 공간 복잡도: O(n)
+// 시간 복잡도 : O(n)
+// 공간 복잡도 : O(n)
 public class Main {
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine(), " ");
-        int s = Integer.parseInt(st1.nextToken());
-        int n = Integer.parseInt(st1.nextToken());
-        StringTokenizer st2 = new StringTokenizer(br.readLine(), " ");
+        int n = Integer.parseInt(br.readLine());
         int[] arr = new int[n];
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        for (int x : T.solution(arr, s)) {
-            System.out.print(x + " ");
-        }
+        int[] result = T.solution(arr);
+        System.out.println(result[0] + " " + result[1]);
     }
 
-    private int[] solution(int[] arr, int s) {
-        Deque<Integer> deque = new ArrayDeque<>(s);
-        for (int x : arr) {
-            if (deque.contains(x)) {
-                deque.remove(x);
-            } else if (deque.size() == s) {
-                deque.pollLast();
-            }
-            deque.addFirst(x);
-        }
-        int[] result = new int[s];
-        int length = deque.size();
-        for (int i = 0; i < length; i++) {
-            result[i] = deque.pollFirst();
-        }
+    private int[] solution(int[] arr) {
+        int[] copied = Arrays.copyOf(arr, arr.length);
+        Arrays.sort(copied);
+        int[] result = new int[2];
+        int index = 0;
 
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != copied[i]) {
+                result[index++] = i + 1;
+            }
+        }
         return result;
     }
 }
