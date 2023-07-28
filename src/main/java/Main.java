@@ -1,36 +1,49 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 // 시간 복잡도 : O(n)
 // 공간 복잡도 : O(n)
 public class Main {
     public static void main(String[] args) throws IOException {
-        Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[n];
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        List<Point> points = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            points.add(new Point(
+                    Integer.parseInt(st.nextToken()),
+                    Integer.parseInt(st.nextToken()))
+            );
         }
-        int[] result = T.solution(arr);
-        System.out.println(result[0] + " " + result[1]);
+        Collections.sort(points);
+        points.forEach(System.out::println);
     }
 
-    private int[] solution(int[] arr) {
-        int[] copied = Arrays.copyOf(arr, arr.length);
-        Arrays.sort(copied);
-        int[] result = new int[2];
-        int index = 0;
+    private static class Point implements Comparable<Point> {
+        final int x;
+        final int y;
 
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] != copied[i]) {
-                result[index++] = i + 1;
-            }
+        private Point(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
-        return result;
+
+        @Override
+        public int compareTo(Point o) {
+            if (x == o.x) {
+                return Integer.compare(y, o.y);
+            }
+            return Integer.compare(x, o.x);
+        }
+
+        @Override
+        public String toString() {
+            return x + " " + y;
+        }
     }
 }
