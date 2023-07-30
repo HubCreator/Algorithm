@@ -1,38 +1,42 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
-// 시간 복잡도 : O(2^n)
-// 공간 복잡도 : O(n)
 public class Main {
-    private static int n;
-    private static boolean[] check;
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Main T = new Main();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        check = new boolean[n + 1]; // tracking
+        Node node2 = new Node(2, new Node(4, null, null), new Node(5, null, null));
+        Node node3 = new Node(3, new Node(6, null, null), new Node(7, null, null));
+        Node root = new Node(1, node2, node3);
 
-        T.dfs(1); // start level
+        T.bfs(root);
     }
 
-    private void dfs(int level) {
-        if (level == n + 1) { // end level
-            StringBuilder result = new StringBuilder();
-            for (int i = 1; i < check.length; i++) {
-                if (check[i]) {
-                    result.append(i).append(" ");
+    private void bfs(Node root) {
+        Queue<Node> queue = new ArrayDeque<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int length = queue.size();
+            for (int i = 0; i < length; i++) {
+                Node poll = queue.poll();
+                System.out.print(poll.value + " ");
+                if (poll.lt != null) {
+                    queue.offer(poll.lt);
+                }
+                if (poll.rt != null) {
+                    queue.offer(poll.rt);
                 }
             }
-            if (result.length() > 0) {
-                System.out.println(result);
-            }
-        } else { // 해당 level의 check 경우의 수에 따라 deep dive (back tracking)
-            check[level] = true;
-            dfs(level + 1);
-            check[level] = false;
-            dfs(level + 1);
+        }
+    }
+
+    static class Node {
+        private int value;
+        private Node lt, rt;
+
+        public Node(int value, Node lt, Node rt) {
+            this.value = value;
+            this.lt = lt;
+            this.rt = rt;
         }
     }
 }
