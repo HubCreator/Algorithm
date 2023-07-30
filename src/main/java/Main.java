@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 // 시간 복잡도 : O(n)
-// 공간 복잡도 : O(n)
+// 곤간 복잡도 : O(n)
 public class Main {
     public static void main(String[] args) throws IOException {
         Main T = new Main();
@@ -22,19 +22,31 @@ public class Main {
     }
 
     private int solution(int[] arr, int m) {
-        Arrays.sort(arr);
-        int lt = 0, rt = arr.length - 1;
+        int answer = 0;
+        int lt = Arrays.stream(arr).max().getAsInt();
+        int rt = Arrays.stream(arr).sum();
         while (lt <= rt) {
             int mid = (lt + rt) / 2;
-            if (arr[mid] == m) {
-                return mid + 1;
-            }
-            if (m > arr[mid]) {
-                lt = mid + 1;
-            } else if (m < arr[mid]) {
+            if (getCount(arr, mid) <= m) {
+                answer = mid;
                 rt = mid - 1;
+            } else {
+                lt = mid + 1;
             }
         }
-        return -1;
+        return answer;
+    }
+
+    private int getCount(int[] arr, int mid) {
+        int cnt = 1, sum = 0;
+        for (int x : arr) {
+            if (sum + x > mid) {
+                cnt++;
+                sum = x;
+            } else {
+                sum += x;
+            }
+        }
+        return cnt;
     }
 }
