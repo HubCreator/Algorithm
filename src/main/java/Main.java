@@ -1,32 +1,38 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+// 시간 복잡도 : O(2^n)
+// 공간 복잡도 : O(n)
 public class Main {
-    public static void main(String[] args) {
+    private static int n;
+    private static boolean[] check;
+
+    public static void main(String[] args) throws IOException {
         Main T = new Main();
-        Node node2 = new Node(2, new Node(4, null, null), new Node(5, null, null));
-        Node node3 = new Node(3, new Node(6, null, null), new Node(7, null, null));
-        Node root = new Node(1, node2, node3);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        check = new boolean[n + 1]; // tracking
 
-        T.dfs(root);
+        T.dfs(1); // start level
     }
 
-    private void dfs(Node root) {
-        if (root.lt != null) {
-            dfs(root.lt);
-        }
-        if (root.rt != null) {
-            dfs(root.rt);
-        }
-        System.out.print(root.value + " ");
-    }
-
-    static class Node {
-        private int value;
-        private Node lt;
-        private Node rt;
-
-        public Node(int value, Node lt, Node rt) {
-            this.value = value;
-            this.lt = lt;
-            this.rt = rt;
+    private void dfs(int level) {
+        if (level == n + 1) { // end level
+            StringBuilder result = new StringBuilder();
+            for (int i = 1; i < check.length; i++) {
+                if (check[i]) {
+                    result.append(i).append(" ");
+                }
+            }
+            if (result.length() > 0) {
+                System.out.println(result);
+            }
+        } else { // 해당 level의 check 경우의 수에 따라 deep dive (back tracking)
+            check[level] = true;
+            dfs(level + 1);
+            check[level] = false;
+            dfs(level + 1);
         }
     }
 }
