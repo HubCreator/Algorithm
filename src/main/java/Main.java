@@ -1,49 +1,40 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 // 시간 복잡도 : O(n)
 // 공간 복잡도 : O(n)
 public class Main {
     public static void main(String[] args) throws IOException {
+        Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        List<Point> points = new ArrayList<>();
+        StringTokenizer st1 = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st1.nextToken());
+        int m = Integer.parseInt(st1.nextToken());
+        int[] arr = new int[n];
+        StringTokenizer st2 = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            points.add(new Point(
-                    Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()))
-            );
+            arr[i] = Integer.parseInt(st2.nextToken());
         }
-        Collections.sort(points);
-        points.forEach(System.out::println);
+        System.out.println(T.solution(arr, m));
     }
 
-    private static class Point implements Comparable<Point> {
-        final int x;
-        final int y;
-
-        private Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public int compareTo(Point o) {
-            if (x == o.x) {
-                return Integer.compare(y, o.y);
+    private int solution(int[] arr, int m) {
+        Arrays.sort(arr);
+        int lt = 0, rt = arr.length - 1;
+        while (lt <= rt) {
+            int mid = (lt + rt) / 2;
+            if (arr[mid] == m) {
+                return mid + 1;
             }
-            return Integer.compare(x, o.x);
+            if (m > arr[mid]) {
+                lt = mid + 1;
+            } else if (m < arr[mid]) {
+                rt = mid - 1;
+            }
         }
-
-        @Override
-        public String toString() {
-            return x + " " + y;
-        }
+        return -1;
     }
 }
