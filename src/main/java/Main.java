@@ -1,42 +1,41 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.StringTokenizer;
 
+// 시간 복잡도 : O(n)
+// 공간 복잡도 : O(n)
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main T = new Main();
-        Node node2 = new Node(2, new Node(4, null, null), new Node(5, null, null));
-        Node node3 = new Node(3, new Node(6, null, null), new Node(7, null, null));
-        Node root = new Node(1, node2, node3);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int s = Integer.parseInt(st.nextToken());
+        int e = Integer.parseInt(st.nextToken());
 
-        T.bfs(root);
+        System.out.println(T.bfs(s, e));
     }
 
-    private void bfs(Node root) {
-        Queue<Node> queue = new ArrayDeque<>();
-        queue.offer(root);
+    private int bfs(int s, int e) {
+        int[] dir = new int[]{-1, 1, 5};
+        int result = 0;
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.offer(s);
         while (!queue.isEmpty()) {
-            int length = queue.size();
-            for (int i = 0; i < length; i++) {
-                Node poll = queue.poll();
-                System.out.print(poll.value + " ");
-                if (poll.lt != null) {
-                    queue.offer(poll.lt);
-                }
-                if (poll.rt != null) {
-                    queue.offer(poll.rt);
+            int size = queue.size();
+            result++;
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                for (int d : dir) {
+                    if (poll == e) {
+                        return result - 1;
+                    }
+                    queue.offer(poll + d);
                 }
             }
         }
-    }
-
-    static class Node {
-        private int value;
-        private Node lt, rt;
-
-        public Node(int value, Node lt, Node rt) {
-            this.value = value;
-            this.lt = lt;
-            this.rt = rt;
-        }
+        return -1;
     }
 }
