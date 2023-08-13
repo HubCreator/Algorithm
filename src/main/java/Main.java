@@ -4,43 +4,34 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int n;
-    private static int[] arr;
-    private static boolean[] check;
-    private static boolean answer;
-
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        check = new boolean[n];
-        arr = new int[n];
+        int n = Integer.parseInt(br.readLine());
+        boolean[] check = new boolean[n];
+        int[] arr = new int[n];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-        T.dfs(0);
+        boolean answer = T.dfs(arr, check, 0, 0, 0);
         System.out.println(answer);
     }
 
-    private void dfs(int level) {
-        if (level == n) {
-            int sum1 = 0, sum2 = 0;
-            for (int i = 0; i < check.length; i++) {
-                if (check[i]) {
-                    sum1 += arr[i];
-                } else {
-                    sum2 += arr[i];
-                }
-            }
-            if (sum1 == sum2) {
-                answer = true;
-            }
+    private boolean dfs(int[] arr, boolean[] check, int level, int sum1, int sum2) {
+        if (level == arr.length) {
+            return sum1 == sum2;
         } else {
-            check[level] = true;
-            dfs(level + 1);
-            check[level] = false;
-            dfs(level + 1);
+            // 조기 종료 방법
+            // 만약 각 조건이 true이면 상위로 true를 계속 던저 조기 종료시킴
+            // 만약 각 조건이 false이면 그 다음 로직을 이어나감
+            if (dfs(arr, check, level + 1, sum1 + arr[level], sum2)) {
+                return true;
+            }
+            if (dfs(arr, check, level + 1, sum1, sum2 + arr[level])) {
+                return true;
+            }
+            return false;
         }
     }
 }
