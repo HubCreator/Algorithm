@@ -1,60 +1,46 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
-    private static final List<List<Integer>> list = new ArrayList<>();
+    private static int n;
+    private static int[] arr;
+    private static boolean[] check;
+    private static boolean answer;
 
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        check = new boolean[n];
+        arr = new int[n];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        for (int i = 0; i <= n; i++) {
-            list.add(new ArrayList<>());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        for (int i = 0; i < m; i++) {
-            StringTokenizer t = new StringTokenizer(br.readLine());
-            list.get(Integer.parseInt(t.nextToken())).add(Integer.parseInt(t.nextToken()));
-        }
-        for (int i = 2; i <= n; i++) {
-            System.out.println(i + " : " + T.bfs(i));
-        }
+        T.dfs(0);
+        System.out.println(answer);
     }
 
-    private int bfs(int target) {
-        Queue<Integer> queue = new ArrayDeque<>(list.get(1));
-        int level = 1;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                Integer poll = queue.poll();
-                if (poll == target) {
-                    return level;
-                }
-                List<Integer> nexts = list.get(poll);
-                for (Integer next : nexts) {
-                    if (!queue.contains(next)) {
-                        queue.offer(next);
-                    }
+    private void dfs(int level) {
+        if (level == n) {
+            int sum1 = 0, sum2 = 0;
+            for (int i = 0; i < check.length; i++) {
+                if (check[i]) {
+                    sum1 += arr[i];
+                } else {
+                    sum2 += arr[i];
                 }
             }
-            level++;
+            if (sum1 == sum2) {
+                answer = true;
+            }
+        } else {
+            check[level] = true;
+            dfs(level + 1);
+            check[level] = false;
+            dfs(level + 1);
         }
-        return -1;
     }
 }
-/*
-6 9
-1 3
-1 4
-2 1
-2 5
-3 4
-4 5
-4 6
-6 2
-6 5
- */
