@@ -10,29 +10,30 @@ public class Main {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st1 = new StringTokenizer(br.readLine());
-        int c = Integer.parseInt(st1.nextToken());
         int n = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[n];
+        int m = Integer.parseInt(st1.nextToken());
+        int[] scores = new int[n];
+        int[] times = new int[n];
         boolean[] check = new boolean[n];
-        int sum = 0;
-
+        int scoreSum = 0;
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            scores[i] = Integer.parseInt(st.nextToken());
+            times[i] = Integer.parseInt(st.nextToken());
         }
-        T.dfs(c, arr, check, sum, 0);
+
+        T.dfs(scores, times, 0, 0, m, 0);
         System.out.println(answer);
     }
 
-    private void dfs(int c, int[] arr, boolean[] check, int sum, int level) {
-        if (level == arr.length) {
-            if (sum <= c) {
-                answer = Math.max(answer, sum);
+    private void dfs(int[] scores, int[] times, int scoreSum, int timeSum, int m, int level) {
+        if (level == scores.length) {
+            if (timeSum <= m) {
+                answer = Math.max(answer, scoreSum);
             }
         } else {
-            check[level] = true;
-            dfs(c, arr, check, sum + arr[level], level + 1);
-            check[level] = false;
-            dfs(c, arr, check, sum, level + 1);
+            dfs(scores, times, scoreSum += scores[level], timeSum += times[level], m, level + 1);
+            dfs(scores, times, scoreSum -= scores[level], timeSum -= times[level], m, level + 1);
         }
     }
 }
