@@ -10,26 +10,22 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
-        boolean[] check = new boolean[n];
+        int[] pm = new int[m];
 
-        T.dfs(check, m, 0, 0);
+        T.dfs(pm, n, m, 0);
     }
 
-    private void dfs(boolean[] check, int m, int count, int level) {
-        if (level == m + 1) {
-            if (count == m) {
-                for (int i = 0; i < check.length; i++) {
-                    if (check[i]) {
-                        System.out.print(i + 1 + " ");
-                    }
-                }
-                System.out.println();
+    private void dfs(int[] pm, int n, int m, int level) {
+        if (level == m) {
+            for (int el : pm) {
+                System.out.print(el + " ");
             }
+            System.out.println();
         } else {
-            check[level] = true;
-            dfs(check, m, count + 1, level + 1);
-            check[level] = false;
-            dfs(check, m, count, level + 1);
+            for (int i = 1; i <= n; i++) {
+                pm[level] = i;
+                dfs(pm, n, m, level + 1);
+            }
         }
     }
 }
