@@ -1,45 +1,40 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
+    private static int answer = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[n];
+        Integer[] arr = new Integer[n]; // 래퍼 타입이어야 Collections 프레임워크 사용 가능
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
+        Arrays.sort(arr, Collections.reverseOrder()); // 최적화 여지
+
         int m = Integer.parseInt(br.readLine());
 
-        System.out.println(T.bfs(arr, n, m));
+        T.dfs(arr, n, m, 0, 0);
+        System.out.println(answer);
     }
 
-    private int bfs(int[] arr, int n, int m) {
-        Queue<Integer> queue = new ArrayDeque<>();
-        int level = 1;
-        for (int i = 0; i < n; i++) {
-            queue.offer(arr[i]);
+    private void dfs(Integer[] arr, int n, int m, int sum, int level) {
+        if (sum > m || level > answer) { // 최적화
+            return;
         }
-
-        while (!queue.isEmpty()) {
-            int length = queue.size();
-            for (int i = 0; i < length; i++) {
-                Integer poll = queue.poll();
-                if (poll == m) {
-                    return level;
-                }
-                for (int j = 0; j < n; j++) {
-                    queue.offer(poll + arr[j]);
-                }
+        if (sum == m) {
+            answer = Math.min(answer, level);
+        } else {
+            for (int i = 0; i < n; i++) {
+                dfs(arr, n, m, sum + arr[i], level + 1);
             }
-            level++;
         }
-        return -1;
     }
 }
