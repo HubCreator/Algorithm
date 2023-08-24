@@ -1,17 +1,10 @@
 class Solution {
-    private int answer = Integer.MIN_VALUE;
-
     public int solution(int[][] triangle) {
-        dfs(triangle, triangle[0][0], 0, 1);
-        return answer;
-    }
-
-    private void dfs(int[][] triangle, int sum, int col, int level) {
-        if (level == triangle.length) {
-            answer = Math.max(answer, sum);
-        } else {
-            dfs(triangle, sum + triangle[level][col], col, level + 1);
-            dfs(triangle, sum + triangle[level][col + 1], col + 1, level + 1);
+        for (int i = triangle.length - 1; i >= 0; i--) {
+            for (int j = triangle[i].length - 1; j >= 1; j--) {
+                triangle[i - 1][j - 1] += Math.max(triangle[i][j - 1], triangle[i][j]);
+            }
         }
+        return triangle[0][0];
     }
 }
