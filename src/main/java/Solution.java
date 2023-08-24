@@ -1,35 +1,17 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 class Solution {
-    Deque<Integer> deque = new ArrayDeque<>();
+    private int answer = Integer.MIN_VALUE;
 
-    public int[] solution(String[] operations) {
-        for (String operation : operations) {
-            addToDeque(operation);
-        }
-        if (!deque.isEmpty()) {
-            return new int[]{deque.peekLast(), deque.peekFirst()};
-        }
-        return new int[]{0, 0};
+    public int solution(int[][] triangle) {
+        dfs(triangle, triangle[0][0], 0, 1);
+        return answer;
     }
 
-    private void addToDeque(String operation) {
-        String[] split = operation.split(" ");
-
-        if (split[0].equals("I")) {
-            int t = Integer.parseInt(split[1]);
-            if (deque.isEmpty() || deque.peekLast() <= t) {
-                deque.offerLast(t);
-            } else if (deque.peekFirst() >= t) {
-                deque.offerFirst(t);
-            }
-        } else if (split[0].equals("D") && !deque.isEmpty()) {
-            if (split[1].equals("-1")) {
-                deque.pollFirst();
-            } else {
-                deque.pollLast();
-            }
+    private void dfs(int[][] triangle, int sum, int col, int level) {
+        if (level == triangle.length) {
+            answer = Math.max(answer, sum);
+        } else {
+            dfs(triangle, sum + triangle[level][col], col, level + 1);
+            dfs(triangle, sum + triangle[level][col + 1], col + 1, level + 1);
         }
     }
 }
