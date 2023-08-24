@@ -1,39 +1,39 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int answer = Integer.MAX_VALUE;
-
     public static void main(String[] args) throws IOException {
         Main T = new Main();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        Integer[] arr = new Integer[n]; // 래퍼 타입이어야 Collections 프레임워크 사용 가능
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringTokenizer st1 = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st1.nextToken());
+        int m = Integer.parseInt(st1.nextToken());
+        int[] arr = new int[n];
+        int[] pm = new int[n];
+        boolean[] check = new boolean[n];
+        StringTokenizer st2 = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            arr[i] = Integer.parseInt(st2.nextToken());
         }
-        Arrays.sort(arr, Collections.reverseOrder()); // 최적화 여지
-
-        int m = Integer.parseInt(br.readLine());
-
-        T.dfs(arr, n, m, 0, 0);
-        System.out.println(answer);
+        T.dfs(n, m, arr, pm, check, 0);
     }
 
-    private void dfs(Integer[] arr, int n, int m, int sum, int level) {
-        if (sum > m || level > answer) { // 최적화
-            return;
-        }
-        if (sum == m) {
-            answer = Math.min(answer, level);
+    private void dfs(int n, int m, int[] arr, int[] pm, boolean[] check, int level) {
+        if (level == m) {
+            for (int i = 0; i < m; i++) {
+                System.out.print(pm[i] + " ");
+            }
+            System.out.println();
         } else {
             for (int i = 0; i < n; i++) {
-                dfs(arr, n, m, sum + arr[i], level + 1);
+                if (!check[i]) {
+                    check[i] = true;
+                    pm[level] = arr[i];
+                    dfs(n, m, arr, pm, check, level + 1);
+                    check[i] = false;
+                }
             }
         }
     }
