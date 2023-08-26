@@ -1,22 +1,15 @@
-class Solution {
-    public int solution(int n, int[][] computers) {
-        int answer = 0;
-        boolean[] check = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            if (!check[i]) {
-                dfs(computers, check, i);
-                answer++;
-            }
-        }
-        return answer;
-    }
+import java.util.StringTokenizer;
 
-    void dfs(int[][] computers, boolean[] check, int start) {
-        check[start] = true;
-        for (int i = 0; i < computers.length; i++) {
-            if (computers[start][i] == 1 && !check[i]) {
-                dfs(computers, check, i);
-            }
+class Solution {
+    public String solution(String s) {
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+
+        StringTokenizer st = new StringTokenizer(s);
+        while (st.hasMoreTokens()) {
+            int target = Integer.parseInt(st.nextToken());
+            min = Math.min(min, target);
+            max = Math.max(max, target);
         }
+        return min + " " + max;
     }
 }
