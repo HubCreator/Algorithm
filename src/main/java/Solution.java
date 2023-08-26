@@ -1,15 +1,16 @@
-import java.util.StringTokenizer;
-
 class Solution {
     public String solution(String s) {
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-
-        StringTokenizer st = new StringTokenizer(s);
-        while (st.hasMoreTokens()) {
-            int target = Integer.parseInt(st.nextToken());
-            min = Math.min(min, target);
-            max = Math.max(max, target);
+        StringBuilder answer = new StringBuilder();
+        char[] charArray = s.toLowerCase().toCharArray();
+        boolean flag = true;
+        for (char c : charArray) {
+            if (flag) {
+                answer.append(Character.toUpperCase(c));
+            } else {
+                answer.append(Character.toLowerCase(c));
+            }
+            flag = Character.isSpaceChar(c);
         }
-        return min + " " + max;
+        return answer.toString();
     }
 }
