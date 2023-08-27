@@ -1,16 +1,12 @@
 class Solution {
-    public String solution(String s) {
-        StringBuilder answer = new StringBuilder();
-        char[] charArray = s.toLowerCase().toCharArray();
-        boolean flag = true;
-        for (char c : charArray) {
-            if (flag) {
-                answer.append(Character.toUpperCase(c));
-            } else {
-                answer.append(Character.toLowerCase(c));
-            }
-            flag = Character.isSpaceChar(c);
+    public int[] solution(String s) {
+        int round = 0, zeroCount = 0;
+        while (!s.equals("1")) {
+            round += 1;
+            String result = s.replaceAll("[0]", "");
+            zeroCount += s.length() - result.length();
+            s = Integer.toBinaryString(result.length());
         }
-        return answer.toString();
+        return new int[]{round, zeroCount};
     }
 }
