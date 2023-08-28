@@ -1,21 +1,29 @@
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.HashSet;
+import java.util.Set;
 
 class Solution {
-    public int solution(int[] scoville, int K) {
-        int answer = 0;
-        Queue<Integer> minHeap = new PriorityQueue<>();
-        for (int s : scoville) {
-            minHeap.offer(s);
+    public int[] solution(int n, String[] words) {
+        int[] answer = new int[]{0, 1};
+        boolean flag = false;
+        Set<String> set = new HashSet<>();
+        set.add(words[0]);
+        for (int i = 1; i < words.length; i++) {
+            answer[0] = i % n + 1;
+            if (i % n == 0) {
+                answer[1] += 1;
+            }
+            String target = words[i];
+            if (!set.add(target)) {
+                flag = true;
+                break;
+            }
+            String[] split = target.split("");
+            if (!words[i - 1].endsWith(split[0])) {
+                return answer;
+            }
         }
-        while (minHeap.size() >= 2 && minHeap.peek() < K) {
-            Integer poll1 = minHeap.poll();
-            Integer poll2 = minHeap.poll();
-            minHeap.offer(poll1 + (poll2 * 2));
-            answer += 1;
-        }
-        if (!minHeap.isEmpty() && minHeap.poll() < K) {
-            return -1;
+        if (!flag && answer[0] == n && answer[1] == words.length / n) {
+            return new int[]{0, 0};
         }
         return answer;
     }
