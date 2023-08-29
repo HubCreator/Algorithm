@@ -1,29 +1,26 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 class Solution {
-    public int[] solution(int n, String[] words) {
-        int[] answer = new int[]{0, 1};
-        boolean flag = false;
-        Set<String> set = new HashSet<>();
-        set.add(words[0]);
-        for (int i = 1; i < words.length; i++) {
-            answer[0] = i % n + 1;
-            if (i % n == 0) {
-                answer[1] += 1;
-            }
-            String target = words[i];
-            if (!set.add(target)) {
-                flag = true;
+    Map<Integer, Integer> map = new HashMap<>();
+    public int solution(int k, int[] tangerine) {
+        int answer = 0;
+        for (int t : tangerine) {
+            map.put(t, map.getOrDefault(t, 0) + 1);
+        }
+        List<Integer> values = map.values()
+                .stream()
+                .sorted((a, b) -> b - a)
+                .collect(Collectors.toList());
+
+        for (Integer value : values) {
+            answer += 1;
+            k -= value;
+            if (k <= 0) {
                 break;
             }
-            String[] split = target.split("");
-            if (!words[i - 1].endsWith(split[0])) {
-                return answer;
-            }
-        }
-        if (!flag && answer[0] == n && answer[1] == words.length / n) {
-            return new int[]{0, 0};
         }
         return answer;
     }
