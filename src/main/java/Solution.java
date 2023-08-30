@@ -1,23 +1,19 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class Solution {
-    public int solution(String s) {
-        List<Character> list = new ArrayList<>();
-        list.add(list.get(0));
-        for (int i = 1; i < s.length(); i++) {
-            if (!list.isEmpty() && list.size() > 0 && list.get(list.size() - 1) == s.charAt(i)) {
-                list.remove(list.size() - 1);
-                continue;
+public class Solution {
+    public int solution(int n) {
+        int answer = 0;
+        while (n > 0) {
+            System.out.println(n);
+            if (n % 2 == 1) {
+                answer += 1;
+                n -= 1;
             }
-            list.add(s.charAt(i));
+            n /= 2;
         }
-
-        return list.isEmpty() ? 1 : 0;
+        return answer;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        System.out.println(solution.solution("baabaa"));
+        System.out.println(solution.solution(5));
     }
 }
