@@ -1,11 +1,12 @@
 class Solution {
-    public int solution(int n) {
-        int[] cache = new int[n + 1];
-        cache[0] = 0;
-        cache[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            cache[i] = (cache[i - 2] + cache[i - 1]) % 1234567;
+    public int solution(int n, int a, int b) {
+        int round = 1;
+        while (Math.abs(a - b) != 1 || Math.max(a, b) % 2 != 0) {
+            round++;
+            a = (a + 1) / 2;
+            b = (b + 1) / 2;
         }
-        return cache[n];
+
+        return round;
     }
 }
