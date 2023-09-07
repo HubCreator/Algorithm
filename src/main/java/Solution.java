@@ -1,33 +1,78 @@
-import java.util.*;
-
 class Solution {
-    public String solution(String input_string) {
-        Map<Character, Integer> map = new HashMap<>();
-        List<Character> stack = new ArrayList<>();
-        StringBuilder answer = new StringBuilder();
+    private static enum Direction {
+        NORTH {
+            @Override
+            public void go(int[] cur) {
+                cur[1] += 1;
+            }
+            @Override
+            public void back(int[] cur) {
+                cur[1] -= 1;
+            }
+        },
+        EAST {
+            @Override
+            public void go(int[] cur) {
+                cur[0] += 1;
+            }
+            @Override
+            public void back(int[] cur) {
+                cur[0] -= 1;
+            }
+        },
+        SOUTH {
+            @Override
+            public void go(int[] cur) {
+                cur[1] -= 1;
+            }
+            @Override
+            public void back(int[] cur) {
+                cur[1] += 1;
+            }
+        },
+        WEST {
+            @Override
+            public void go(int[] cur) {
+                cur[0] -= 1;
+            }
+            @Override
+            public void back(int[] cur) {
+                cur[0] += 1;
+            }
+        };
 
-        for (int i = 0; i < input_string.length(); i++) {
-            char target = input_string.charAt(i);
-            map.put(target, map.getOrDefault(target, 0) + 1);
-        }
-        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-            Character key = entry.getKey();
-            int start = input_string.indexOf(key);
-            String subString = input_string.substring(start, start + entry.getValue());
-            for (int j = 0; j < subString.length(); j++) {
-                if (subString.charAt(j) != entry.getKey()) {
-                    stack.add(entry.getKey());
-                    break;
-                }
+        public abstract void go(int[] cur);
+        public abstract void back(int[] cur);
+    }
+
+    public int[] solution(String command) {
+        int[] answer = new int[]{0, 0};
+        Direction[] dirs = new Direction[] {
+                Direction.NORTH,
+                Direction.EAST,
+                Direction.SOUTH,
+                Direction.WEST
+        };
+        int dirIdx = 0;
+
+        for (int i = 0; i < command.length(); i++) {
+            char t = command.charAt(i);
+            if (t == 'R') {
+                dirIdx = (dirIdx + 1) % 4;
+            }
+            if (t == 'L') {
+                dirIdx = dirIdx == 0 ?
+                        3 :
+                        dirIdx - 1;
+            }
+            if (t == 'G') {
+                dirs[dirIdx].go(answer);
+            }
+            if (t == 'B') {
+                dirs[dirIdx].back(answer);
             }
         }
-        if (stack.isEmpty()) {
-            return "N";
-        }
-        Collections.sort(stack);
-        for (Character character : stack) {
-            answer.append(character);
-        }
-        return answer.toString();
+
+        return answer;
     }
 }
