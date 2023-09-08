@@ -1,78 +1,49 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 class Solution {
-    private static enum Direction {
-        NORTH {
-            @Override
-            public void go(int[] cur) {
-                cur[1] += 1;
-            }
-            @Override
-            public void back(int[] cur) {
-                cur[1] -= 1;
-            }
-        },
-        EAST {
-            @Override
-            public void go(int[] cur) {
-                cur[0] += 1;
-            }
-            @Override
-            public void back(int[] cur) {
-                cur[0] -= 1;
-            }
-        },
-        SOUTH {
-            @Override
-            public void go(int[] cur) {
-                cur[1] -= 1;
-            }
-            @Override
-            public void back(int[] cur) {
-                cur[1] += 1;
-            }
-        },
-        WEST {
-            @Override
-            public void go(int[] cur) {
-                cur[0] -= 1;
-            }
-            @Override
-            public void back(int[] cur) {
-                cur[0] += 1;
-            }
-        };
+    public int[] solution(int[] progresses, int[] speeds) {
+        List<Integer> result = new ArrayList<>();
 
-        public abstract void go(int[] cur);
-        public abstract void back(int[] cur);
-    }
-
-    public int[] solution(String command) {
-        int[] answer = new int[]{0, 0};
-        Direction[] dirs = new Direction[] {
-                Direction.NORTH,
-                Direction.EAST,
-                Direction.SOUTH,
-                Direction.WEST
-        };
-        int dirIdx = 0;
-
-        for (int i = 0; i < command.length(); i++) {
-            char t = command.charAt(i);
-            if (t == 'R') {
-                dirIdx = (dirIdx + 1) % 4;
-            }
-            if (t == 'L') {
-                dirIdx = dirIdx == 0 ?
-                        3 :
-                        dirIdx - 1;
-            }
-            if (t == 'G') {
-                dirs[dirIdx].go(answer);
-            }
-            if (t == 'B') {
-                dirs[dirIdx].back(answer);
-            }
+        int count;
+        Queue<Job> jobs = new LinkedList<>();
+        for (int i = 0; i < progresses.length; i++) {
+            jobs.offer(new Job(progresses[i], speeds[i]));
         }
 
+        while (!jobs.isEmpty()) {
+            for (Job job : jobs) {
+                job.process();
+            }
+            count = 0;
+            while (!jobs.isEmpty() && jobs.peek().progress >= 100) {
+                count += 1;
+                jobs.poll();
+            }
+            if (count > 0) {
+                result.add(count);
+            }
+        }
+        int[] answer = new int[result.size()];
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = result.get(i);
+        }
         return answer;
+    }
+
+    private static class Job {
+        public int progress;
+        public int speed;
+
+        public Job(int progress, int speed) {
+            this.progress = progress;
+            this.speed = speed;
+        }
+
+        public void process() {
+            progress += speed;
+        }
     }
 }
