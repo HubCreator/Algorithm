@@ -1,49 +1,22 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 class Solution {
-    public int[] solution(int[] progresses, int[] speeds) {
-        List<Integer> result = new ArrayList<>();
+    public int solution(int n) {
+        int oneCount = getOneCount(n);
 
-        int count;
-        Queue<Job> jobs = new LinkedList<>();
-        for (int i = 0; i < progresses.length; i++) {
-            jobs.offer(new Job(progresses[i], speeds[i]));
-        }
-
-        while (!jobs.isEmpty()) {
-            for (Job job : jobs) {
-                job.process();
-            }
-            count = 0;
-            while (!jobs.isEmpty() && jobs.peek().progress >= 100) {
-                count += 1;
-                jobs.poll();
-            }
-            if (count > 0) {
-                result.add(count);
+        while (true) {
+            if (getOneCount(++n) == oneCount) {
+                break;
             }
         }
-        int[] answer = new int[result.size()];
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = result.get(i);
-        }
-        return answer;
+        return n;
     }
 
-    private static class Job {
-        public int progress;
-        public int speed;
-
-        public Job(int progress, int speed) {
-            this.progress = progress;
-            this.speed = speed;
+    private int getOneCount(int n) {
+        String binary = Integer.toBinaryString(n);
+        char[] arr = binary.toCharArray();
+        int result = 0;
+        for (char c : arr) {
+            if (c == '1') result += 1;
         }
-
-        public void process() {
-            progress += speed;
-        }
+        return result;
     }
 }
