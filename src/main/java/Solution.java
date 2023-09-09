@@ -1,26 +1,17 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 class Solution {
-    public int solution(int cacheSize, String[] cities) {
-        int answer = 0;
-        Deque<String> deque = new ArrayDeque<>();
-        for (int i = 0; i < cities.length; i++) {
-            String city = cities[i].toLowerCase();
-            if (deque.isEmpty() || !deque.contains(city)) {
-                answer += 5;
-                deque.offerFirst(city);
-                if (deque.size() > cacheSize) {
-                    deque.pollLast();
-                }
-                continue;
-            }
-            if (deque.contains(city)) {
-                deque.remove(city);
-                deque.offerFirst(city);
-                answer += 1;
-            }
-        }
+    int answer = 0;
+
+    public int solution(int[] numbers, int target) {
+        dfs(numbers, target, 0, 0);
         return answer;
+    }
+
+    public void dfs(int[] numbers, int target, int sum, int level) {
+        if (numbers.length == level) {
+            if (sum == target) answer += 1;
+        } else {
+            dfs(numbers, target, sum + numbers[level], level + 1);
+            dfs(numbers, target, sum - numbers[level], level + 1);
+        }
     }
 }
