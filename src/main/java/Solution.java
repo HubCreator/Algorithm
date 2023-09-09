@@ -1,22 +1,26 @@
-class Solution {
-    public int solution(int n) {
-        int oneCount = getOneCount(n);
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-        while (true) {
-            if (getOneCount(++n) == oneCount) {
-                break;
+class Solution {
+    public int solution(int cacheSize, String[] cities) {
+        int answer = 0;
+        Deque<String> deque = new ArrayDeque<>();
+        for (int i = 0; i < cities.length; i++) {
+            String city = cities[i].toLowerCase();
+            if (deque.isEmpty() || !deque.contains(city)) {
+                answer += 5;
+                deque.offerFirst(city);
+                if (deque.size() > cacheSize) {
+                    deque.pollLast();
+                }
+                continue;
+            }
+            if (deque.contains(city)) {
+                deque.remove(city);
+                deque.offerFirst(city);
+                answer += 1;
             }
         }
-        return n;
-    }
-
-    private int getOneCount(int n) {
-        String binary = Integer.toBinaryString(n);
-        char[] arr = binary.toCharArray();
-        int result = 0;
-        for (char c : arr) {
-            if (c == '1') result += 1;
-        }
-        return result;
+        return answer;
     }
 }
