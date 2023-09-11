@@ -1,28 +1,32 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
-    public int solution(String[] want, int[] number, String[] discount) {
-        int answer = 0;
-        Map<String, Integer> wishMap = new HashMap<>();
-        Map<String, Integer> discountMap = new HashMap<>();
-        for (int i = 0; i < want.length; i++) {
-            wishMap.put(want[i], number[i]);
-        }
-        for (int i = 0; i < 9; i++) {
-            discountMap.put(discount[i], discountMap.getOrDefault(discount[i], 0) + 1);
-        }
-        int lt = 0;
-        for (int i = 9; i < discount.length; i++, lt++) {
-            discountMap.put(discount[i], discountMap.getOrDefault(discount[i], 0) + 1);
-            if (wishMap.equals(discountMap)) {
-                answer += 1;
-            }
-            discountMap.put(discount[lt], discountMap.get(discount[lt]) - 1);
-            if (discountMap.get(discount[lt]) == 0) {
-                discountMap.remove(discount[lt]);
-            }
-        }
+    public int answer = -1;
+
+    public int solution(int k, int[][] dungeons) {
+        boolean[] check = new boolean[dungeons.length];
+        dfs(k, dungeons, check, 0);
         return answer;
+    }
+
+    public void dfs(int k, int[][] dungeons, boolean[] check, int level) {
+        if (k < 0) {
+            return;
+        }
+        if (level == check.length) {
+            int count = 0;
+            for (boolean ch : check) {
+                if (ch) count++;
+            }
+            answer = Math.max(answer, count);
+        } else {
+            for (int i = 0; i < check.length; i++) {
+                if (!check[i] && k >= dungeons[i][0]) {
+                    check[i] = true;
+                    dfs(k - dungeons[i][1], dungeons, check, level + 1);
+                    check[i] = false;
+                } else {
+                    dfs(k, dungeons, check, level + 1);
+                }
+            }
+        }
     }
 }
