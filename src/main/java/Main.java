@@ -1,39 +1,30 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Main T = new Main();
+    static int[][] fibo = new int[41][];
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st1.nextToken());
-        int m = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[n];
-        int[] pm = new int[n];
-        boolean[] check = new boolean[n];
-        StringTokenizer st2 = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
+        int t = Integer.parseInt(br.readLine());
+        initFibo();
+        for (int i = 0; i < t; i++) {
+            int input = Integer.parseInt(br.readLine());
+            int[] result = fibo[input];
+            System.out.println(result[0] + " " + result[1]);
         }
-        T.dfs(n, m, arr, pm, check, 0);
     }
 
-    private void dfs(int n, int m, int[] arr, int[] pm, boolean[] check, int level) {
-        if (level == m) {
-            for (int i = 0; i < m; i++) {
-                System.out.print(pm[i] + " ");
-            }
-            System.out.println();
-        } else {
-            for (int i = 0; i < n; i++) {
-                if (!check[i]) {
-                    check[i] = true;
-                    pm[level] = arr[i];
-                    dfs(n, m, arr, pm, check, level + 1);
-                    check[i] = false;
-                }
+    private static void initFibo() {
+        for (int i = 0; i < fibo.length; i++) {
+            if (i == 0) {
+                fibo[i] = new int[]{0, 1};
+            } else if (i == 1) {
+                fibo[i] = new int[]{1, 0};
+            } else {
+                fibo[i] = new int[]{
+                        fibo[i-2][0] + fibo[i-1][0],
+                        fibo[i-2][1] + fibo[i-1][1]
+                };
             }
         }
     }
