@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -19,65 +21,45 @@ public class Main {
             }
         }
 
-        int min = Integer.MAX_VALUE;
-        char[][] minBoard = new char[n][m];
-        for (int i = 0; i < board.length - k; i += k) {
-            for (int j = 0; j < board[i].length - k; j += k) {
-                char[][] mask = makeMask(board, i, j, k);
-                int count = 0;
-                char[][] copiedBoard = copyBoard(board);
-                for (int y = 0; y < board.length; y += k) {
-                    for (int x = 0; x < board[y].length; x += k) {
-                        count += solution(mask, k, copiedBoard, y, x);
+        int count = 0;
+        char[][] mask = new char[k][k];
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < k; j++) {
+                Map<Character, Integer> map = new HashMap<>();
+                for (int y = i; y < n; y += k) {
+                    for (int x = j; x < m; x += k) {
+                        map.put(board[y][x], map.getOrDefault(board[y][x], 0) + 1);
                     }
                 }
-                if (min > count) {
-                    min = count;
-                    minBoard = copiedBoard;
+                char result = ' ';
+                int max = Integer.MIN_VALUE;
+                for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+                    if (max < entry.getValue()) {
+                        max = entry.getValue();
+                        result = entry.getKey();
+                    }
+                }
+                mask[i][j] = result;
+                count += (n / k) * (m / k) - max;
+            }
+        }
+        char[][] resultBoard = new char[n][m];
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < k; j++) {
+                for (int y = i; y < n; y += k) {
+                    for (int x = j; x < m; x += k) {
+                        resultBoard[y][x] = mask[i][j];
+                    }
                 }
             }
         }
-        answer.append(min).append('\n');
-        for (int i = 0; i < minBoard.length; i++) {
-            for (int j = 0; j < minBoard[i].length; j++) {
-                answer.append(minBoard[i][j]);
+        answer.append(count).append('\n');
+        for (char[] chars : resultBoard) {
+            for (char c : chars) {
+                answer.append(c);
             }
             answer.append('\n');
         }
-
-        System.out.println(answer);
-    }
-
-    private static char[][] copyBoard(char[][] board) {
-        char[][] copy = new char[board.length][board[0].length];
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                copy[i][j] = board[i][j];
-            }
-        }
-        return copy;
-    }
-
-    private static int solution(char[][] mask, int k, char[][] board, int y, int x) {
-        int count = 0;
-        for (int i = y; i < y + k; i++) {
-            for (int j = x; j < x + k; j++) {
-                if (board[i][j] != mask[i % k][j % k]) {
-                    board[i][j] = mask[i % k][j % k];
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    private static char[][] makeMask(char[][] board, int i, int j, int k) {
-        char[][] mask = new char[k][k];
-        for (int y = i; y < i + k; y++) {
-            for (int x = j; x < j + k; x++) {
-                mask[y % k][x % k] = board[y][x];
-            }
-        }
-        return mask;
+        System.out.println(answer.deleteCharAt(answer.length() - 1));
     }
 }
