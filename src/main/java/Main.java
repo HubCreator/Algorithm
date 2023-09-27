@@ -21,12 +21,12 @@ public class Main {
         for (int i = 0; i < t; i++) {
             answer.append(solution(dp, Integer.parseInt(br.readLine()))).append('\n');
         }
-        System.out.println(answer);
+        System.out.print(answer);
     }
 
-    private static int solution(long[][] dp, int n) {
-        int answer = 0;
-        for (int i = 0; i < dp[n].length; i++) {
+    private static long solution(long[][] dp, int n) {
+        long answer = 0;
+        for (int i = 0; i < 10; i++) {
             answer += dp[n][i];
         }
         return answer;
