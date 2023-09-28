@@ -1,30 +1,34 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder answer = new StringBuilder();
         int n = Integer.parseInt(br.readLine());
-        int arr[][] = new int[n][2];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            arr[i][0] = Integer.parseInt(st.nextToken());
-            arr[i][1] = Integer.parseInt(st.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-        for (int i = 0; i < arr.length; i++) {
-            int count = 0;
-            for (int j = 0; j < arr.length; j++) {
-                if (i != j &&
-                        arr[i][0] < arr[j][0] &&
-                        arr[i][1] < arr[j][1]) {
-                    count++;
-                }
+
+        int lt = 0, maxLength = Integer.MIN_VALUE;
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+
+        for (int rt = 0; rt < arr.length; rt++) {
+            minHeap.offer(arr[rt]);
+            maxHeap.offer(arr[rt]);
+            if (maxHeap.peek() - minHeap.peek() > 2) {
+                maxHeap.remove(arr[lt]);
+                minHeap.remove(arr[lt]);
+                lt++;
             }
-            answer.append(count + 1).append(' ');
+            maxLength = Math.max(maxLength, rt - lt + 1);
         }
-        System.out.print(answer);
+        System.out.print(maxLength);
     }
 }
