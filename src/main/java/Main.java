@@ -1,34 +1,43 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
+    private static int count = 0;
+    private static StringBuilder answer = new StringBuilder();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int[] arr = new int[]{1, 2, 3};
+        int[] pm = new int[11];
+        dfs(n, k, arr, pm, 0, 0);
+        if (answer.length() > 0) {
+            System.out.print(answer);
+        } else {
+            System.out.print(-1);
         }
+    }
 
-        int lt = 0, maxLength = Integer.MIN_VALUE;
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
-
-        for (int rt = 0; rt < arr.length; rt++) {
-            minHeap.offer(arr[rt]);
-            maxHeap.offer(arr[rt]);
-            if (maxHeap.peek() - minHeap.peek() > 2) {
-                maxHeap.remove(arr[lt]);
-                minHeap.remove(arr[lt]);
-                lt++;
+    private static void dfs(int n, int k, int[] arr, int[] pm, int sum, int level) {
+        if (sum > n) {
+            return;
+        } else if (sum == n) {
+            count++;
+            if (count == k) {
+                for (int i = 0; i < level; i++) {
+                    answer.append(pm[i] + 1).append('+');
+                }
+                answer.deleteCharAt(answer.length() - 1);
             }
-            maxLength = Math.max(maxLength, rt - lt + 1);
+        } else {
+            for (int i = 0; i < arr.length; i++) {
+                pm[level] = i;
+                dfs(n, k, arr, pm, sum + arr[i], level + 1);
+            }
         }
-        System.out.print(maxLength);
     }
 }
