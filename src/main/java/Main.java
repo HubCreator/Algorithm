@@ -1,35 +1,66 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder answer = new StringBuilder();
-
-        int T = Integer.parseInt(br.readLine());
-        for (int i = 0; i < T; i++) {
-            int N = Integer.parseInt(br.readLine());
-            int[] coin = new int[N];
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                coin[j] = Integer.parseInt(st.nextToken());
-            }
-            int M = Integer.parseInt(br.readLine());
-            answer.append(solution(coin, N, M)).append('\n');
+        StringTokenizer st1 = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st1.nextToken());
+        int K = Integer.parseInt(st1.nextToken());
+        int M = Integer.parseInt(st1.nextToken());
+        List<Set<Integer>> board = new ArrayList<>();
+        for (int i = 0; i <= N; i++) {
+            board.add(new HashSet<>());
         }
-        System.out.print(answer);
+        for (int i = 0; i < M; i++) {
+            StringTokenizer st2 = new StringTokenizer(br.readLine());
+            int[] arr = new int[K];
+            for (int j = 0; j < K; j++) {
+                arr[j] = Integer.parseInt(st2.nextToken());
+            }
+            for (int j = 0; j < arr.length; j++) {
+                for (int k = 0; k < arr.length; k++) {
+                    if (j == k) {
+                        continue;
+                    }
+                    board.get(arr[j]).add(arr[k]);
+                }
+            }
+        }
+        System.out.println(bfs(board, N));
     }
 
-    private static int solution(int[] coin, int n, int m) {
-        int[] dp = new int[10001];
-        dp[0] = 1;
-        for (int i = 0; i < n; i++) { // 코인 종류의 갯수
-            for (int j = coin[i]; j <= m; j++) { // 해당 코인부터 목표 m까지 점차 키워나감
-                dp[j] += dp[j - coin[i]];
+    private static int bfs(List<Set<Integer>> board, int end) {
+        Queue<Integer> queue = new ArrayDeque<>(board.get(1));
+        List<Integer> check = new ArrayList<>();
+        check.add(1);
+        int count = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            count += 1;
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                if (poll == end) {
+                    return count;
+                }
+                check.add(poll);
+                Set<Integer> nextSteps = board.get(poll);
+                for (Integer nextStep : nextSteps) {
+                    if (!check.contains(nextStep)) {
+                        queue.offer(nextStep);
+                    }
+                }
             }
+
         }
-        return dp[m];
+        return -1;
     }
 }
