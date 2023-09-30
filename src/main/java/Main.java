@@ -3,10 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -16,50 +14,43 @@ public class Main {
         int N = Integer.parseInt(st1.nextToken());
         int K = Integer.parseInt(st1.nextToken());
         int M = Integer.parseInt(st1.nextToken());
-        List<Set<Integer>> board = new ArrayList<>();
-        for (int i = 0; i <= N; i++) {
-            board.add(new HashSet<>());
+        List<List<Integer>> board = new ArrayList<>();
+        for (int i = 0; i <= N + M; i++) {
+            board.add(new ArrayList<>());
         }
+
         for (int i = 0; i < M; i++) {
             StringTokenizer st2 = new StringTokenizer(br.readLine());
-            int[] arr = new int[K];
             for (int j = 0; j < K; j++) {
-                arr[j] = Integer.parseInt(st2.nextToken());
-            }
-            for (int j = 0; j < arr.length; j++) {
-                for (int k = 0; k < arr.length; k++) {
-                    if (j == k) {
-                        continue;
-                    }
-                    board.get(arr[j]).add(arr[k]);
-                }
+                int t = Integer.parseInt(st2.nextToken());
+                board.get(t).add(N + i + 1); // 공간 복잡도 줄이기
+                board.get(N + i + 1).add(t);
             }
         }
-        System.out.println(bfs(board, N));
+        System.out.println(bfs(board, N, M));
     }
 
-    private static int bfs(List<Set<Integer>> board, int end) {
-        Queue<Integer> queue = new ArrayDeque<>(board.get(1));
-        List<Integer> check = new ArrayList<>();
-        check.add(1);
-        int count = 1;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            count += 1;
-            for (int i = 0; i < size; i++) {
-                Integer poll = queue.poll();
-                if (poll == end) {
-                    return count;
-                }
-                check.add(poll);
-                Set<Integer> nextSteps = board.get(poll);
-                for (Integer nextStep : nextSteps) {
-                    if (!check.contains(nextStep)) {
-                        queue.offer(nextStep);
-                    }
-                }
-            }
+    private static int bfs(List<List<Integer>> board, int N, int M) {
+        boolean[] visited = new boolean[N + M + 1];
+        int[] distance = new int[N + M + 1];
 
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.offer(1);
+        visited[1] = true;
+        distance[1] = 1;
+        while (!queue.isEmpty()) {
+            Integer poll = queue.poll();
+            for (Integer next : board.get(poll)) {
+                if (visited[next]) {
+                    continue;
+                }
+                visited[next] = true;
+                distance[next] = distance[poll] + 1;
+                queue.offer(next);
+            }
+        }
+        if (visited[N]) {
+            return distance[N] / 2 + 1;
         }
         return -1;
     }
