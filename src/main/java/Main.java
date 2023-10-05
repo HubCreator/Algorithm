@@ -1,32 +1,50 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
+    private static int count = 0;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine());
-        StringTokenizer st2 = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st1.nextToken());
-        int K = Integer.parseInt(st1.nextToken());
-        int[] arr = new int[N];
-        for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
-        }
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int row = Integer.parseInt(st.nextToken());
+        int col = Integer.parseInt(st.nextToken());
+        char[][] board = getBoard(br, row, col);
+        int[][] countBoard = new int[row][col];
 
-        Queue<Integer> pq = new PriorityQueue<>();
-        for (int i = 1; i < arr.length; i++) {
-            pq.offer(arr[i] - arr[i - 1]);
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (countBoard[i][j] == 0) {
+                    count++;
+                    move(countBoard, board, i, j);
+                }
+            }
         }
+        System.out.print(count);
+    }
 
-        int answer = 0;
-        for (int i = 0; i < N - K; i++) {
-            answer += pq.poll();
+    private static void move(int[][] countBoard, char[][] board, int i, int j) {
+        int row = i, col = j;
+        do {
+            switch (board[row][col]) {
+                case 'U': row--; break;
+                case 'D': row++; break;
+                case 'L': col--; break;
+                case 'R': col++; break;
+            }
+            countBoard[row][col] = count;
+        } while(row != i || col != j);
+    }
+
+    private static char[][] getBoard(BufferedReader br, int row, int col) throws IOException {
+        char[][] board = new char[row][col];
+        for (int i = 0; i < row; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < col; j++) {
+                board[i][j] = line.charAt(j);
+            }
         }
-
-        System.out.print(answer);
+        return board;
     }
 }
