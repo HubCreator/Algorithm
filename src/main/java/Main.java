@@ -1,35 +1,36 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int answer = 0;
         int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
         for (int i = 0; i < N; i++) {
-            int t = Integer.parseInt(st.nextToken());
-            treeMap.put(t, treeMap.getOrDefault(t, 0) + 1);
+            arr[i] = Integer.parseInt(st.nextToken());
         }
-
-        boolean flag;
-        do {
-            flag = false;
-            for (Map.Entry<Integer, Integer> entry : treeMap.entrySet()) {
-                if (entry.getValue() > 0) {
-                    treeMap.put(entry.getKey(), entry.getValue() - 1);
-                    flag = true;
+        boolean[] check = new boolean[N];
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < 4; i++) {
+            int result = 1;
+            for (int j = i; j < N - 3 + i; j++) {
+                result *= arr[j];
+                check[j] = true;
+            }
+            for (int j = 0; j < N; j++) {
+                if (!check[j]) {
+                    result += arr[j];
                 }
             }
-            if (flag) {
-                answer++;
+            if (result > max) {
+                max = result;
             }
-        } while (flag);
-        System.out.print(answer);
+            Arrays.fill(check, false);
+        }
+        System.out.println(max);
     }
 }
