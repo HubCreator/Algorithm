@@ -3,59 +3,58 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    private static int dy[] = {-1, 0, 1, 0};
-    private static int dx[] = {0, 1, 0, -1};
+    private static int dy[] = new int[]{-1, 0, 1, 0};
+    private static int dx[] = new int[]{0, 1, 0, -1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        char[][] arr = new char[n][n];
-        for (int i = 0; i < n; i++) {
-            String line = br.readLine();
-            for (int j = 0; j < n; j++) {
-                arr[i][j] = line.charAt(j);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int[][] arr = new int[N][M];
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st2 = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                arr[i][j] = Integer.parseInt(st2.nextToken());
             }
         }
-        int s1 = bfs(arr);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (arr[i][j] == 'R') {
-                    arr[i][j] = 'G';
-                }
-            }
-        }
-        int s2 = bfs(arr);
-        System.out.print(s1 + " " + s2);
+        System.out.print(bfs(arr));
     }
 
-    private static int bfs(char[][] arr) {
-        int answer = 0;
+    private static int bfs(int[][] arr) {
         Queue<int[]> queue = new ArrayDeque<>();
-        boolean[][] check = new boolean[arr.length][arr.length];
+        int answer = Integer.MIN_VALUE;
         for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr.length; j++) {
-                if (!check[i][j]) {
-                    check[i][j] = true;
+            for (int j = 0; j < arr[i].length; j++) {
+                if (arr[i][j] == 1) {
                     queue.offer(new int[]{i, j});
-                    answer++;
-                    while (!queue.isEmpty()) {
-                        int[] poll = queue.poll();
-                        for (int d = 0; d < 4; d++) {
-                            int ny = poll[0] + dy[d];
-                            int nx = poll[1] + dx[d];
-                            if (ny >= 0 && ny < arr.length &&
-                                    nx >= 0 && nx < arr.length &&
-                                    !check[ny][nx] && arr[ny][nx] == arr[poll[0]][poll[1]]) {
-                                check[ny][nx] = true;
-                                queue.offer(new int[]{ny, nx});
-                            }
-                        }
-                    }
                 }
             }
         }
-        return answer;
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            for (int d = 0; d < 4; d++) {
+                int ny = poll[0] + dy[d];
+                int nx = poll[1] + dx[d];
+                if (ny >= 0 && ny < arr.length &&
+                        nx >= 0 && nx < arr[0].length &&
+                        arr[ny][nx] == 0) {
+                    arr[ny][nx] = arr[poll[0]][poll[1]] + 1;
+                    queue.offer(new int[]{ny, nx});
+                }
+            }
+        }
+        for (int[] ints : arr) {
+            for (int anInt : ints) {
+                if (anInt == 0) {
+                    return -1;
+                }
+                answer = Math.max(answer, anInt);
+            }
+        }
+        return answer - 1;
     }
 }
