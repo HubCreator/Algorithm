@@ -1,59 +1,43 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static StringBuilder answer = new StringBuilder();
+    private static int count = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
-        for (int i = 0; i < T; i++) {
-            StringTokenizer st1 = new StringTokenizer(br.readLine());
-            StringTokenizer st2 = new StringTokenizer(br.readLine());
-            int N = Integer.parseInt(st1.nextToken());
-            int M = Integer.parseInt(st1.nextToken());
-            Deque<Document> queue = new ArrayDeque<>();
-            for (int j = 0; j < N; j++) {
-                queue.offer(new Document(j, Integer.parseInt(st2.nextToken())));
-            }
-            solution(M, queue);
+        int n = Integer.parseInt(br.readLine());
+        int t = Integer.parseInt(br.readLine());
+        List<List<Integer>> adjList = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adjList.add(new ArrayList<>());
         }
-        System.out.print(answer);
+        for (int i = 0; i < t; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            adjList.get(u).add(v);
+            adjList.get(v).add(u);
+        }
+        boolean[] check = new boolean[n + 1];
+        check[1] = true;
+        dfs(adjList, 1, check);
+
+        System.out.print(count);
     }
 
-    private static void solution(int m, Deque<Document> queue) {
-        int result = 0;
-        boolean flag;
-        while (!queue.isEmpty()) {
-            flag = false;
-            Document poll = queue.poll();
-            for (Document document : queue) {
-                if (poll.value < document.value) {
-                    queue.offerLast(poll);
-                    flag = true;
-                    break;
-                }
+    private static void dfs(List<List<Integer>> adjList, int curr, boolean[] check) {
+        List<Integer> nodes = adjList.get(curr);
+        for (Integer node : nodes) {
+            if (!check[node]) {
+                check[node] = true;
+                count++;
+                dfs(adjList, node, check);
             }
-            if (!flag) {
-                result++;
-                if (poll.index == m) {
-                    answer.append(result).append('\n');
-                    return;
-                }
-            }
-        }
-    }
-
-    private static class Document {
-        int index, value;
-
-        public Document(int index, int value) {
-            this.index = index;
-            this.value = value;
         }
     }
 }
