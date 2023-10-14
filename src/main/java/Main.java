@@ -1,41 +1,59 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
+    private static StringBuilder answer = new StringBuilder();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] arr = new int[N];
-        for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+        int T = Integer.parseInt(br.readLine());
+        for (int i = 0; i < T; i++) {
+            StringTokenizer st1 = new StringTokenizer(br.readLine());
+            StringTokenizer st2 = new StringTokenizer(br.readLine());
+            int N = Integer.parseInt(st1.nextToken());
+            int M = Integer.parseInt(st1.nextToken());
+            Deque<Document> queue = new ArrayDeque<>();
+            for (int j = 0; j < N; j++) {
+                queue.offer(new Document(j, Integer.parseInt(st2.nextToken())));
+            }
+            solution(M, queue);
         }
+        System.out.print(answer);
+    }
 
-        int size = N - 4 + 1;
-        int max = Integer.MIN_VALUE, multiply = 1;
-        boolean[] check = new boolean[N];
-
-        for (int i = 0; i < size - 1; i++) {
-            multiply *= arr[i];
-            check[i] = true;
-        }
-
-        for (int i = size - 1; i < N; i++) {
-            multiply *= arr[i];
-            check[i] = true;
-            int sum = 0;
-            for (int j = 0; j < arr.length; j++) {
-                if (!check[j]) {
-                    sum += arr[j];
+    private static void solution(int m, Deque<Document> queue) {
+        int result = 0;
+        boolean flag;
+        while (!queue.isEmpty()) {
+            flag = false;
+            Document poll = queue.poll();
+            for (Document document : queue) {
+                if (poll.value < document.value) {
+                    queue.offerLast(poll);
+                    flag = true;
+                    break;
                 }
             }
-            max = Math.max(max, multiply + sum);
-            multiply /= arr[i - size + 1];
-            check[i - size + 1] = false;
+            if (!flag) {
+                result++;
+                if (poll.index == m) {
+                    answer.append(result).append('\n');
+                    return;
+                }
+            }
         }
+    }
 
-        System.out.print(max);
+    private static class Document {
+        int index, value;
+
+        public Document(int index, int value) {
+            this.index = index;
+            this.value = value;
+        }
     }
 }
