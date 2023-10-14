@@ -15,22 +15,15 @@ public class Main {
     }
 
     private static int solution(int n) {
-        int answer = 1;
-        for (int a = 0; ; a++) {
-            for (int b = 0; ; b++) {
-                int next = (2 * a) + (3 * b);
-                if (next == 0 || next > n ||
-                        (a > 0 && b > 0) && next % 2 == 0 ||
-                        (a > 0 && b > 0) && next % 3 == 0) {
-                    break;
-                }
-                answer += n / next;
-            }
-            if (n < 2 * a) {
-                break;
-            }
+        if (n == 1) {
+            return 1;
         }
-
-        return answer;
+        if (n == 2) {
+            return 2;
+        }
+        if (n == 3) {
+            return 4;
+        }
+        return solution(n - 3) + solution(n - 2) + solution(n - 1);
     }
 }
