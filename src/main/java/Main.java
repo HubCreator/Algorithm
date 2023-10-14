@@ -9,21 +9,26 @@ public class Main {
         int T = Integer.parseInt(br.readLine());
         for (int i = 0; i < T; i++) {
             int n = Integer.parseInt(br.readLine());
-            answer.append(solution(n)).append('\n');
+            long[][] dp = initDp(n);
+            answer.append(1 + dp[n][2] + dp[n][3]).append(System.lineSeparator());
         }
         System.out.print(answer);
     }
 
-    private static int solution(int n) {
-        if (n == 1) {
-            return 1;
+    private static long[][] initDp(int n) {
+        long[][] dp = new long[10001][4];
+        dp[2][2] = 1;
+
+        dp[3][2] = 1;
+        dp[3][3] = 1;
+
+        dp[4][2] = 2;
+        dp[4][3] = 1;
+
+        for (int i = 5; i < dp.length; i++) {
+            dp[i][2] = i / 2;
+            dp[i][3] = 1 + dp[i - 3][2] + dp[i - 3][3];
         }
-        if (n == 2) {
-            return 2;
-        }
-        if (n == 3) {
-            return 4;
-        }
-        return solution(n - 3) + solution(n - 2) + solution(n - 1);
+        return dp;
     }
 }
