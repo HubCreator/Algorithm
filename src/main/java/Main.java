@@ -1,29 +1,36 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder answer = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        Set<String> memo = new HashSet<>();
-        for (int i = 0; i < N; i++) {
-            memo.add(br.readLine());
-        }
-        for (int i = 0; i < M; i++) {
-            StringTokenizer st2 = new StringTokenizer(br.readLine(), ",");
-            while (st2.hasMoreTokens()) {
-                String s = st2.nextToken();
-                memo.remove(s);
-            }
-            answer.append(memo.size()).append('\n');
+        int T = Integer.parseInt(br.readLine());
+        for (int i = 0; i < T; i++) {
+            int n = Integer.parseInt(br.readLine());
+            answer.append(solution(n)).append('\n');
         }
         System.out.print(answer);
+    }
+
+    private static int solution(int n) {
+        int answer = 1;
+        for (int a = 0; ; a++) {
+            for (int b = 0; ; b++) {
+                int next = (2 * a) + (3 * b);
+                if (next == 0 || next > n ||
+                        (a > 0 && b > 0) && next % 2 == 0 ||
+                        (a > 0 && b > 0) && next % 3 == 0) {
+                    break;
+                }
+                answer += n / next;
+            }
+            if (n < 2 * a) {
+                break;
+            }
+        }
+
+        return answer;
     }
 }
