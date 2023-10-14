@@ -1,57 +1,61 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Main {
-    private static int[] dy = {-1, 0, 1, 0};
-    private static int[] dx = {0, 1, 0, -1};
-    private static int count;
+    private static int dy[] = {-1, 0, 1, 0};
+    private static int dx[] = {0, 1, 0, -1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
-        boolean[][] arr = new boolean[N + 1][M + 1];
-        for (int i = 0; i < K; i++) {
-            StringTokenizer st2 = new StringTokenizer(br.readLine());
-            int r = Integer.parseInt(st2.nextToken());
-            int c = Integer.parseInt(st2.nextToken());
-            arr[r][c] = true;
+        int n = Integer.parseInt(br.readLine());
+        char[][] arr = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = line.charAt(j);
+            }
         }
-        System.out.print(solution(arr));
+        int s1 = bfs(arr);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (arr[i][j] == 'R') {
+                    arr[i][j] = 'G';
+                }
+            }
+        }
+        int s2 = bfs(arr);
+        System.out.print(s1 + " " + s2);
     }
 
-    private static int solution(boolean[][] arr) {
-        int answer = Integer.MIN_VALUE;
+    private static int bfs(char[][] arr) {
+        int answer = 0;
+        Queue<int[]> queue = new ArrayDeque<>();
+        boolean[][] check = new boolean[arr.length][arr.length];
         for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[i].length; j++) {
-                if (arr[i][j]) {
-                    boolean[][] check = new boolean[arr.length][arr[i].length];
+            for (int j = 0; j < arr.length; j++) {
+                if (!check[i][j]) {
                     check[i][j] = true;
-                    count = 1;
-                    dfs(arr, check, i, j);
-                    answer = Math.max(answer, count);
+                    queue.offer(new int[]{i, j});
+                    answer++;
+                    while (!queue.isEmpty()) {
+                        int[] poll = queue.poll();
+                        for (int d = 0; d < 4; d++) {
+                            int ny = poll[0] + dy[d];
+                            int nx = poll[1] + dx[d];
+                            if (ny >= 0 && ny < arr.length &&
+                                    nx >= 0 && nx < arr.length &&
+                                    !check[ny][nx] && arr[ny][nx] == arr[poll[0]][poll[1]]) {
+                                check[ny][nx] = true;
+                                queue.offer(new int[]{ny, nx});
+                            }
+                        }
+                    }
                 }
             }
         }
         return answer;
     }
-
-    private static void dfs(boolean[][] arr, boolean[][] check, int i, int j) {
-        for (int d = 0; d < 4; d++) {
-            int ny = dy[d] + i;
-            int nx = dx[d] + j;
-            if (ny >= 0 && ny < check.length &&
-                    nx >= 0 && nx < check[0].length &&
-                    arr[ny][nx] && !check[ny][nx]) {
-                check[ny][nx] = true;
-                count++;
-                dfs(arr, check, ny, nx);
-            }
-        }
-    }
-
 }
