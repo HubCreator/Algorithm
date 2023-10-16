@@ -1,34 +1,50 @@
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 class Solution {
-    public int[] dy = new int[]{-1, 0, 1, 0};
-    public int[] dx = new int[]{0, 1, 0, -1};
+    public Set<Integer> answer = new HashSet<>();
+    public List<Integer> list;
 
-    public int solution(int[][] maps) {
-        int n = maps.length, m = maps[0].length;
-        Queue<int[]> queue = new ArrayDeque<>(n * m);
-        queue.offer(new int[]{0, 0});
+    public int solution(int[] elements) {
+        list = getList(elements);
+        for (int len = 1; len <= elements.length; len++) {
+            boolean[] check = new boolean[list.size()];
+            int[] pm = new int[len];
+            dfs(check, pm, len, 0);
+        }
+        return answer.size();
+    }
 
-        while(!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                int[] poll = queue.poll();
-                if (poll[0] == n - 1 && poll[1] == m - 1) {
-                    return maps[poll[0]][poll[1]];
-                }
-                for (int d = 0; d < 4; d++) {
-                    int ny = poll[0] + dy[d];
-                    int nx = poll[1] + dx[d];
-                    if (ny >= 0 && ny < n &&
-                            nx >= 0 && nx < m &&
-                            maps[ny][nx] == 1) {
-                        maps[ny][nx] = maps[poll[0]][poll[1]] + 1;
-                        queue.offer(new int[]{ny, nx});
-                    }
+    public void dfs(boolean[] check, int[] pm, int len, int level) {
+        if (len == level) {
+            int sum = 0;
+            for (int t : pm) {
+                sum += list.get(t);
+            }
+            System.out.println(level + " " + sum);
+            answer.add(sum);
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                if (!check[i]) {
+                    check[i] = true;
+                    pm[level] = i;
+                    dfs(check, pm, len, level + 1);
+                    check[i] = false;
                 }
             }
         }
-        return -1;
+    }
+
+    public List<Integer> getList(int[] elements) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < elements.length; i++) {
+            result.add(elements[i]);
+        }
+        for (int i = 0; i < elements.length; i++) {
+            result.add(elements[i]);
+        }
+        return result;
     }
 }
