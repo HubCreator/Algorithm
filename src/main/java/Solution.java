@@ -1,60 +1,36 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 class Solution {
-    public boolean[] prime = new boolean[10000001];
-    public int count = 0;
-    public Set<Integer> result = new HashSet<>();
+    public int[] dy = new int[]{-1, 0, 1, 0};
+    public int[] dx = new int[]{0, 1, 0, -1};
 
-    public int solution(String numbers) {
-        char[] arr = new char[numbers.length()];
+    public int solution(int[][] maps) {
+        int answer = 0, n = maps.length, m = maps[0].length;
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{0, 0});
 
-        makePrime();
-
-        for (int i = 0; i < numbers.length(); i++) {
-            arr[i] = numbers.charAt(i);
-        }
-
-        for (int i = 1; i <= arr.length; i++) {
-            boolean[] check = new boolean[arr.length];
-            int[] pm = new int[i];
-            dfs(arr, pm, check, i, 0);
-        }
-
-        return result.size();
-    }
-
-    public void makePrime() {
-        prime[0] = true;
-        prime[1] = true;
-        for (int i = 2; i < prime.length; i++) {
-            if (!prime[i]) {
-                for (int j = i + i; j < prime.length; j += i) {
-                    prime[j] = true;
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            answer++;
+            for (int i = 0; i < size; i++) {
+                int[] poll = queue.poll();
+                maps[poll[0]][poll[1]] = -1;
+                if (poll[0] == n - 1 && poll[1] == m - 1) {
+                    return answer;
+                }
+                for (int d = 0; d < 4; d++) {
+                    int ny = poll[0] + dy[d];
+                    int nx = poll[1] + dx[d];
+                    if (ny >= 0 && ny < n &&
+                            nx >= 0 && nx < m &&
+                            maps[ny][nx] == 1) {
+                        queue.offer(new int[]{ny, nx});
+                    }
                 }
             }
-        }
-    }
 
-    public void dfs(char[] arr, int[] pm, boolean[] check, int end, int level) {
-        if (level == end) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < pm.length; i++) {
-                sb.append(arr[pm[i]]);
-            }
-
-            if (sb.length() != 0 && !prime[Integer.parseInt(sb.toString())]) {
-                result.add(Integer.parseInt(sb.toString()));
-            }
-        } else {
-            for (int i = 0; i < arr.length; i++) {
-                if (!check[i]) {
-                    check[i] = true;
-                    pm[level] = i;
-                    dfs(arr, pm, check, end, level + 1);
-                    check[i] = false;
-                }
-            }
         }
+        return -1;
     }
 }
