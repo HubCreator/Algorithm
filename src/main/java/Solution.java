@@ -1,50 +1,31 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 class Solution {
     public Set<Integer> answer = new HashSet<>();
-    public List<Integer> list;
-
     public int solution(int[] elements) {
-        list = getList(elements);
-        for (int len = 1; len <= elements.length; len++) {
-            boolean[] check = new boolean[list.size()];
-            int[] pm = new int[len];
-            dfs(check, pm, len, 0);
+        int totalSum = 0;
+        for (int i = 0; i < elements.length; i++) {
+            totalSum += elements[i];
+            answer.add(elements[i]);
+        }
+        answer.add(totalSum);
+
+        for (int i = 2; i < elements.length; i++) {
+            solution(elements, i);
         }
         return answer.size();
     }
 
-    public void dfs(boolean[] check, int[] pm, int len, int level) {
-        if (len == level) {
-            int sum = 0;
-            for (int t : pm) {
-                sum += list.get(t);
-            }
-            System.out.println(level + " " + sum);
+    public void solution(int[] elements, int size) {
+        int sum = 0, len = elements.length;
+        for(int i = 0; i < size - 1; i++) {
+            sum += elements[i];
+        }
+        for (int i = size - 1; i < len + size; i++) {
+            sum += elements[i % len];
             answer.add(sum);
-        } else {
-            for (int i = 0; i < list.size(); i++) {
-                if (!check[i]) {
-                    check[i] = true;
-                    pm[level] = i;
-                    dfs(check, pm, len, level + 1);
-                    check[i] = false;
-                }
-            }
+            sum -= elements[(i - (size - 1)) % len];
         }
-    }
-
-    public List<Integer> getList(int[] elements) {
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < elements.length; i++) {
-            result.add(elements[i]);
-        }
-        for (int i = 0; i < elements.length; i++) {
-            result.add(elements[i]);
-        }
-        return result;
     }
 }
