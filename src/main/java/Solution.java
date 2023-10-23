@@ -31,16 +31,22 @@ class Solution {
         while (!queue.isEmpty()) {
             Genre genre = queue.poll();
             Collections.sort(genre.musics);
+            int count = 0;
             for (Music music : genre.musics) {
+                if (count > 1) {
+                    break;
+                }
                 answer.add(music.index);
+                count++;
             }
         }
 
-        for (int i = 0; i < answer.size(); i++) {
-            System.out.println(answer.get(i));
+        int[] result = new int[answer.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = answer.get(i);
         }
 
-        return null;
+        return result;
     }
 
     private static class Music implements Comparable<Music> {
@@ -74,10 +80,10 @@ class Solution {
         public int compareTo(Genre o) {
             int sum1 = 0, sum2 = 0;
             for (int i = 0; i < this.musics.size(); i++) {
-                sum1 += musics.get(i).play;
+                sum1 += this.musics.get(i).play;
             }
             for (int i = 0; i < o.musics.size(); i++) {
-                sum2 += musics.get(i).play;
+                sum2 += o.musics.get(i).play;
             }
             return sum2 - sum1;
         }
