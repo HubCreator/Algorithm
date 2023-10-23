@@ -1,45 +1,30 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-
 class Solution {
-    public int[] answer;
-    public int level = 0;
+    public int solution(int n, int[][] results) {
+        int answer = 0;
+        boolean[][] graph = new boolean[n + 1][n + 1];
+        int[] prize = new int[n + 1];
 
-    public int solution(int n, int[][] edge) {
-        answer = new int[n + 1];
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= n; i++) {
-            graph.add(new ArrayList<>());
+        for (int[] result : results) {
+            graph[result[0]][result[1]] = true;
         }
-        for (int[] path : edge) {
-            graph.get(path[0]).add(path[1]);
-            graph.get(path[1]).add(path[0]);
-        }
-        boolean[] check = new boolean[n + 1];
-        bfs(n, graph, check);
-        return answer[level - 1];
-    }
 
-    public void bfs(int n, List<List<Integer>> graph, boolean[] check) {
-        Queue<Integer> queue = new ArrayDeque<>();
-        queue.add(1);
-        check[1] = true;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            answer[level] = size;
-            for (int i = 0; i < size; i++) {
-                Integer poll = queue.poll();
-                List<Integer> nexts = graph.get(poll);
-                for (Integer nx : nexts) {
-                    if (!check[nx]) {
-                        check[nx] = true;
-                        queue.offer(nx);
+        for (int k = 1; k < n + 1; k ++) {
+            for (int i = 1; i < n + 1; i++) {
+                for (int j = 1; j < n + 1; j++) {
+                    if (!graph[i][j] && graph[i][k] && graph[k][j]) {
+                        graph[i][j] = true;
                     }
                 }
             }
-            level++;
         }
+
+        for (int i = 1; i <= n; i++){
+            int cnt = 0;
+            for (int j = 1; j <= n; j++){
+                if (graph[i][j] || graph[j][i]) cnt++;
+            }
+            if (cnt == (n - 1)) answer++;
+        }
+        return answer;
     }
 }
