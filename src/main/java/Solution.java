@@ -1,31 +1,45 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 class Solution {
-    public Set<Integer> answer = new HashSet<>();
-    public int solution(int[] elements) {
-        int totalSum = 0;
-        for (int i = 0; i < elements.length; i++) {
-            totalSum += elements[i];
-            answer.add(elements[i]);
-        }
-        answer.add(totalSum);
+    public int[] answer;
+    public int level = 0;
 
-        for (int i = 2; i < elements.length; i++) {
-            solution(elements, i);
+    public int solution(int n, int[][] edge) {
+        answer = new int[n + 1];
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList<>());
         }
-        return answer.size();
+        for (int[] path : edge) {
+            graph.get(path[0]).add(path[1]);
+            graph.get(path[1]).add(path[0]);
+        }
+        boolean[] check = new boolean[n + 1];
+        bfs(n, graph, check);
+        return answer[level - 1];
     }
 
-    public void solution(int[] elements, int size) {
-        int sum = 0, len = elements.length;
-        for(int i = 0; i < size - 1; i++) {
-            sum += elements[i];
-        }
-        for (int i = size - 1; i < len + size; i++) {
-            sum += elements[i % len];
-            answer.add(sum);
-            sum -= elements[(i - (size - 1)) % len];
+    public void bfs(int n, List<List<Integer>> graph, boolean[] check) {
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(1);
+        check[1] = true;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            answer[level] = size;
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                List<Integer> nexts = graph.get(poll);
+                for (Integer nx : nexts) {
+                    if (!check[nx]) {
+                        check[nx] = true;
+                        queue.offer(nx);
+                    }
+                }
+            }
+            level++;
         }
     }
 }
