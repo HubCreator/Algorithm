@@ -1,32 +1,18 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class Solution {
-    public String solution(String number, int k) {
+    public String solution(int n, int t, int m, int p) {
+        StringBuilder line = new StringBuilder();
         StringBuilder answer = new StringBuilder();
-        int n = number.length();
-        int t = n - k;  // 스택에 들어갈 숫자 개수
-        List<Character> stack = new ArrayList<>();
-
-        for (int i = 0; i < n; i++) {
-            char current = number.charAt(i);
-            while (k > 0 && !stack.isEmpty() && stack.get(stack.size() - 1) < current) {
-                stack.remove(stack.size() - 1);  // 스택에서 더 작은 숫자 제거
-                k--;
+        for (int i = 0; i < n * t * m; i++) {
+            line.append(Long.toString(i, n));
+        }
+        for (int i = 0; i < line.length(); i++) {
+            if (answer.length() >= t) {
+                break;
             }
-            stack.add(current);  // 현재 숫자 스택에 추가
+            if (i % m == p - 1) {
+                answer.append(Character.toUpperCase(line.charAt(i)));
+            }
         }
-
-        // 남은 숫자를 스택에서 가져와서 문자열로 결합
-        for (int i = 0; i < t; i++) {
-            answer.append(stack.get(i));
-        }
-
         return answer.toString();
-    }
-
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        System.out.println(solution.solution("1924", 2));  // "94" 출력
     }
 }
