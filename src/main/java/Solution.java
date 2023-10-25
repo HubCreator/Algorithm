@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 class Solution {
@@ -11,9 +10,6 @@ class Solution {
 
         init(str1.toUpperCase(), list1);
         init(str2.toUpperCase(), list2);
-
-        Collections.sort(list1);
-        Collections.sort(list2);
 
         for (String s : list1) {
             if (list2.remove(s)) {
@@ -47,6 +43,6 @@ class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        System.out.println(solution.solution("FRANCE ", "french"));
+        System.out.println(solution.solution("aa1+aa2", "AAAA12"));
     }
 }
