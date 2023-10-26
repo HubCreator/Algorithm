@@ -1,46 +1,55 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        String[] arr = new String[t];
-        for (int i = 0; i < t; i++) {
-            arr[i] = br.readLine();
+        String line = br.readLine();
+        line += '!';
+        List<String> list = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < line.length() - 1; i++) {
+            sb.append(line.charAt(i));
+            if (line.charAt(i) == 'f' && line.charAt(i + 1) == 'w') {
+                list.add(sb.toString());
+                sb = new StringBuilder();
+            }
         }
-        int answer = 0;
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = i + 1; j < arr.length; j++) {
-                if (check(arr[i], arr[j])) {
-                    answer++;
+        list.add(sb.toString());
+
+        String wolf = "wolf";
+        char prev = '1';
+        int idx = 0;
+        for (String s : list) {
+            int n = s.length() / 4;
+            for (int i = 0; i < s.length(); i++) {
+                char curr = s.charAt(i);
+                if (i == 0) {
+                    prev = curr;
+                }
+
+                if (prev != curr) {
+                    if (wolf.charAt((idx + 1) % 4) == curr) {
+                        idx++;
+                        prev = curr;
+                    } else {
+                        System.out.println(0);
+                        return;
+                    }
+                }
+
+                if (s.lastIndexOf(curr) - s.indexOf(curr) + 1 != n) {
+                    System.out.println(0);
+                    return;
                 }
             }
+            idx = 0;
         }
 
-        System.out.println(answer);
-    }
-
-    private static boolean check(String s1, String s2) {
-        Map<Character, Character> map1 = new HashMap<>();
-        Map<Character, Character> map2 = new HashMap<>();
-        for (int i = 0; i < s1.length(); i++) {
-            if (!map1.isEmpty() &&
-                    map1.containsKey(s1.charAt(i)) &&
-                    map1.get(s1.charAt(i)) != s2.charAt(i)) {
-                return false;
-            }
-            if (!map2.isEmpty() &&
-                    map2.containsKey(s2.charAt(i)) &&
-                    map2.get(s2.charAt(i)) != s1.charAt(i)) {
-                return false;
-            }
-            map1.put(s1.charAt(i), s2.charAt(i));
-            map2.put(s2.charAt(i), s1.charAt(i));
-        }
-        return true;
+        System.out.println(1);
     }
 }
