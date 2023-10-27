@@ -1,68 +1,89 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int result;
+    private static char[][] board;
+    private static String inkLine;
+    private static int[] boxCoord;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int I = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        board = new char[N][N];
+        inkLine = br.readLine();
+        boxCoord = initBoard(br, N);
+        String commandLine = br.readLine();
+        solution(K, I, commandLine);
+
         StringBuilder answer = new StringBuilder();
-        int T = Integer.parseInt(br.readLine());
-        for (int i = 0; i < T; i++) {
-            result = Integer.MAX_VALUE;
-            int N = Integer.parseInt(br.readLine());
-            List<List<Integer>> list = new ArrayList<>();
-            for (int j = 0; j < N; j++) {
-                list.add(new ArrayList<>());
+        for (char[] chars : board) {
+            for (char aChar : chars) {
+                answer.append(aChar);
             }
-            for (int j = 0; j < N; j++) {
-                StringTokenizer st = new StringTokenizer(br.readLine());
-                int d = Integer.parseInt(st.nextToken());
-                for (int k = 0; k < d; k++) {
-                    int t = Integer.parseInt(st.nextToken()) - 1;
-                    list.get(j).add(t);
-                }
-            }
-            boolean[] check = new boolean[N];
-            dfs(list, check, 0);
-            answer.append(result).append('\n');
+            answer.append('\n');
         }
         System.out.print(answer);
     }
 
-    private static void dfs(List<List<Integer>> list, boolean[] check, int level) {
-        if (level == check.length) {
-            boolean[] history = new boolean[check.length];
-            int count = 0;
-            for (int i = 0; i < check.length; i++) {
-                if (check[i]) {
-                    history[i] = true;
-                    for (Integer friend : list.get(i)) {
-                        history[friend] = true;
-                    }
-                    count++;
+    private static void solution(int k, int I, String commandLine) {
+        int inkCount = 0, inkIndex = 0;
+        for (int i = 0; i < k; i++) {
+            char command = commandLine.charAt(i);
+            if (command == 'j') {
+                inkCount++;
+            } else if (command == 'J') {
+                char color = inkLine.charAt(inkIndex);
+                coloring(color, inkCount);
+                inkCount = 0;
+                inkIndex = (inkIndex + 1) % I;
+            } else {
+                int y = boxCoord[0], x = boxCoord[1];
+                if (command == 'U' && boxCoord[0] - 1 >= 0 && board[boxCoord[0] - 1][boxCoord[1]] == '.') {
+                    boxCoord = new int[]{y - 1, x};
                 }
-            }
-            int sum = 0;
-            for (boolean b : history) {
-                if (b) {
-                    sum += 1;
+                if (command == 'D' && boxCoord[0] + 1 < board.length && board[boxCoord[0] + 1][boxCoord[1]] == '.') {
+                    boxCoord = new int[]{y + 1, x};
                 }
-            }
-            if (sum == check.length) {
-                result = Math.min(result, count);
-            }
-        } else {
-            if (!check[level]) {
-                check[level] = true;
-                dfs(list, check, level + 1);
-                check[level] = false;
-                dfs(list, check, level + 1);
+                if (command == 'L' && boxCoord[1] - 1 >= 0 && board[boxCoord[0]][boxCoord[1] - 1] == '.') {
+                    boxCoord = new int[]{y, x - 1};
+                }
+                if (command == 'R' && boxCoord[1] + 1 < board.length && board[boxCoord[0]][boxCoord[1] + 1] == '.') {
+                    boxCoord = new int[]{y, x + 1};
+                }
             }
         }
+        board[boxCoord[0]][boxCoord[1]] = '@';
+    }
+
+    private static void coloring(char color, int inkCount) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (Math.abs(boxCoord[0] - i) + Math.abs(boxCoord[1] - j) <= inkCount && board[i][j] != '.') {
+                    board[i][j] = color;
+                }
+            }
+        }
+    }
+
+    private static int[] initBoard(BufferedReader br, int N) throws IOException {
+        int[] boxCoord = null;
+        for (int i = 0; i < N; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < line.length(); j++) {
+                char c = line.charAt(j);
+                if (c == '@') {
+                    boxCoord = new int[]{i, j};
+                    board[i][j] = '.';
+                    continue;
+                }
+                board[i][j] = c;
+            }
+        }
+        return boxCoord;
     }
 }
