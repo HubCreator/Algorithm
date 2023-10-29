@@ -1,38 +1,53 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 class Solution {
-    public int[] solution(String msg) {
-        List<String> dict = new ArrayList<>();
-        List<Integer> indexes = new ArrayList<>();
-        for (char c = 'A'; c <= 'Z'; c++) {
-            dict.add(String.valueOf(c));
-        }
-        for (int i = 0; i < msg.length(); i++) {
-            StringBuilder curr = new StringBuilder();
-            curr.append(msg.charAt(i));
-
-            while (i < msg.length() - 1 && dict.contains(curr.toString() + msg.charAt(i + 1))) {
-                curr.append(msg.charAt(i + 1));
-                i++;
+    public int solution(String begin, String target, String[] words) {
+        boolean flag = false;
+        for (String word : words) {
+            if (word.equals(target)) {
+                flag = true;
             }
-            if (i < msg.length() - 1) {
-                dict.add(curr.toString() + msg.charAt(i + 1));
+        }
+        if (!flag) {
+            return 0;
+        }
+        int answer = 0;
+        boolean[] check = new boolean[words.length];
+        Queue<String> queue = new ArrayDeque<>();
+        queue.offer(begin);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            answer++;
+            for (int i = 0; i < size; i++) {
+                String poll = queue.poll();
+                if (poll.equals(target)) {
+                    return answer - 1;
+                }
+                for (int j = 0; j < words.length; j++) {
+                    if (!check[j] && isValid(poll, words[j])) {
+                        check[j] = true;
+                        queue.offer(words[j]);
+                    }
+                }
             }
-            indexes.add(dict.indexOf(curr.toString()) + 1);
         }
+        return 0;
+    }
 
-        int[] answer = new int[indexes.size()];
-        for (int i = 0; i < indexes.size(); i++) {
-            answer[i] = indexes.get(i);
+    private boolean isValid(String word1, String word2) {
+        int count = 0;
+        for (int i = 0; i < word1.length(); i++) {
+            if (word1.charAt(i) != word2.charAt(i)) {
+                count++;
+            }
         }
-        return answer;
+        return count == 1;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        for (int i : solution.solution("KAKAO")) {
-            System.out.print(i + " ");
-        }
+        int answer = solution.solution("hit", "cog", new String[]{"hot", "dot", "dog", "lot", "log", "cog"});
+        System.out.println("answer = " + answer);
     }
 }
