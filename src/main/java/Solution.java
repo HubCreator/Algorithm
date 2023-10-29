@@ -1,34 +1,47 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class Solution {
-    public int solution(int n, int k) {
-        int answer = 0;
-        String line = Long.toString(n, k) + "0";
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < line.length(); i++) {
-            char curr = line.charAt(i);
-            if (curr != '0') {
-                sb.append(curr);
-            } else {
-                if (sb.length() > 0 && isPrime(sb.toString())) {
-                    answer++;
-                }
-                sb = new StringBuilder();
-            }
+    public int[] solution(String msg) {
+        StringBuilder dict1 = new StringBuilder();
+        StringBuilder dict2 = new StringBuilder();
+        List<String> dict = new ArrayList<>();
+        List<Integer> indexes = new ArrayList<>();
+        for (char c = 'A'; c <= 'Z'; c++) {
+            dict1.append(String.valueOf(c));
         }
 
+        for (int i = 0; i < msg.length() - 1; i++) {
+            StringBuilder curr = new StringBuilder();
+            curr.append(msg.charAt(i));
+
+            while (i < msg.length() -1 &&
+                    dict2.indexOf(curr.toString() + msg.charAt(i + 1)) != -1) {
+                curr.append(msg.charAt(i + 1));
+                i++;
+            }
+
+            if (i < msg.length() - 1) {
+                char next = msg.charAt(i + 1);
+                dict2.append(curr.toString() + next);
+            }
+            if (curr.toString().length() > 1) {
+                indexes.add(dict2.indexOf(curr.toString()) + 27);
+            } else {
+                indexes.add(dict2.indexOf(curr.toString()) + 1);
+            }
+        }
+        int[] answer = new int[indexes.size()];
+        for (int i = 0; i < indexes.size(); i++) {
+            answer[i] = indexes.get(i);
+        }
         return answer;
     }
 
-    private boolean isPrime(String input) {
-        long i = Long.parseLong(input);
-        if (i == 1) {
-            return false;
-        } else {
-            for (int j = 2; j <= Math.sqrt(i); j++) {
-                if (i % j == 0) {
-                    return false;
-                }
-            }
-            return true;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        for (int i : solution.solution("ABABABABABABABAB")) {
+            System.out.print(i + " ");
         }
     }
 }
