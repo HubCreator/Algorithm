@@ -1,35 +1,26 @@
+import java.util.HashSet;
+import java.util.Set;
+
 class Solution {
-    public int solution(int n, int[][] results) {
-        int answer = 0;
-        boolean[][] board = new boolean[n + 1][n + 1];
-        for (int[] result : results) {
-            board[result[0]][result[1]] = true;
+    public int[] solution(int n, String[] words) {
+        int[] answer = {0, 1};
+        Set<String> set = new HashSet<>();
+        set.add(words[0]);
+
+        for (int i = 1; i < words.length; i++) {
+            answer[0] = i % n + 1;
+            if (i % n == 0) {
+                answer[1] += 1;
+            }
+            String curr = words[i];
+            String prev = words[i - 1];
+            if (set.add(curr) && prev.charAt(prev.length() - 1) == curr.charAt(0)) {
+                continue;
+            } else {
+                return answer;
+            }
         }
 
-        for (int k = 1; k <= n; k++) {
-            for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= n; j++) {
-                    if (board[i][k] && board[k][j]) {
-                        board[i][j] = true;
-                    }
-                }
-            }
-        }
-
-        for (int p = 1; p <= n; p++) {
-            int win = 0, lose = 0;
-            for (int i = 1; i <= n; i++) {
-                if (board[p][i]) {
-                    win++;
-                }
-                if (board[i][p]) {
-                    lose++;
-                }
-            }
-            if (win + lose == n - 1) {
-                answer++;
-            }
-        }
-        return answer;
+        return new int[]{0, 0};
     }
 }
