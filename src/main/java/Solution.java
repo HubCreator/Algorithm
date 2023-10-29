@@ -1,25 +1,35 @@
-import java.util.Arrays;
-
 class Solution {
-    public int solution(int[][] routes) {
-        int answer = 1;
-        Arrays.sort(routes, (a, b) -> a[1] - b[1]);
-        int cam = -30001;
-        for (int i = 0; i < routes.length; i++) {
-            int[] curr = routes[i];
-            if (cam > curr[1]) {
-                continue;
-            }
-            answer++;
-            cam = curr[1];
+    public int solution(int n, int[][] results) {
+        int answer = 0;
+        boolean[][] board = new boolean[n + 1][n + 1];
+        for (int[] result : results) {
+            board[result[0]][result[1]] = true;
         }
 
-        return answer;
-    }
+        for (int k = 1; k <= n; k++) {
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (board[i][k] && board[k][j]) {
+                        board[i][j] = true;
+                    }
+                }
+            }
+        }
 
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        int answer = solution.solution(new int[][]{{-100, 100}, {50, 170}, {150, 200}, {-50, -10}, {10, 20}, {30, 40}});
-        System.out.println("answer = " + answer);
+        for (int p = 1; p <= n; p++) {
+            int win = 0, lose = 0;
+            for (int i = 1; i <= n; i++) {
+                if (board[p][i]) {
+                    win++;
+                }
+                if (board[i][p]) {
+                    lose++;
+                }
+            }
+            if (win + lose == n - 1) {
+                answer++;
+            }
+        }
+        return answer;
     }
 }
