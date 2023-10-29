@@ -1,23 +1,25 @@
+import java.util.Arrays;
+
 class Solution {
-    public int[] solution(int n, int s) {
-        if (n > s) {
-            return new int[]{-1};
+    public int solution(int[][] routes) {
+        int answer = 1;
+        Arrays.sort(routes, (a, b) -> a[1] - b[1]);
+        int cam = -30001;
+        for (int i = 0; i < routes.length; i++) {
+            int[] curr = routes[i];
+            if (cam > curr[1]) {
+                continue;
+            }
+            answer++;
+            cam = curr[1];
         }
-        int[] answer = new int[n];
-        int idx = 0;
-        while (n > 0) {
-            int target = s / n;
-            answer[idx++] = target;
-            s -= target;
-            n--;
-        }
+
         return answer;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        for (int i : solution.solution(2, 9)) {
-            System.out.print(i + " ");
-        }
+        int answer = solution.solution(new int[][]{{-100, 100}, {50, 170}, {150, 200}, {-50, -10}, {10, 20}, {30, 40}});
+        System.out.println("answer = " + answer);
     }
 }
