@@ -16,6 +16,8 @@ class Solution {
             String prev = words[i - 1];
             if (set.add(curr) && prev.charAt(prev.length() - 1) == curr.charAt(0)) {
                 continue;
+
+
             } else {
                 return answer;
             }
