@@ -1,50 +1,40 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DecimalFormat;
+import java.util.StringTokenizer;
 
 public class Main {
-    private static int[] dirs = new int[]{-1, 1, 0};
+    private static StringBuilder answer = new StringBuilder();
+    private static int[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        int answer = 0;
-        List<int[]> history = new ArrayList<>();
+        StringTokenizer st1 = new StringTokenizer(br.readLine());
+        StringTokenizer st2 = new StringTokenizer(br.readLine());
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        int N = Integer.parseInt(st1.nextToken());
+        int K = Integer.parseInt(st1.nextToken());
 
-        for (int k = 0; k < n; k++) {
-            for (int l = 0; l < n; l++) {
-                history.clear();
-                history.add(new int[]{k, l});
+        arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st2.nextToken());
+        }
 
-                OuterLoop:
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        if (checkHistory(history, i, j)) {
-                            history.add(new int[]{i, j});
-                        }
-                        if (history.size() == n) {
-                            answer++;
-                            break OuterLoop;
-                        }
-                    }
-                }
-
-            }
+        for (int i = 0; i < K; i++) {
+            String[] split = br.readLine().split(" ");
+            double result = solution(Integer.parseInt(split[0]) - 1, Integer.parseInt(split[1]) - 1);
+            answer.append(decimalFormat.format(result)).append('\n');
         }
 
         System.out.println(answer);
     }
 
-    private static boolean checkHistory(List<int[]> history, int i, int j) {
-        for (int[] ints : history) {
-            if (i == ints[0] ||
-                    j == ints[1] ||
-                    Math.abs(i - ints[0]) == Math.abs(j - ints[1])) {
-                return false;
-            }
+    public static double solution(int a, int b) {
+        double sum = 0;
+        for (int i = a; i <= b; i++) {
+            sum += arr[i];
         }
-        return true;
+        return sum / (b - a + 1);
     }
 }
