@@ -1,26 +1,37 @@
-import java.util.HashSet;
-import java.util.Set;
-
 class Solution {
-    public int[] solution(int n, String[] words) {
-        int[] answer = {0, 1};
-        Set<String> set = new HashSet<>();
-        set.add(words[0]);
+    public long solution(int r1, int r2) {
+        long answer = 0, intersect = 0;
+        int max = Math.max(r1, r2);
+        int min = Math.min(r1, r2);
+        double max2 = Math.pow(max, 2);
+        double min2 = Math.pow(min, 2);
 
-        for (int i = 1; i < words.length; i++) {
-            answer[0] = i % n + 1;
-            if (i % n == 0) {
-                answer[1] += 1;
-            }
-            String curr = words[i];
-            String prev = words[i - 1];
-            if (set.add(curr) && prev.charAt(prev.length() - 1) == curr.charAt(0)) {
-                continue;
-            } else {
-                return answer;
+
+        for (int i = 0; i <= max; i++) {
+            for (int j = 0; j <= max; j++) {
+                double x = Math.pow(i, 2);
+                double y = Math.pow(j, 2);
+                if (x + y <= max2) {
+                    answer++;
+
+                    if (i == 0 || j == 0) {
+                        intersect++;
+                    }
+                }
+
             }
         }
+        System.out.println(answer - 1);
 
-        return new int[]{0, 0};
+        return (long) answer;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        solution.solution(0, 10);
     }
 }
+
+// 2 -> 5 -> 10 -> 16 -> 25 -> 34 -> 44 -> 57 -> 72 -> 89
+//  +3   +5    +6   +9     +9    +10    +13   +20   + 17
+//   +2    +1    +3   +0
