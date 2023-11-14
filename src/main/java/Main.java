@@ -1,40 +1,45 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static StringBuilder answer = new StringBuilder();
-    private static int[] arr;
+    private static boolean[][] board;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st1 = new StringTokenizer(br.readLine());
-        StringTokenizer st2 = new StringTokenizer(br.readLine());
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        int N = Integer.parseInt(st1.nextToken());
-        int K = Integer.parseInt(st1.nextToken());
-
-        arr = new int[N];
+        int answer = Integer.MAX_VALUE;
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        board = new boolean[N][M];
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st2.nextToken());
+            String line = br.readLine();
+            for (int j = 0; j < M; j++) {
+                board[i][j] = line.charAt(j) == 'W';
+            }
         }
 
-        for (int i = 0; i < K; i++) {
-            String[] split = br.readLine().split(" ");
-            double result = solution(Integer.parseInt(split[0]) - 1, Integer.parseInt(split[1]) - 1);
-            answer.append(decimalFormat.format(result)).append('\n');
+        for (int i = 0; i <= N - 8; i++) {
+            for (int j = 0; j <= M - 8; j++) {
+                answer = Math.min(answer, solution(i, j));
+            }
         }
-
-        System.out.println(answer);
+        System.out.print(answer);
     }
 
-    public static double solution(int a, int b) {
-        double sum = 0;
-        for (int i = a; i <= b; i++) {
-            sum += arr[i];
+    private static int solution(int y, int x) {
+        int count = 0;
+        boolean flag = board[y][x];
+        for (int i = y; i < y + 8; i++) {
+            for (int j = x; j < x + 8; j++) {
+                if (board[i][j] != flag) {
+                    count++;
+                }
+                flag = !flag;
+            }
+            flag = !board[i][0];
         }
-        return sum / (b - a + 1);
+        return Math.min(count, 64 - count);
     }
 }
