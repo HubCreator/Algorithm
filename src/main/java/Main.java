@@ -4,42 +4,46 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static boolean[][] board;
-
+    private static int answer = Integer.MIN_VALUE;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int answer = Integer.MAX_VALUE;
+        int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        board = new boolean[N][M];
         for (int i = 0; i < N; i++) {
-            String line = br.readLine();
-            for (int j = 0; j < M; j++) {
-                board[i][j] = line.charAt(j) == 'W';
-            }
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        for (int i = 0; i <= N - 8; i++) {
-            for (int j = 0; j <= M - 8; j++) {
-                answer = Math.min(answer, solution(i, j));
-            }
+        for (int i = 1; i <= N; i++) {
+            int[] pm = new int[i];
+            boolean[] check = new boolean[N];
+            dfs(i, arr, pm, check, 0);
         }
+
         System.out.print(answer);
     }
 
-    private static int solution(int y, int x) {
-        int count = 0;
-        boolean flag = board[y][x];
-        for (int i = y; i < y + 8; i++) {
-            for (int j = x; j < x + 8; j++) {
-                if (board[i][j] != flag) {
-                    count++;
+    private static void dfs(int len, int[] arr, int[] pm, boolean[] check, int level) {
+        if (len == level) {
+            boolean flag = true;
+            for (int i = 0; i < pm.length - 1; i++) {
+                if (pm[i] >= pm[i + 1]) {
+                    flag = false;
+                    break;
                 }
-                flag = !flag;
             }
-            flag = !board[i][0];
+            if (flag) {
+                answer = Math.max(answer, len);
+            }
+        } else {
+            for (int i = 0; i < arr.length; i++) {
+                if (!check[i]) {
+                    check[i] = true;
+                    pm[level] = arr[i];
+                    dfs(len, arr, pm, check, level + 1);
+                    check[i] = false;
+                }
+            }
         }
-        return Math.min(count, 64 - count);
     }
 }
