@@ -25,9 +25,10 @@ public class Main {
                 arr[(from + to) - j] = tmp;
             }
         }
-
+        StringBuilder answer = new StringBuilder();
         for (int i = 1; i <= N; i++) {
-            System.out.print(arr[i] + " ");
+            answer.append(arr[i]).append(' ');
         }
+        System.out.print(answer);
     }
 }
