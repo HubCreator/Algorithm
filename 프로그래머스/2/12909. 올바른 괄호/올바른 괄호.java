@@ -1,23 +1,27 @@
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 class Solution {
     boolean solution(String s) {
-        List<Character> list = new ArrayList<>();
+        List<Character> stack = new ArrayList<>();
+        
         for (int i = 0; i < s.length(); i++) {
-            char target = s.charAt(i);
-            if (list.isEmpty()) {
-                list.add(target);
+            if (stack.isEmpty()) {
+                stack.add(s.charAt(i));    
                 continue;
-            }
-            char peek = list.get(list.size() - 1);
-            if (peek == '(' && target == ')') {
-                list.remove(list.size() - 1);
-            } else {
-                list.add(target);
+            } 
+            
+            char top = stack.get(stack.size() - 1);
+            if (top == ')') {
+                return false;
+            } else { // '('
+                if (s.charAt(i) == '(') {
+                    stack.add(s.charAt(i));
+                } else {
+                    stack.remove(stack.size() - 1);
+                }
             }
         }
-
-        return list.isEmpty();
+        
+        return stack.size() == 0;
     }
 }
