@@ -1,43 +1,43 @@
-import java.util.Deque;
-import java.util.ArrayDeque;
+import java.util.*;
 
 class Solution {
     public int solution(int[] priorities, int location) {
         int answer = 0;
-        Deque<Job> deque = new ArrayDeque<>();
+        Deque<Job> queue = new ArrayDeque<>();
+        Queue<Integer> p = new PriorityQueue<>(Collections.reverseOrder());
+        
         for (int i = 0; i < priorities.length; i++) {
-            deque.offer(new Job(i, priorities[i]));
+            queue.offer(new Job(priorities[i], i));
+            p.offer(priorities[i]);
         }
         
-        while (!deque.isEmpty()) {
-            Job poll = deque.pollFirst();
-            boolean flag = false;
-            for (Job job : deque) {
-                if (poll.priority < job.priority) {
-                    flag = true;
+        while (!p.isEmpty()) {
+            int highest = p.poll();
+            Job job = null;
+            while (true) {
+                job = queue.pollFirst();
+                if (job.priority != highest) {
+                    queue.offerLast(job);    
+                } else {
                     break;
                 }
+            } 
+            answer++;
+                
+            if (job.index == location) {
+                return answer;
             }
-            if (flag) {
-                deque.offerLast(poll);
-            } else {
-                answer += 1;
-                if (poll.index == location) {
-                    return answer;
-                }    
-            }
-            
         }
         return answer;
     }
+}
+
+class Job {
+    public int priority;
+    public int index;
     
-    private static class Job {
-        private int index;
-        private int priority;
-        
-        public Job(int index, int priority) {
-            this.index = index;
-            this.priority = priority;
-        }
+    public Job(int priority, int index) {
+        this.priority = priority;
+        this.index = index;
     }
 }
